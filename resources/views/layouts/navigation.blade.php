@@ -44,6 +44,18 @@
                         <x-nav-link :href="route('school.attendance.index')" :active="request()->routeIs('school.attendance.*')">
                             {{ __('Attendance') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('school.exams.index')" :active="request()->routeIs('school.exams.*')">
+                            {{ __('Exams') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.results.index')" :active="request()->routeIs('school.results.*')">
+                            {{ __('Results') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.routine.index')" :active="request()->routeIs('school.routine.*')">
+                            {{ __('Routine') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.grades.index')" :active="request()->routeIs('school.grades.*')">
+                            {{ __('Grades') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>

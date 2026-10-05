@@ -4,6 +4,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\School\AcademicYearController;
 use App\Http\Controllers\School\AttendanceController;
 use App\Http\Controllers\School\DashboardController as SchoolDashboardController;
+use App\Http\Controllers\School\ExamController;
+use App\Http\Controllers\School\ExamSubjectController;
+use App\Http\Controllers\School\GradeController;
+use App\Http\Controllers\School\MarkController;
+use App\Http\Controllers\School\ResultController;
+use App\Http\Controllers\School\RoutineController;
 use App\Http\Controllers\School\SchoolClassController;
 use App\Http\Controllers\School\SectionController;
 use App\Http\Controllers\School\StudentController;
@@ -60,6 +66,24 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::resource('students', StudentController::class);
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+
+        Route::resource('grades', GradeController::class)->except('show');
+
+        Route::resource('exams', ExamController::class);
+        Route::get('/exams/{exam}/subjects/create', [ExamSubjectController::class, 'create'])->name('exams.subjects.create');
+        Route::post('/exams/{exam}/subjects', [ExamSubjectController::class, 'store'])->name('exams.subjects.store');
+        Route::delete('/exams/{exam}/subjects/{examSubject}', [ExamSubjectController::class, 'destroy'])->name('exams.subjects.destroy');
+
+        Route::get('/exam-subjects/{examSubject}/marks', [MarkController::class, 'edit'])->name('marks.edit');
+        Route::put('/exam-subjects/{examSubject}/marks', [MarkController::class, 'update'])->name('marks.update');
+
+        Route::get('/results', [ResultController::class, 'index'])->name('results.index');
+        Route::get('/results/{exam}/marksheet/{student}', [ResultController::class, 'marksheet'])->name('results.marksheet');
+
+        Route::get('/routine', [RoutineController::class, 'index'])->name('routine.index');
+        Route::get('/routine/create', [RoutineController::class, 'create'])->name('routine.create');
+        Route::post('/routine', [RoutineController::class, 'store'])->name('routine.store');
+        Route::delete('/routine/{routine}', [RoutineController::class, 'destroy'])->name('routine.destroy');
     });
 
 require __DIR__.'/auth.php';
