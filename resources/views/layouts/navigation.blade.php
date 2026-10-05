@@ -22,6 +22,28 @@
                         <x-nav-link :href="route('super-admin.plans.index')" :active="request()->routeIs('super-admin.plans.*')">
                             {{ __('Plans') }}
                         </x-nav-link>
+                    @elseif (Auth::user()->school_id)
+                        <x-nav-link :href="route('school.students.index')" :active="request()->routeIs('school.students.*')">
+                            {{ __('Students') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.teachers.index')" :active="request()->routeIs('school.teachers.*')">
+                            {{ __('Teachers') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.classes.index')" :active="request()->routeIs('school.classes.*')">
+                            {{ __('Classes') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.sections.index')" :active="request()->routeIs('school.sections.*')">
+                            {{ __('Sections') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.subjects.index')" :active="request()->routeIs('school.subjects.*')">
+                            {{ __('Subjects') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.academic-years.index')" :active="request()->routeIs('school.academic-years.*')">
+                            {{ __('Academic Years') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.attendance.index')" :active="request()->routeIs('school.attendance.*')">
+                            {{ __('Attendance') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>

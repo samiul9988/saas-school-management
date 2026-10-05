@@ -1,6 +1,14 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\School\AcademicYearController;
+use App\Http\Controllers\School\AttendanceController;
+use App\Http\Controllers\School\DashboardController as SchoolDashboardController;
+use App\Http\Controllers\School\SchoolClassController;
+use App\Http\Controllers\School\SectionController;
+use App\Http\Controllers\School\StudentController;
+use App\Http\Controllers\School\SubjectController;
+use App\Http\Controllers\School\TeacherController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
 use App\Http\Controllers\SuperAdmin\PlanController;
 use App\Http\Controllers\SuperAdmin\SchoolController;
@@ -11,9 +19,17 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return request()->user()->isSuperAdmin()
-        ? redirect()->route('super-admin.dashboard')
-        : view('dashboard');
+    $user = request()->user();
+
+    if ($user->isSuperAdmin()) {
+        return redirect()->route('super-admin.dashboard');
+    }
+
+    if ($user->school_id) {
+        return redirect()->route('school.dashboard');
+    }
+
+    return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -29,6 +45,21 @@ Route::middleware(['auth', 'verified', 'super_admin'])
         Route::get('/dashboard', SuperAdminDashboardController::class)->name('dashboard');
         Route::resource('schools', SchoolController::class);
         Route::resource('plans', PlanController::class)->except('show');
+    });
+
+Route::middleware(['auth', 'verified', 'school_context'])
+    ->prefix('school')
+    ->name('school.')
+    ->group(function () {
+        Route::get('/dashboard', SchoolDashboardController::class)->name('dashboard');
+        Route::resource('academic-years', AcademicYearController::class)->except('show')->parameters(['academic-years' => 'academicYear']);
+        Route::resource('classes', SchoolClassController::class)->except('show')->parameters(['classes' => 'class']);
+        Route::resource('sections', SectionController::class)->except('show');
+        Route::resource('subjects', SubjectController::class)->except('show');
+        Route::resource('teachers', TeacherController::class);
+        Route::resource('students', StudentController::class);
+        Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+        Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     });
 
 require __DIR__.'/auth.php';

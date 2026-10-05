@@ -36,6 +36,21 @@ class School extends Model
         return $this->hasMany(Subscription::class);
     }
 
+    public function students(): HasMany
+    {
+        return $this->hasMany(Student::class);
+    }
+
+    public function teachers(): HasMany
+    {
+        return $this->hasMany(Teacher::class);
+    }
+
+    public function schoolClasses(): HasMany
+    {
+        return $this->hasMany(SchoolClass::class);
+    }
+
     public function activeSubscription(): HasMany
     {
         return $this->subscriptions()->where('status', 'active');
