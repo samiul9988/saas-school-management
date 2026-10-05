@@ -15,6 +15,14 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if (Auth::user()->isSuperAdmin())
+                        <x-nav-link :href="route('super-admin.schools.index')" :active="request()->routeIs('super-admin.schools.*')">
+                            {{ __('Schools') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('super-admin.plans.index')" :active="request()->routeIs('super-admin.plans.*')">
+                            {{ __('Plans') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
