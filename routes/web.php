@@ -6,10 +6,16 @@ use App\Http\Controllers\School\AttendanceController;
 use App\Http\Controllers\School\DashboardController as SchoolDashboardController;
 use App\Http\Controllers\School\ExamController;
 use App\Http\Controllers\School\ExamSubjectController;
+use App\Http\Controllers\School\ExpenseController;
+use App\Http\Controllers\School\FeePaymentController;
+use App\Http\Controllers\School\FeeTypeController;
+use App\Http\Controllers\School\FinanceReportController;
 use App\Http\Controllers\School\GradeController;
+use App\Http\Controllers\School\IncomeController;
 use App\Http\Controllers\School\MarkController;
 use App\Http\Controllers\School\ResultController;
 use App\Http\Controllers\School\RoutineController;
+use App\Http\Controllers\School\StudentFeeController;
 use App\Http\Controllers\School\SchoolClassController;
 use App\Http\Controllers\School\SectionController;
 use App\Http\Controllers\School\StudentController;
@@ -84,6 +90,15 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/routine/create', [RoutineController::class, 'create'])->name('routine.create');
         Route::post('/routine', [RoutineController::class, 'store'])->name('routine.store');
         Route::delete('/routine/{routine}', [RoutineController::class, 'destroy'])->name('routine.destroy');
+
+        Route::get('/finance', FinanceReportController::class)->name('finance.index');
+        Route::resource('fee-types', FeeTypeController::class)->except('show');
+        Route::resource('student-fees', StudentFeeController::class)->only(['index', 'create', 'store', 'destroy']);
+        Route::get('/student-fees/{studentFee}/pay', [FeePaymentController::class, 'create'])->name('fee-payments.create');
+        Route::post('/student-fees/{studentFee}/pay', [FeePaymentController::class, 'store'])->name('fee-payments.store');
+        Route::get('/fee-payments/{feePayment}/receipt', [FeePaymentController::class, 'receipt'])->name('fee-payments.receipt');
+        Route::resource('incomes', IncomeController::class)->only(['index', 'create', 'store', 'destroy']);
+        Route::resource('expenses', ExpenseController::class)->only(['index', 'create', 'store', 'destroy']);
     });
 
 require __DIR__.'/auth.php';

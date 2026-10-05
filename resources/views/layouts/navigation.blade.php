@@ -56,6 +56,9 @@
                         <x-nav-link :href="route('school.grades.index')" :active="request()->routeIs('school.grades.*')">
                             {{ __('Grades') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('school.finance.index')" :active="request()->routeIs('school.finance.*', 'school.fee-types.*', 'school.student-fees.*', 'school.incomes.*', 'school.expenses.*')">
+                            {{ __('Finance') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
