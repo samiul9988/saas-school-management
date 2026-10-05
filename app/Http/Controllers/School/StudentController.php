@@ -43,7 +43,7 @@ class StudentController extends Controller
 
     public function show(Student $student): View
     {
-        $student->load('schoolClass', 'section', 'academicYear', 'attendances');
+        $student->load('schoolClass', 'section', 'academicYear', 'attendances', 'portalUser');
 
         return view('school.students.show', compact('student'));
     }

@@ -5,12 +5,17 @@ namespace App\Http\Controllers\School;
 use App\Http\Controllers\Controller;
 use App\Models\FeePayment;
 use App\Models\StudentFee;
+use App\Services\SmsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class FeePaymentController extends Controller
 {
+    public function __construct(private SmsService $sms)
+    {
+    }
+
     public function create(StudentFee $studentFee): View
     {
         $studentFee->load('student', 'feeType');
@@ -40,6 +45,15 @@ class FeePaymentController extends Controller
 
         $studentFee->paid_amount += $data['amount'];
         $studentFee->recalculateStatus();
+
+        if ($studentFee->student->guardian_phone) {
+            $this->sms->send(
+                $request->user()->school,
+                $studentFee->student->guardian_phone,
+                "Payment of {$data['amount']} received for {$studentFee->student->name}. Receipt: {$payment->receipt_number}.",
+                'fee_payment'
+            );
+        }
 
         return redirect()->route('school.fee-payments.receipt', $payment)->with('status', 'Payment recorded.');
     }

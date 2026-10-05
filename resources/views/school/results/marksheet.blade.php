@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('school.results.index') }}" class="text-indigo-600 hover:underline print:hidden">&larr; Back to results</a>
+            <a href="{{ Auth::user()->isParent() ? route('parent.results') : route('school.results.index') }}" class="text-indigo-600 hover:underline print:hidden">&larr; Back to results</a>
         </div>
     </div>
 </x-app-layout>

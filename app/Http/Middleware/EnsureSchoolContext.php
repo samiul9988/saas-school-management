@@ -12,7 +12,7 @@ class EnsureSchoolContext
     {
         $user = $request->user();
 
-        if (! $user || ! $user->school_id) {
+        if (! $user || ! $user->school_id || $user->role !== \App\Models\User::ROLE_SCHOOL_ADMIN) {
             abort(403, 'Unauthorized.');
         }
 

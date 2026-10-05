@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'super_admin' => \App\Http\Middleware\EnsureSuperAdmin::class,
             'school_context' => \App\Http\Middleware\EnsureSchoolContext::class,
+            'parent_portal' => \App\Http\Middleware\EnsureParent::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

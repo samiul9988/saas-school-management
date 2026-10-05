@@ -20,15 +20,26 @@ class User extends Authenticatable
 
     public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_SCHOOL_ADMIN = 'school_admin';
+    public const ROLE_PARENT = 'parent';
 
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
     }
 
+    public function portalStudent(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Student::class, 'portal_user_id');
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+
+    public function isParent(): bool
+    {
+        return $this->role === self::ROLE_PARENT;
     }
 
     /**

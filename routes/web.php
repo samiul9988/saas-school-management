@@ -13,9 +13,13 @@ use App\Http\Controllers\School\FinanceReportController;
 use App\Http\Controllers\School\GradeController;
 use App\Http\Controllers\School\IncomeController;
 use App\Http\Controllers\School\MarkController;
+use App\Http\Controllers\School\NoticeController;
 use App\Http\Controllers\School\ResultController;
 use App\Http\Controllers\School\RoutineController;
+use App\Http\Controllers\School\SmsSettingController;
 use App\Http\Controllers\School\StudentFeeController;
+use App\Http\Controllers\School\StudentPortalAccountController;
+use App\Http\Controllers\Parent\PortalController as ParentPortalController;
 use App\Http\Controllers\School\SchoolClassController;
 use App\Http\Controllers\School\SectionController;
 use App\Http\Controllers\School\StudentController;
@@ -35,6 +39,10 @@ Route::get('/dashboard', function () {
 
     if ($user->isSuperAdmin()) {
         return redirect()->route('super-admin.dashboard');
+    }
+
+    if ($user->isParent()) {
+        return redirect()->route('parent.dashboard');
     }
 
     if ($user->school_id) {
@@ -99,6 +107,26 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/fee-payments/{feePayment}/receipt', [FeePaymentController::class, 'receipt'])->name('fee-payments.receipt');
         Route::resource('incomes', IncomeController::class)->only(['index', 'create', 'store', 'destroy']);
         Route::resource('expenses', ExpenseController::class)->only(['index', 'create', 'store', 'destroy']);
+
+        Route::resource('notices', NoticeController::class)->except('show');
+
+        Route::get('/sms-settings', [SmsSettingController::class, 'edit'])->name('sms-settings.edit');
+        Route::put('/sms-settings', [SmsSettingController::class, 'update'])->name('sms-settings.update');
+
+        Route::post('/students/{student}/portal-account', [StudentPortalAccountController::class, 'store'])->name('students.portal-account.store');
+        Route::delete('/students/{student}/portal-account', [StudentPortalAccountController::class, 'destroy'])->name('students.portal-account.destroy');
+    });
+
+Route::middleware(['auth', 'verified', 'parent_portal'])
+    ->prefix('parent')
+    ->name('parent.')
+    ->group(function () {
+        Route::get('/dashboard', [ParentPortalController::class, 'dashboard'])->name('dashboard');
+        Route::get('/attendance', [ParentPortalController::class, 'attendance'])->name('attendance');
+        Route::get('/fees', [ParentPortalController::class, 'fees'])->name('fees');
+        Route::get('/results', [ParentPortalController::class, 'results'])->name('results');
+        Route::get('/results/{exam}/marksheet', [ParentPortalController::class, 'marksheet'])->name('results.marksheet');
+        Route::get('/notices', [ParentPortalController::class, 'notices'])->name('notices');
     });
 
 require __DIR__.'/auth.php';

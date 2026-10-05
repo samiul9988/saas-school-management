@@ -59,6 +59,25 @@
                         <x-nav-link :href="route('school.finance.index')" :active="request()->routeIs('school.finance.*', 'school.fee-types.*', 'school.student-fees.*', 'school.incomes.*', 'school.expenses.*')">
                             {{ __('Finance') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('school.notices.index')" :active="request()->routeIs('school.notices.*')">
+                            {{ __('Notices') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.sms-settings.edit')" :active="request()->routeIs('school.sms-settings.*')">
+                            {{ __('SMS Settings') }}
+                        </x-nav-link>
+                    @elseif (Auth::user()->isParent())
+                        <x-nav-link :href="route('parent.attendance')" :active="request()->routeIs('parent.attendance')">
+                            {{ __('Attendance') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('parent.fees')" :active="request()->routeIs('parent.fees')">
+                            {{ __('Fees') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('parent.results')" :active="request()->routeIs('parent.results')">
+                            {{ __('Results') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('parent.notices')" :active="request()->routeIs('parent.notices')">
+                            {{ __('Notices') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>

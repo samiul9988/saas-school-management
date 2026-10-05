@@ -30,6 +30,32 @@
                 </table>
             </div>
 
+            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+                <h3 class="font-semibold mb-3">Parent Portal Account</h3>
+                @if ($student->portalUser)
+                    <p class="text-sm text-gray-600 mb-3">Active account: <span class="font-medium">{{ $student->portalUser->email }}</span></p>
+                    <form action="{{ route('school.students.portal-account.destroy', $student) }}" method="POST" onsubmit="return confirm('Remove this parent portal account?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-600 hover:underline text-sm">Remove Account</button>
+                    </form>
+                @else
+                    <form action="{{ route('school.students.portal-account.store', $student) }}" method="POST" class="flex flex-wrap gap-2 items-end">
+                        @csrf
+                        <div>
+                            <x-input-label for="email" value="Login Email" />
+                            <x-text-input id="email" type="email" name="email" class="mt-1" required />
+                        </div>
+                        <div>
+                            <x-input-label for="password" value="Password" />
+                            <x-text-input id="password" type="password" name="password" class="mt-1" required />
+                        </div>
+                        <x-primary-button>Create Portal Account</x-primary-button>
+                    </form>
+                    @error('email') <p class="text-red-600 text-sm mt-2">{{ $message }}</p> @enderror
+                @endif
+            </div>
+
             <a href="{{ route('school.students.index') }}" class="text-indigo-600 hover:underline">&larr; Back to students</a>
         </div>
     </div>

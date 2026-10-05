@@ -15,7 +15,7 @@ class Student extends Model
     protected $fillable = [
         'school_id', 'academic_year_id', 'school_class_id', 'section_id',
         'admission_number', 'roll', 'name', 'date_of_birth', 'gender',
-        'guardian_name', 'guardian_phone', 'address', 'photo', 'status',
+        'guardian_name', 'guardian_phone', 'address', 'photo', 'status', 'portal_user_id',
     ];
 
     protected $casts = [
@@ -45,5 +45,10 @@ class Student extends Model
     public function fees(): HasMany
     {
         return $this->hasMany(StudentFee::class);
+    }
+
+    public function portalUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'portal_user_id');
     }
 }
