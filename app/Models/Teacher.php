@@ -24,4 +24,9 @@ class Teacher extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function salaryStructure(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(SalaryStructure::class);
+    }
 }

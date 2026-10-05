@@ -51,4 +51,9 @@ class Student extends Model
     {
         return $this->belongsTo(User::class, 'portal_user_id');
     }
+
+    public function transport(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(StudentTransport::class);
+    }
 }

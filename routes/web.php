@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\School\AcademicYearController;
 use App\Http\Controllers\School\AttendanceController;
+use App\Http\Controllers\School\BookCategoryController;
+use App\Http\Controllers\School\BookController;
+use App\Http\Controllers\School\BookIssueController;
 use App\Http\Controllers\School\DashboardController as SchoolDashboardController;
 use App\Http\Controllers\School\ExamController;
 use App\Http\Controllers\School\ExamSubjectController;
@@ -12,13 +15,22 @@ use App\Http\Controllers\School\FeeTypeController;
 use App\Http\Controllers\School\FinanceReportController;
 use App\Http\Controllers\School\GradeController;
 use App\Http\Controllers\School\IncomeController;
+use App\Http\Controllers\School\InventoryCategoryController;
+use App\Http\Controllers\School\InventoryItemController;
+use App\Http\Controllers\School\InventoryTransactionController;
 use App\Http\Controllers\School\MarkController;
 use App\Http\Controllers\School\NoticeController;
+use App\Http\Controllers\School\PayrollController;
 use App\Http\Controllers\School\ResultController;
+use App\Http\Controllers\School\RouteStopController;
 use App\Http\Controllers\School\RoutineController;
+use App\Http\Controllers\School\SalaryStructureController;
 use App\Http\Controllers\School\SmsSettingController;
 use App\Http\Controllers\School\StudentFeeController;
 use App\Http\Controllers\School\StudentPortalAccountController;
+use App\Http\Controllers\School\StudentTransportController;
+use App\Http\Controllers\School\TransportRouteController;
+use App\Http\Controllers\School\VehicleController;
 use App\Http\Controllers\Parent\PortalController as ParentPortalController;
 use App\Http\Controllers\School\SchoolClassController;
 use App\Http\Controllers\School\SectionController;
@@ -115,6 +127,37 @@ Route::middleware(['auth', 'verified', 'school_context'])
 
         Route::post('/students/{student}/portal-account', [StudentPortalAccountController::class, 'store'])->name('students.portal-account.store');
         Route::delete('/students/{student}/portal-account', [StudentPortalAccountController::class, 'destroy'])->name('students.portal-account.destroy');
+
+        // Library
+        Route::resource('book-categories', BookCategoryController::class)->only(['index', 'store', 'destroy']);
+        Route::resource('books', BookController::class)->except('show');
+        Route::get('/book-issues', [BookIssueController::class, 'index'])->name('book-issues.index');
+        Route::get('/book-issues/create', [BookIssueController::class, 'create'])->name('book-issues.create');
+        Route::post('/book-issues', [BookIssueController::class, 'store'])->name('book-issues.store');
+        Route::post('/book-issues/{bookIssue}/return', [BookIssueController::class, 'returnBook'])->name('book-issues.return');
+
+        // Transport
+        Route::resource('vehicles', VehicleController::class)->except('show');
+        Route::resource('transport-routes', TransportRouteController::class)->except('show');
+        Route::post('/transport-routes/{route}/stops', [RouteStopController::class, 'store'])->name('transport-routes.stops.store');
+        Route::delete('/transport-routes/{route}/stops/{stop}', [RouteStopController::class, 'destroy'])->name('transport-routes.stops.destroy');
+        Route::get('/student-transports', [StudentTransportController::class, 'index'])->name('student-transports.index');
+        Route::get('/student-transports/create', [StudentTransportController::class, 'create'])->name('student-transports.create');
+        Route::post('/student-transports', [StudentTransportController::class, 'store'])->name('student-transports.store');
+        Route::delete('/student-transports/{studentTransport}', [StudentTransportController::class, 'destroy'])->name('student-transports.destroy');
+
+        // Inventory
+        Route::resource('inventory-categories', InventoryCategoryController::class)->only(['index', 'store', 'destroy']);
+        Route::resource('inventory-items', InventoryItemController::class)->except('show');
+        Route::post('/inventory-items/{item}/transactions', [InventoryTransactionController::class, 'store'])->name('inventory-items.transactions.store');
+
+        // Payroll / HR
+        Route::get('/salary-structures', [SalaryStructureController::class, 'index'])->name('salary-structures.index');
+        Route::post('/salary-structures', [SalaryStructureController::class, 'store'])->name('salary-structures.store');
+        Route::delete('/salary-structures/{salaryStructure}', [SalaryStructureController::class, 'destroy'])->name('salary-structures.destroy');
+        Route::get('/payrolls', [PayrollController::class, 'index'])->name('payrolls.index');
+        Route::post('/payrolls/generate', [PayrollController::class, 'generate'])->name('payrolls.generate');
+        Route::post('/payrolls/{payroll}/mark-paid', [PayrollController::class, 'markPaid'])->name('payrolls.mark-paid');
     });
 
 Route::middleware(['auth', 'verified', 'parent_portal'])

@@ -65,6 +65,18 @@
                         <x-nav-link :href="route('school.sms-settings.edit')" :active="request()->routeIs('school.sms-settings.*')">
                             {{ __('SMS Settings') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('school.books.index')" :active="request()->routeIs('school.book*')">
+                            {{ __('Library') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.vehicles.index')" :active="request()->routeIs('school.vehicles.*', 'school.transport-routes.*', 'school.student-transports.*')">
+                            {{ __('Transport') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.inventory-items.index')" :active="request()->routeIs('school.inventory-*')">
+                            {{ __('Inventory') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('school.salary-structures.index')" :active="request()->routeIs('school.salary-structures.*', 'school.payrolls.*')">
+                            {{ __('Payroll') }}
+                        </x-nav-link>
                     @elseif (Auth::user()->isParent())
                         <x-nav-link :href="route('parent.attendance')" :active="request()->routeIs('parent.attendance')">
                             {{ __('Attendance') }}
