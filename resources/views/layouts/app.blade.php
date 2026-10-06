@@ -20,10 +20,76 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
-            body { font-family: 'Figtree', sans-serif; }
-            .app-sidebar .brand-link { background:#0f172a; }
-            .app-sidebar .nav-sidebar > .nav-item > .nav-link.active { background:#4f46e5; }
+            :root {
+                --brand-1: #ff7849;
+                --brand-2: #ef4169;
+                --navy-1: #1a1536;
+                --navy-2: #2a1b54;
+                --peach-1: #fdf0e6;
+                --peach-2: #fbe4ee;
+            }
+
+            body {
+                font-family: 'Figtree', sans-serif;
+                background: linear-gradient(135deg, var(--peach-1), var(--peach-2)) fixed;
+            }
+
+            /* Sidebar */
+            .app-sidebar {
+                background: linear-gradient(180deg, var(--navy-1), var(--navy-2)) !important;
+            }
+            .app-sidebar .brand-link {
+                background: transparent;
+                border-bottom: 1px solid rgba(255,255,255,.08);
+            }
+            .app-sidebar .nav-sidebar > .nav-item > .nav-link,
+            .app-sidebar .nav-treeview .nav-link {
+                border-radius: 8px;
+                margin: 1px 6px;
+            }
+            .app-sidebar .nav-sidebar > .nav-item > .nav-link.active,
+            .app-sidebar .nav-treeview .nav-link.active {
+                background: linear-gradient(90deg, var(--brand-1), var(--brand-2)) !important;
+                color: #fff !important;
+            }
+            .app-sidebar .nav-link:hover {
+                background: rgba(255,255,255,.07);
+            }
+
+            /* Topbar */
+            .app-header {
+                background: transparent !important;
+                border-bottom: 1px solid rgba(0,0,0,.06);
+            }
+
             .content-header h1 { font-size: 1.25rem; }
+
+            /* Recolor primary Tailwind buttons/links app-wide */
+            .bg-indigo-600 {
+                background: linear-gradient(90deg, var(--brand-1), var(--brand-2)) !important;
+                border: none !important;
+            }
+            .hover\:bg-indigo-700:hover { filter: brightness(.93); }
+            .text-indigo-600 { color: var(--brand-2) !important; }
+            .text-indigo-600:hover, .hover\:text-indigo-800:hover { color: var(--brand-1) !important; }
+            .text-red-600 { color: #e11d48 !important; }
+
+            /* Peach table headers */
+            .bg-gray-50 { background: var(--peach-1) !important; }
+
+            /* Gradient top accent on card/panel containers */
+            .bg-white.shadow-sm {
+                position: relative;
+                border: 1px solid rgba(239,65,105,.08);
+            }
+            .bg-white.shadow-sm::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0; right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+            }
+            .bg-white.shadow-sm.rounded-lg::before { border-radius: 8px 8px 0 0; }
         </style>
     </head>
     <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">

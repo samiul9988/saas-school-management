@@ -62,14 +62,14 @@
 
         <div class="relative text-center">
             <span class="absolute inset-0 flex items-center"><span class="w-full border-t border-gray-200"></span></span>
-            <span class="relative bg-white px-3 text-xs uppercase tracking-wider text-gray-400">{{ __('Or') }}</span>
+            {{-- <span class="relative bg-white px-3 text-xs uppercase tracking-wider text-gray-400">{{ __('Or') }}</span> --}}
         </div>
 
-        @if (Route::has('register'))
+        {{-- @if (Route::has('register'))
             <a href="{{ route('register') }}"
                class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition">
                 <i class="bi bi-shield-plus"></i> {{ __('Create New School') }}
             </a>
-        @endif
+        @endif --}}
     </form>
 </x-guest-layout>
