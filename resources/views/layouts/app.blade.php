@@ -42,12 +42,12 @@
                 background: transparent;
                 border-bottom: 1px solid rgba(255,255,255,.08);
             }
-            .app-sidebar .nav-sidebar > .nav-item > .nav-link,
+            .app-sidebar .sidebar-menu > .nav-item > .nav-link,
             .app-sidebar .nav-treeview .nav-link {
                 border-radius: 0;
                 margin: 0;
             }
-            .app-sidebar .nav-sidebar > .nav-item > .nav-link.active,
+            .app-sidebar .sidebar-menu > .nav-item > .nav-link.active,
             .app-sidebar .nav-treeview .nav-link.active {
                 background: linear-gradient(90deg, var(--brand-1), var(--brand-2)) !important;
                 color: #fff !important;
