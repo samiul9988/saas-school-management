@@ -1,0 +1,269 @@
+<title>স্কুল ম্যানেজমেন্ট ফিচার লিস্ট</title>
+<style>
+/* Layout: single-column document, left eyebrow rail per module, numbered phase badges since this literally is a build sequence */
+:root{
+  --bg:#faf7f2;
+  --surface:#ffffff;
+  --ink:#201a14;
+  --muted:#6b6058;
+  --accent:#8a5a3b;
+  --accent-soft:#f1e4d8;
+  --line:#e8ddd0;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#17120e;
+    --surface:#211a14;
+    --ink:#f1e9e0;
+    --muted:#a99c8e;
+    --accent:#d99a68;
+    --accent-soft:#2c2118;
+    --line:#352a20;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17120e;
+  --surface:#211a14;
+  --ink:#f1e9e0;
+  --muted:#a99c8e;
+  --accent:#d99a68;
+  --accent-soft:#2c2118;
+  --line:#352a20;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Hind Siliguri","Noto Sans Bengali","Segoe UI",system-ui,sans-serif;
+  padding-inline:16px;
+}
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding-block:48px 80px;
+}
+
+.masthead{margin-bottom:40px}
+.eyebrow{
+  font-size:.75rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-weight:600;
+}
+h1{
+  font-family:"Hind Siliguri","Noto Sans Bengali",serif;
+  font-size:clamp(1.9rem,5vw,2.6rem);
+  line-height:1.25;
+  margin:.4em 0 .3em;
+  text-wrap:balance;
+}
+.sub{
+  color:var(--muted);
+  font-size:1.02rem;
+  line-height:1.7;
+  max-width:62ch;
+}
+
+.stat-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:28px;
+}
+.stat{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:14px 18px;
+  min-width:120px;
+  flex:1;
+}
+.stat .n{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .l{font-size:.78rem;color:var(--muted)}
+
+.module{
+  margin-top:40px;
+  border-top:1px solid var(--line);
+  padding-top:28px;
+}
+.module-head{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  margin-bottom:6px;
+  flex-wrap:wrap;
+}
+.badge{
+  font-size:.72rem;
+  font-weight:700;
+  color:var(--accent);
+  background:var(--accent-soft);
+  border-radius:999px;
+  padding:3px 10px;
+  letter-spacing:.03em;
+  white-space:nowrap;
+}
+.module h2{
+  font-size:1.3rem;
+  margin:0;
+  line-height:1.3;
+}
+.module p.desc{
+  color:var(--muted);
+  margin:.4em 0 1em;
+  max-width:60ch;
+  line-height:1.65;
+}
+
+ul.feat{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  gap:8px;
+}
+ul.feat li{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  line-height:1.55;
+  padding:9px 12px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+ul.feat li .tick{
+  color:var(--accent);
+  flex-shrink:0;
+  margin-top:1px;
+  font-weight:700;
+}
+
+footer{
+  margin-top:56px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:.85rem;
+  line-height:1.7;
+}
+</style>
+
+<div class="wrap">
+  <div class="masthead">
+    <div class="eyebrow">Feature Summary &middot; ফিচার তালিকা</div>
+    <h1>SaaS School Management — ফিচার লিস্ট</h1>
+    <p class="sub">
+      একটি Laravel-ভিত্তিক মাল্টি-টেন্যান্ট (multi-tenant) স্কুল ম্যানেজমেন্ট সফটওয়্যার, যেখানে একটি সফটওয়্যার দিয়েই
+      একাধিক স্কুল পরিচালনা করা যাবে — প্রতিটি স্কুলের ডাটা সম্পূর্ণ আলাদা ও সুরক্ষিত থাকবে।
+    </p>
+    <div class="stat-row">
+      <div class="stat"><div class="n">6</div><div class="l">মূল মডিউল</div></div>
+      <div class="stat"><div class="n">30+</div><div class="l">ডাটাবেজ টেবিল</div></div>
+      <div class="stat"><div class="n">3</div><div class="l">ইউজার রোল</div></div>
+      <div class="stat"><div class="n">bKash/Nagad</div><div class="l">পেমেন্ট সাপোর্ট</div></div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="module-head">
+      <span class="badge">Phase 1</span>
+      <h2>সুপার অ্যাডমিন ও SaaS কোর</h2>
+    </div>
+    <p class="desc">সফটওয়্যারের মালিক (আপনি) এখান থেকে পুরো বিজনেস নিয়ন্ত্রণ করবেন — কোন স্কুল কোন প্যাকেজে আছে, কে একটিভ, কে ট্রায়ালে।</p>
+    <ul class="feat">
+      <li><span class="tick">✓</span> সুপার অ্যাডমিন ড্যাশবোর্ড — মোট স্কুল, একটিভ/ট্রায়াল/এক্সপায়ার্ড স্কুলের সংখ্যা, মাসিক রেভিনিউ</li>
+      <li><span class="tick">✓</span> স্কুল রেজিস্ট্রেশন, এডিট, স্ট্যাটাস পরিবর্তন (Pending/Trial/Active/Suspended)</li>
+      <li><span class="tick">✓</span> প্যাকেজ/প্ল্যান ম্যানেজমেন্ট (Basic, Standard, Premium) — প্রতিটি প্ল্যানে আলাদা ফিচার, দাম, স্টুডেন্ট/টিচার লিমিট</li>
+      <li><span class="tick">✓</span> নতুন স্কুল তৈরির সাথে সাথে স্বয়ংক্রিয়ভাবে সেই স্কুলের অ্যাডমিন লগইন তৈরি</li>
+      <li><span class="tick">✓</span> প্রতিটি স্কুলের ডাটা সম্পূর্ণ আলাদা (Tenant Isolation) — এক স্কুল কখনও আরেক স্কুলের ডাটা দেখতে পারবে না</li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-head">
+      <span class="badge">Phase 2</span>
+      <h2>স্কুল পরিচালনা (একাডেমিক কোর)</h2>
+    </div>
+    <p class="desc">প্রতিটি স্কুলের নিজস্ব ড্যাশবোর্ড ও দৈনন্দিন পরিচালনার টুলস।</p>
+    <ul class="feat">
+      <li><span class="tick">✓</span> স্কুল অ্যাডমিন ড্যাশবোর্ড — মোট স্টুডেন্ট, টিচার, আজকের উপস্থিতি/অনুপস্থিতি</li>
+      <li><span class="tick">✓</span> শিক্ষাবর্ষ (Academic Year), ক্লাস, সেকশন, সাবজেক্ট ম্যানেজমেন্ট</li>
+      <li><span class="tick">✓</span> স্টুডেন্ট ভর্তি — নাম, রোল, অ্যাডমিশন নাম্বার, অভিভাবকের তথ্য, ক্লাস/সেকশন অ্যাসাইন</li>
+      <li><span class="tick">✓</span> টিচার/স্টাফ প্রোফাইল ম্যানেজমেন্ট</li>
+      <li><span class="tick">✓</span> দৈনিক উপস্থিতি (Attendance) — ক্লাস/সেকশন অনুযায়ী মার্ক করা, Present/Absent/Late/Leave</li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-head">
+      <span class="badge">Phase 3</span>
+      <h2>পরীক্ষা ও রেজাল্ট</h2>
+    </div>
+    <p class="desc">পরীক্ষা তৈরি থেকে শুরু করে মার্কশিট প্রিন্ট পর্যন্ত সম্পূর্ণ স্বয়ংক্রিয় প্রক্রিয়া।</p>
+    <ul class="feat">
+      <li><span class="tick">✓</span> গ্রেডিং সিস্টেম কাস্টমাইজ করা যাবে (A, A-, B, F ইত্যাদি, প্রতিটির জন্য % রেঞ্জ ও গ্রেড পয়েন্ট)</li>
+      <li><span class="tick">✓</span> পরীক্ষা তৈরি (হাফ ইয়ারলি, ফাইনাল ইত্যাদি) ও প্রতিটি ক্লাসের জন্য সাবজেক্ট ও পূর্ণমান নির্ধারণ</li>
+      <li><span class="tick">✓</span> নাম্বার এন্ট্রি স্ক্রিন — প্রতিটি সাবজেক্টে প্রতিটি স্টুডেন্টের মার্ক বসানো, অনুপস্থিত চিহ্নিত করা</li>
+      <li><span class="tick">✓</span> স্বয়ংক্রিয় রেজাল্ট — মোট নাম্বার, শতাংশ, গ্রেড, পাস/ফেল, ক্লাসে পজিশন — সব হিসাব সিস্টেম নিজেই করে</li>
+      <li><span class="tick">✓</span> প্রিন্টযোগ্য মার্কশিট প্রতিটি স্টুডেন্টের জন্য</li>
+      <li><span class="tick">✓</span> ক্লাস রুটিন তৈরি — দিন, সময়, সাবজেক্ট, টিচার অনুযায়ী</li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-head">
+      <span class="badge">Phase 4</span>
+      <h2>ফি ও হিসাব (একাউন্টিং)</h2>
+    </div>
+    <p class="desc">ফি কালেকশন থেকে রিসিট প্রিন্ট পর্যন্ত — bKash ও Nagad সহ।</p>
+    <ul class="feat">
+      <li><span class="tick">✓</span> ফি টাইপ তৈরি (ভর্তি ফি, মাসিক বেতন, পরীক্ষার ফি ইত্যাদি) — মাসিক/বাৎসরিক/একবারের</li>
+      <li><span class="tick">✓</span> এক ক্লিকে পুরো ক্লাসের সব স্টুডেন্টকে ফি অ্যাসাইন করা</li>
+      <li><span class="tick">✓</span> ফি কালেকশন — <strong>Cash, bKash, Nagad, Bank</strong> — ট্রানজেকশন আইডি সহ</li>
+      <li><span class="tick">✓</span> আংশিক পরিশোধ (Partial Payment) ট্র্যাকিং — কত বাকি আছে স্বয়ংক্রিয়ভাবে হিসাব হয়</li>
+      <li><span class="tick">✓</span> প্রতিটি পেমেন্টের জন্য প্রিন্টযোগ্য রিসিট (Receipt Number সহ)</li>
+      <li><span class="tick">✓</span> ইনকাম ও এক্সপেন্স ট্র্যাকিং (স্কুলের অন্যান্য আয়-ব্যয়)</li>
+      <li><span class="tick">✓</span> ফাইন্যান্স ড্যাশবোর্ড — মোট বাকি, এই মাসের কালেকশন, আয়-ব্যয়ের সারাংশ</li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-head">
+      <span class="badge">Phase 5</span>
+      <h2>যোগাযোগ ও প্যারেন্ট পোর্টাল</h2>
+    </div>
+    <p class="desc">অভিভাবকরা নিজেদের লগইন থেকে বাচ্চার সব তথ্য দেখতে পারবেন।</p>
+    <ul class="feat">
+      <li><span class="tick">✓</span> নোটিস বোর্ড — সবাইকে/স্টুডেন্ট/টিচার/অভিভাবক টার্গেট করে নোটিস পাঠানো</li>
+      <li><span class="tick">✓</span> SMS সেটিংস পেজ — যেকোনো SMS প্রোভাইডারের API কানেক্ট করার ব্যবস্থা, পাঠানো SMS-এর লগ</li>
+      <li><span class="tick">✓</span> ফি পরিশোধ হলে অভিভাবককে স্বয়ংক্রিয় SMS কনফার্মেশন</li>
+      <li><span class="tick">✓</span> প্যারেন্ট পোর্টাল লগইন — স্কুল অ্যাডমিন সহজেই তৈরি করে দিতে পারবেন</li>
+      <li><span class="tick">✓</span> অভিভাবক দেখতে পারবেন: বাচ্চার উপস্থিতি, ফি ও বাকি, পরীক্ষার রেজাল্ট/মার্কশিট, নোটিস</li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-head">
+      <span class="badge">Phase 6</span>
+      <h2>লাইব্রেরি, ট্রান্সপোর্ট, ইনভেন্টরি ও পেরোল</h2>
+    </div>
+    <p class="desc">অতিরিক্ত মডিউল যেগুলো প্রয়োজন অনুযায়ী চালু/বন্ধ রাখা যাবে।</p>
+    <ul class="feat">
+      <li><span class="tick">✓</span> <strong>লাইব্রেরি</strong> — বই ক্যাটাগরি, স্টক ট্র্যাকিং, স্টুডেন্ট/টিচারকে বই ইস্যু ও ফেরত, লেট ফাইন হিসাব</li>
+      <li><span class="tick">✓</span> <strong>ট্রান্সপোর্ট</strong> — গাড়ি, রুট, স্টপ, স্টুডেন্ট অ্যাসাইনমেন্ট, রুট অনুযায়ী ভাড়া</li>
+      <li><span class="tick">✓</span> <strong>ইনভেন্টরি</strong> — স্কুলের মালামাল/স্টক ট্র্যাকিং, Stock In/Out, কম স্টক হলে সতর্কতা</li>
+      <li><span class="tick">✓</span> <strong>পেরোল/HR</strong> — টিচারদের বেতন কাঠামো সেট করা, মাসিক পেরোল জেনারেট, Paid/Pending ট্র্যাকিং</li>
+    </ul>
+  </div>
+
+  <footer>
+    টেকনিক্যাল নোট: সফটওয়্যারটি Laravel ফ্রেমওয়ার্কে তৈরি, Tailwind CSS দিয়ে ডিজাইন করা, এবং shared hosting-এ (cPanel) সহজেই ডিপ্লয়মেন্ট উপযোগী — কোনো আলাদা Node.js সার্ভার ছাড়াই।
+  </footer>
+</div>
