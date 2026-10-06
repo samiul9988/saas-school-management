@@ -7,6 +7,7 @@ use App\Models\Plan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PlanController extends Controller
@@ -27,8 +28,8 @@ class PlanController extends Controller
     {
         $data = $this->validated($request);
         $data['slug'] = Str::slug($data['name']);
-        $data['features'] = $this->parseFeatures($request->input('features', ''));
         $data['is_active'] = $request->boolean('is_active');
+        $data['features'] = $request->input('features', []);
 
         Plan::create($data);
 
@@ -43,8 +44,8 @@ class PlanController extends Controller
     public function update(Request $request, Plan $plan): RedirectResponse
     {
         $data = $this->validated($request);
-        $data['features'] = $this->parseFeatures($request->input('features', ''));
         $data['is_active'] = $request->boolean('is_active');
+        $data['features'] = $request->input('features', []);
 
         $plan->update($data);
 
@@ -70,15 +71,8 @@ class PlanController extends Controller
             'max_branches' => ['required', 'integer', 'min:1'],
             'is_active' => ['sometimes', 'boolean'],
             'sort_order' => ['nullable', 'integer'],
+            'features' => ['sometimes', 'array'],
+            'features.*' => ['string', Rule::in(array_keys(Plan::FEATURES))],
         ]);
-    }
-
-    private function parseFeatures(string $raw): array
-    {
-        return collect(explode(',', $raw))
-            ->map(fn ($f) => trim($f))
-            ->filter()
-            ->values()
-            ->all();
     }
 }

@@ -33,7 +33,7 @@
                                 <td class="py-3 px-4">{{ $plan->name }}</td>
                                 <td class="py-3 px-4">{{ number_format($plan->monthly_price, 2) }}</td>
                                 <td class="py-3 px-4">{{ number_format($plan->yearly_price, 2) }}</td>
-                                <td class="py-3 px-4 text-xs text-gray-500">{{ implode(', ', $plan->features ?? []) }}</td>
+                                <td class="py-3 px-4 text-xs text-gray-500">{{ collect($plan->features ?? [])->map(fn ($f) => \App\Models\Plan::FEATURES[$f] ?? $f)->implode(', ') }}</td>
                                 <td class="py-3 px-4">{{ $plan->is_active ? 'Yes' : 'No' }}</td>
                                 <td class="py-3 px-4 space-x-2">
                                     <a href="{{ route('super-admin.plans.edit', $plan) }}" class="text-indigo-600 hover:underline">Edit</a>

@@ -33,9 +33,18 @@
         <x-text-input id="max_branches" type="number" name="max_branches" class="mt-1 block w-full" value="{{ old('max_branches', $plan?->max_branches ?? 1) }}" required />
     </div>
 </div>
+@php($selectedFeatures = old('features', $plan?->features ?? []))
+
 <div>
-    <x-input-label for="features" value="Features (comma separated)" />
-    <x-text-input id="features" name="features" class="mt-1 block w-full" value="{{ old('features', $plan ? implode(', ', $plan->features ?? []) : '') }}" placeholder="students, teachers, attendance, exams" />
+    <x-input-label value="Features" />
+    <div class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
+        @foreach (\App\Models\Plan::FEATURES as $key => $label)
+            <label class="flex items-center gap-2 text-sm border border-gray-200 rounded-md px-3 py-2">
+                <input type="checkbox" name="features[]" value="{{ $key }}" @checked(in_array($key, $selectedFeatures))>
+                {{ $label }}
+            </label>
+        @endforeach
+    </div>
 </div>
 <div>
     <x-input-label for="sort_order" value="Sort Order" />

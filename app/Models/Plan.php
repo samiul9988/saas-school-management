@@ -10,6 +10,26 @@ class Plan extends Model
 {
     use HasFactory;
 
+    public const FEATURES = [
+        'students' => 'Student Management',
+        'teachers' => 'Teacher Management',
+        'attendance' => 'Attendance',
+        'exams' => 'Exams',
+        'results' => 'Results & Marksheet',
+        'basic_fees' => 'Basic Fees',
+        'parent_portal' => 'Parent Portal',
+        'sms' => 'SMS Notifications',
+        'library' => 'Library',
+        'payroll' => 'Payroll / HR',
+        'advanced_reports' => 'Advanced Reports',
+        'transport' => 'Transport',
+        'inventory' => 'Inventory',
+        'online_payment' => 'Online Payment (bKash/Nagad)',
+        'multi_branch' => 'Multi-Branch',
+        'advanced_accounting' => 'Advanced Accounting',
+        'hostel' => 'Hostel',
+    ];
+
     protected $fillable = [
         'name', 'slug', 'description', 'monthly_price', 'yearly_price',
         'max_students', 'max_teachers', 'max_branches', 'features',
