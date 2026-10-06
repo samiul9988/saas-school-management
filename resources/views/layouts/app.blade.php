@@ -23,8 +23,8 @@
             :root {
                 --brand-1: #ff7849;
                 --brand-2: #ef4169;
-                --navy-1: #1a1536;
-                --navy-2: #2a1b54;
+                --navy-1: #1c2140;
+                --navy-2: #1c2140;
                 --peach-1: #fdf0e6;
                 --peach-2: #fbe4ee;
             }
@@ -44,8 +44,8 @@
             }
             .app-sidebar .nav-sidebar > .nav-item > .nav-link,
             .app-sidebar .nav-treeview .nav-link {
-                border-radius: 8px;
-                margin: 1px 6px;
+                border-radius: 0;
+                margin: 0;
             }
             .app-sidebar .nav-sidebar > .nav-item > .nav-link.active,
             .app-sidebar .nav-treeview .nav-link.active {
