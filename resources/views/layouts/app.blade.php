@@ -23,6 +23,7 @@
             :root {
                 --brand-1: #22a559;
                 --brand-2: #15803d;
+                --top-active: #2196f3;
                 --sidebar-bg: #ffffff;
                 --sidebar-text: #334155;
                 --content-bg: #eaf6fc;
@@ -65,9 +66,12 @@
                 border-radius: 0;
                 margin: 0;
             }
-            .app-sidebar .sidebar-menu > .nav-item > .nav-link.active,
+            .app-sidebar .sidebar-menu > .nav-item > .nav-link.active {
+                background: var(--top-active) !important;
+                color: #fff !important;
+            }
             .app-sidebar .nav-treeview .nav-link.active {
-                background: linear-gradient(90deg, var(--brand-1), var(--brand-2)) !important;
+                background: var(--brand-1) !important;
                 color: #fff !important;
             }
             .app-sidebar .sidebar-menu > .nav-item > .nav-link.active .nav-icon,
