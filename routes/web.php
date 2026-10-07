@@ -12,6 +12,8 @@ use App\Http\Controllers\School\ExamSubjectController;
 use App\Http\Controllers\School\ExamSubjectSearchController;
 use App\Http\Controllers\School\ExamShortCodeController;
 use App\Http\Controllers\School\ExamSettingsController;
+use App\Http\Controllers\School\MarkInputController;
+use App\Http\Controllers\School\SubjectComponentController;
 use App\Http\Controllers\School\AdmitInstructionController;
 use App\Http\Controllers\School\SeatPlanController;
 use App\Http\Controllers\School\TabulationSheetController;
@@ -117,6 +119,14 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/exam-subjects/{examSubject}/marks', [MarkController::class, 'edit'])->name('marks.edit');
         Route::put('/exam-subjects/{examSubject}/marks', [MarkController::class, 'update'])->name('marks.update');
         Route::get('/exam-subjects/search', [ExamSubjectSearchController::class, 'index'])->name('exam-subjects.search');
+
+        Route::get('/mark-input', [MarkInputController::class, 'index'])->name('mark-input.index');
+        Route::put('/mark-input/{examSubject}', [MarkInputController::class, 'update'])->name('mark-input.update');
+        Route::get('/mark-input/template/download', [MarkInputController::class, 'downloadTemplate'])->name('mark-input.template');
+        Route::post('/mark-input/{examSubject}/upload', [MarkInputController::class, 'upload'])->name('mark-input.upload');
+
+        Route::post('/subject-components', [SubjectComponentController::class, 'store'])->name('subject-components.store');
+        Route::delete('/subject-components/{subjectComponent}', [SubjectComponentController::class, 'destroy'])->name('subject-components.destroy');
 
         Route::get('/results', [ResultController::class, 'index'])->name('results.index');
         Route::get('/results/{exam}/marksheet/{student}', [ResultController::class, 'marksheet'])->name('results.marksheet');

@@ -6,6 +6,7 @@ use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Mark extends Model
 {
@@ -27,5 +28,10 @@ class Mark extends Model
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
+    }
+
+    public function components(): HasMany
+    {
+        return $this->hasMany(MarkComponent::class);
     }
 }
