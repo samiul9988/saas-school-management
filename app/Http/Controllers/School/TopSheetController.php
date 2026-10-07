@@ -29,8 +29,7 @@ class TopSheetController extends Controller
         ]);
 
         $section = Section::findOrFail($data['section_id']);
-        $exam = Exam::with(['examSubjects' => fn ($q) => $q->where('school_class_id', $section->school_class_id)->with('subject')])
-            ->findOrFail($data['exam_id']);
+        $exam = Exam::findOrFail($data['exam_id']);
 
         $students = Student::where('section_id', $section->id)
             ->where('status', 'active')
@@ -44,7 +43,6 @@ class TopSheetController extends Controller
             'section' => $section,
             'exam' => $exam,
             'students' => $students,
-            'examSubjects' => $exam->examSubjects,
         ]);
 
         return $pdf->download('top-sheet.pdf');
