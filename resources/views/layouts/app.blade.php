@@ -33,12 +33,20 @@
             body {
                 font-family: 'Figtree', sans-serif;
                 background: var(--content-bg);
+                min-height: 100vh;
             }
 
-            /* Sidebar */
+            /* Sidebar: scrolls on its own instead of overflowing past the footer on short pages */
             .app-sidebar {
                 background: var(--sidebar-bg) !important;
                 border-right: 1px solid var(--panel-border);
+                height: 100vh;
+                overflow-y: auto;
+                position: sticky;
+                top: 0;
+            }
+            .app-main {
+                min-height: calc(100vh - 57px);
             }
             .app-sidebar, .app-sidebar .nav-link, .app-sidebar .brand-text {
                 color: var(--sidebar-text) !important;
