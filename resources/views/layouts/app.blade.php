@@ -83,6 +83,16 @@
             .app-sidebar .nav-treeview .nav-link.active .nav-icon {
                 color: #fff;
             }
+
+            /* Submenu items show a plain bullet instead of their icon; a nested third level shows a dash */
+            .app-sidebar .nav-treeview .nav-icon::before {
+                font-family: initial !important;
+                content: '\2022' !important;
+                font-size: 14px;
+            }
+            .app-sidebar .nav-treeview .nav-treeview .nav-icon::before {
+                content: '-' !important;
+            }
             .app-sidebar .nav-link:hover {
                 background: #ecfdf5;
             }
