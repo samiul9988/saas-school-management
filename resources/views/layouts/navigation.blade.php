@@ -137,8 +137,13 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item"><a href="{{ route('school.exams.index') }}" class="nav-link {{ $isActiveGroup('school.exams.*') }}"><i class="nav-icon bi bi-file-text"></i><p>{{ __('Exams') }}</p></a></li>
-                            <li class="nav-item"><a href="{{ route('school.results.index') }}" class="nav-link {{ $isActiveGroup('school.results.*') }}"><i class="nav-icon bi bi-bar-chart"></i><p>{{ __('Results') }}</p></a></li>
-                            <li class="nav-item"><a href="{{ route('school.grades.index') }}" class="nav-link {{ $isActiveGroup('school.grades.*') }}"><i class="nav-icon bi bi-award"></i><p>{{ __('Grading Scale') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.exams.seat-plan') }}" class="nav-link {{ $isActiveGroup('school.exams.seat-plan') }}"><i class="nav-icon bi bi-person-vcard"></i><p>{{ __('Admit & Seat Plan') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.exams.top-sheet') }}" class="nav-link {{ $isActiveGroup('school.exams.top-sheet') }}"><i class="nav-icon bi bi-journal-text"></i><p>{{ __('Top Sheet') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.exam-subjects.search') }}" class="nav-link {{ $isActiveGroup('school.exam-subjects.search') }}"><i class="nav-icon bi bi-pencil"></i><p>{{ __('Mark Input') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.exam-subjects.search') }}" class="nav-link"><i class="nav-icon bi bi-pencil-square"></i><p>{{ __('Mark Update') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.results.index') }}" class="nav-link {{ $isActiveGroup('school.results.*') }}"><i class="nav-icon bi bi-bar-chart"></i><p>{{ __('Result Process') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.exams.tabulation-sheet') }}" class="nav-link {{ $isActiveGroup('school.exams.tabulation-sheet') }}"><i class="nav-icon bi bi-table"></i><p>{{ __('Tabulation Sheet') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.grades.index') }}" class="nav-link {{ $isActiveGroup('school.grades.*') }}"><i class="nav-icon bi bi-award"></i><p>{{ __('Settings') }}</p></a></li>
                         </ul>
                     </li>
 

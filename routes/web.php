@@ -9,6 +9,10 @@ use App\Http\Controllers\School\BookIssueController;
 use App\Http\Controllers\School\DashboardController as SchoolDashboardController;
 use App\Http\Controllers\School\ExamController;
 use App\Http\Controllers\School\ExamSubjectController;
+use App\Http\Controllers\School\ExamSubjectSearchController;
+use App\Http\Controllers\School\SeatPlanController;
+use App\Http\Controllers\School\TabulationSheetController;
+use App\Http\Controllers\School\TopSheetController;
 use App\Http\Controllers\School\ExpenseController;
 use App\Http\Controllers\School\FeePaymentController;
 use App\Http\Controllers\School\FeeTypeController;
@@ -109,9 +113,14 @@ Route::middleware(['auth', 'verified', 'school_context'])
 
         Route::get('/exam-subjects/{examSubject}/marks', [MarkController::class, 'edit'])->name('marks.edit');
         Route::put('/exam-subjects/{examSubject}/marks', [MarkController::class, 'update'])->name('marks.update');
+        Route::get('/exam-subjects/search', [ExamSubjectSearchController::class, 'index'])->name('exam-subjects.search');
 
         Route::get('/results', [ResultController::class, 'index'])->name('results.index');
         Route::get('/results/{exam}/marksheet/{student}', [ResultController::class, 'marksheet'])->name('results.marksheet');
+
+        Route::get('/exams-seat-plan', [SeatPlanController::class, 'index'])->name('exams.seat-plan');
+        Route::get('/exams-top-sheet', [TopSheetController::class, 'index'])->name('exams.top-sheet');
+        Route::get('/exams-tabulation-sheet', [TabulationSheetController::class, 'index'])->name('exams.tabulation-sheet');
 
         Route::get('/routine', [RoutineController::class, 'index'])->name('routine.index');
         Route::get('/routine/create', [RoutineController::class, 'create'])->name('routine.create');
