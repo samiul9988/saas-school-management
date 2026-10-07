@@ -68,6 +68,16 @@
                 background: rgba(255,255,255,.07);
             }
 
+            /* Temporarily locked sidebar modules: visible, not clickable */
+            .app-sidebar .nav-locked,
+            .app-sidebar .nav-locked * {
+                pointer-events: none !important;
+                cursor: not-allowed !important;
+            }
+            .app-sidebar .nav-locked > .nav-link {
+                opacity: .45;
+            }
+
             /* Topbar */
             .app-header {
                 background: transparent !important;

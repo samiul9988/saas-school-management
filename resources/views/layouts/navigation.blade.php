@@ -1,5 +1,8 @@
 @php
     $isActiveGroup = fn (...$patterns) => request()->routeIs(...$patterns) ? 'active' : '';
+    // Temporary: set to false to re-enable these sidebar modules.
+    $lockedMenu = true;
+    $locked = fn () => $lockedMenu ? 'nav-locked' : '';
 @endphp
 
 <!-- Topbar -->
@@ -90,14 +93,14 @@
                             <p>{{ __('Students') }}</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item {{ $locked() }}">
                         <a href="{{ route('school.teachers.index') }}" class="nav-link {{ $isActiveGroup('school.teachers.*') }}">
                             <i class="nav-icon bi bi-person-badge"></i>
                             <p>{{ __('Teachers') }}</p>
                         </a>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.classes.*','school.sections.*','school.subjects.*','school.academic-years.*','school.attendance.*','school.routine.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.classes.*','school.sections.*','school.subjects.*','school.academic-years.*','school.attendance.*','school.routine.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-journal-bookmark"></i>
                             <p>{{ __('Academics') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -112,7 +115,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.exams.*','school.results.*','school.grades.*','school.marks.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.exams.*','school.results.*','school.grades.*','school.marks.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-pencil-square"></i>
                             <p>{{ __('Exams & Results') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -124,7 +127,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.finance.*','school.fee-types.*','school.student-fees.*','school.incomes.*','school.expenses.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.finance.*','school.fee-types.*','school.student-fees.*','school.incomes.*','school.expenses.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-cash-coin"></i>
                             <p>{{ __('Finance') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -138,7 +141,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.book*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.book*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-journal-richtext"></i>
                             <p>{{ __('Library') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -150,7 +153,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.vehicles.*','school.transport-routes.*','school.student-transports.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.vehicles.*','school.transport-routes.*','school.student-transports.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-bus-front"></i>
                             <p>{{ __('Transport') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -162,7 +165,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.inventory-*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.inventory-*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-box2"></i>
                             <p>{{ __('Inventory') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -173,7 +176,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.salary-structures.*','school.payrolls.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.salary-structures.*','school.payrolls.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-wallet2"></i>
                             <p>{{ __('Payroll') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -184,7 +187,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.notices.*','school.sms-settings.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.notices.*','school.sms-settings.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-megaphone"></i>
                             <p>{{ __('Communication') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
