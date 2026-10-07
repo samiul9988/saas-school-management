@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -35,6 +36,30 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Update the user's school logo.
+     */
+    public function updateLogo(Request $request): RedirectResponse
+    {
+        $school = $request->user()->school;
+
+        abort_unless($school, 404);
+
+        $request->validate([
+            'logo' => ['required', 'image', 'max:2048'],
+        ]);
+
+        if ($school->logo) {
+            Storage::disk('public')->delete($school->logo);
+        }
+
+        $school->update([
+            'logo' => $request->file('logo')->store('school-logos', 'public'),
+        ]);
+
+        return Redirect::route('profile.edit')->with('status', 'logo-updated');
     }
 
     /**

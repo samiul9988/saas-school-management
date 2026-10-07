@@ -43,9 +43,19 @@
 
 <!-- Sidebar -->
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    @php($brandSchool = Auth::user()->school)
     <div class="sidebar-brand">
-        <a href="{{ route('dashboard') }}" class="brand-link">
-            <span class="brand-text fw-semibold">{{ config('app.name') }}</span>
+        <a href="{{ route('dashboard') }}" class="brand-link d-flex align-items-center gap-2">
+            <span class="d-flex align-items-center justify-content-center rounded overflow-hidden flex-shrink-0" style="width:32px;height:32px;background:linear-gradient(135deg,var(--brand-1),var(--brand-2));">
+                @if ($brandSchool?->logo)
+                    <img src="{{ Storage::url($brandSchool->logo) }}" alt="{{ $brandSchool->name }}" class="w-100 h-100" style="object-fit:cover;">
+                @else
+                    <i class="bi bi-mortarboard-fill text-white"></i>
+                @endif
+            </span>
+            <span class="brand-text fw-semibold text-truncate">
+                {{ $brandSchool?->name ?? config('app.name') }}
+            </span>
         </a>
     </div>
 
