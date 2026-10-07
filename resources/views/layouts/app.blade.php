@@ -76,28 +76,8 @@
             .app-sidebar .nav-treeview .nav-link.active {
                 background: var(--brand-1) !important;
                 color: #fff !important;
-                position: relative;
-                margin-right: -14px;
-                padding-right: 34px;
-                border-radius: 20px 0 0 20px;
-                z-index: 2;
-            }
-            .app-sidebar .nav-treeview .nav-link.active::before,
-            .app-sidebar .nav-treeview .nav-link.active::after {
-                content: '';
-                position: absolute;
-                right: 0;
-                width: 14px;
-                height: 14px;
-                z-index: 1;
-            }
-            .app-sidebar .nav-treeview .nav-link.active::before {
-                top: -14px;
-                background: radial-gradient(circle at top left, transparent 14px, var(--brand-1) 14.5px);
-            }
-            .app-sidebar .nav-treeview .nav-link.active::after {
-                bottom: -14px;
-                background: radial-gradient(circle at bottom left, transparent 14px, var(--brand-1) 14.5px);
+                margin-left: 0;
+                border-radius: 0 20px 20px 0;
             }
             .app-sidebar .sidebar-menu > .nav-item > .nav-link.active .nav-icon,
             .app-sidebar .nav-treeview .nav-link.active .nav-icon {
