@@ -45,9 +45,10 @@
             </div>
 
             <!-- Right: visual panel -->
-            <div class="hidden lg:block lg:w-[56%] relative overflow-hidden bg-sky-50">
+            <div class="hidden lg:flex lg:w-[56%] items-center justify-center overflow-hidden bg-gradient-to-b from-sky-100 to-indigo-50 p-6">
                 <img src="{{ asset('images/school-login.png') }}" alt="SaaS School Management"
-                     class="absolute inset-0 w-full h-full object-cover">
+                     width="861" height="890"
+                     class="max-w-full max-h-full w-auto h-auto rounded-2xl shadow-xl">
             </div>
         </div>
     </body>
