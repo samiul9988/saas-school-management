@@ -21,6 +21,16 @@
             </li>
         </ul>
 
+        @if (Auth::user()->role === \App\Models\User::ROLE_SCHOOL_ADMIN)
+            <ul class="navbar-nav d-none d-lg-flex flex-row gap-2 mx-auto">
+                <li class="nav-item"><a href="{{ route('school.students.create') }}" class="btn btn-sm btn-outline-secondary">{{ __('Add Student') }}</a></li>
+                <li class="nav-item {{ $locked() }}"><a href="{{ route('school.attendance.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Attendance') }}</a></li>
+                <li class="nav-item {{ $locked() }}"><a href="{{ route('school.exams.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Mark Input') }}</a></li>
+                <li class="nav-item {{ $locked() }}"><a href="{{ route('school.student-fees.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Fee Collect') }}</a></li>
+                <li class="nav-item {{ $locked() }}"><a href="{{ route('school.sms-settings.edit') }}" class="btn btn-sm btn-outline-secondary">{{ __('Send SMS') }}</a></li>
+            </ul>
+        @endif
+
         <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">
@@ -87,11 +97,16 @@
                         </a>
                     </li>
                 @elseif (Auth::user()->role === \App\Models\User::ROLE_SCHOOL_ADMIN)
-                    <li class="nav-item">
-                        <a href="{{ route('school.students.index') }}" class="nav-link {{ $isActiveGroup('school.students.*') }}">
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.students.*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $isActiveGroup('school.students.*') }}">
                             <i class="nav-icon bi bi-mortarboard"></i>
-                            <p>{{ __('Students') }}</p>
+                            <p>{{ __('Students') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
                         </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"><a href="{{ route('school.students.index') }}" class="nav-link {{ $isActiveGroup('school.students.index','school.students.show','school.students.edit') }}"><i class="nav-icon bi bi-list-ul"></i><p>{{ __('All Students') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.students.create') }}" class="nav-link {{ $isActiveGroup('school.students.create') }}"><i class="nav-icon bi bi-person-plus"></i><p>{{ __('Add Single Student') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.students.import.create') }}" class="nav-link {{ $isActiveGroup('school.students.import.*') }}"><i class="nav-icon bi bi-people"></i><p>{{ __('Add Multiple Student') }}</p></a></li>
+                        </ul>
                     </li>
                     <li class="nav-item {{ $locked() }}">
                         <a href="{{ route('school.teachers.index') }}" class="nav-link {{ $isActiveGroup('school.teachers.*') }}">

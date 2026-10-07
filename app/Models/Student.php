@@ -14,8 +14,9 @@ class Student extends Model
 
     protected $fillable = [
         'school_id', 'academic_year_id', 'school_class_id', 'section_id',
-        'admission_number', 'roll', 'name', 'date_of_birth', 'gender',
-        'guardian_name', 'guardian_phone', 'address', 'photo', 'status', 'portal_user_id',
+        'group_name', 'category', 'admission_number', 'roll', 'name', 'date_of_birth', 'gender',
+        'religion', 'guardian_name', 'father_name', 'mother_name', 'guardian_phone',
+        'address', 'photo', 'status', 'portal_user_id',
     ];
 
     protected $casts = [

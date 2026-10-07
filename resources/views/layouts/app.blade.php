@@ -21,29 +21,34 @@
 
         <style>
             :root {
-                --brand-1: #ff7849;
-                --brand-2: #ef4169;
-                --navy-1: #1c2140;
-                --navy-2: #1c2140;
-                --peach-1: #fdf0e6;
-                --peach-2: #fbe4ee;
+                --brand-1: #22a559;
+                --brand-2: #15803d;
+                --sidebar-bg: #ffffff;
+                --sidebar-text: #334155;
+                --content-bg: #eaf6fc;
+                --panel-border: #bae6fd;
             }
 
             body {
                 font-family: 'Figtree', sans-serif;
-                background: linear-gradient(135deg, var(--peach-1), var(--peach-2)) fixed;
+                background: var(--content-bg);
             }
 
             /* Sidebar */
             .app-sidebar {
-                background: linear-gradient(180deg, var(--navy-1), var(--navy-2)) !important;
+                background: var(--sidebar-bg) !important;
+                border-right: 1px solid var(--panel-border);
             }
+            .app-sidebar, .app-sidebar .nav-link, .app-sidebar .brand-text {
+                color: var(--sidebar-text) !important;
+            }
+            .app-sidebar .nav-icon { color: var(--brand-2); }
             .app-sidebar .sidebar-brand {
                 overflow: hidden;
+                border-bottom: 1px solid var(--panel-border);
             }
             .app-sidebar .brand-link {
                 background: transparent;
-                border-bottom: 1px solid rgba(255,255,255,.08);
                 overflow: hidden;
                 min-width: 0;
             }
@@ -53,6 +58,7 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 display: block;
+                font-weight: 700;
             }
             .app-sidebar .sidebar-menu > .nav-item > .nav-link,
             .app-sidebar .nav-treeview .nav-link {
@@ -64,22 +70,27 @@
                 background: linear-gradient(90deg, var(--brand-1), var(--brand-2)) !important;
                 color: #fff !important;
             }
+            .app-sidebar .sidebar-menu > .nav-item > .nav-link.active .nav-icon,
+            .app-sidebar .nav-treeview .nav-link.active .nav-icon {
+                color: #fff;
+            }
             .app-sidebar .nav-link:hover {
-                background: rgba(255,255,255,.07);
+                background: #ecfdf5;
             }
 
-            /* Temporarily locked sidebar modules: looks normal, just not clickable */
-            .app-sidebar .nav-locked,
-            .app-sidebar .nav-locked * {
+            /* Temporarily locked modules: looks normal, just not clickable */
+            .nav-locked,
+            .nav-locked * {
                 pointer-events: none !important;
                 cursor: not-allowed !important;
             }
 
             /* Topbar */
             .app-header {
-                background: transparent !important;
-                border-bottom: 1px solid rgba(0,0,0,.06);
+                background: #ffffff !important;
+                border-bottom: 1px solid var(--panel-border);
             }
+            .app-header, .app-header .nav-link { color: var(--sidebar-text) !important; }
 
             .content-header h1 { font-size: 1.25rem; }
 
@@ -91,24 +102,18 @@
             .hover\:bg-indigo-700:hover { filter: brightness(.93); }
             .text-indigo-600 { color: var(--brand-2) !important; }
             .text-indigo-600:hover, .hover\:text-indigo-800:hover { color: var(--brand-1) !important; }
-            .text-red-600 { color: #e11d48 !important; }
+            .text-red-600 { color: #dc2626 !important; }
 
-            /* Peach table headers */
-            .bg-gray-50 { background: var(--peach-1) !important; }
+            /* Light blue table headers */
+            .bg-gray-50 { background: #f0f9ff !important; }
 
-            /* Gradient top accent on card/panel containers */
+            /* Light blue bordered panels, Dcampus-style */
             .bg-white.shadow-sm {
-                position: relative;
-                border: 1px solid rgba(239,65,105,.08);
+                border: 1px solid var(--panel-border) !important;
+                box-shadow: none !important;
             }
-            .bg-white.shadow-sm::before {
-                content: '';
-                position: absolute;
-                top: 0; left: 0; right: 0;
-                height: 3px;
-                background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
-            }
-            .bg-white.shadow-sm.rounded-lg::before { border-radius: 8px 8px 0 0; }
+
+            .app-footer { background: #fff; border-top: 1px solid var(--panel-border); }
         </style>
     </head>
     <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
