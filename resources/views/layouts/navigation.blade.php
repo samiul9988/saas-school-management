@@ -77,7 +77,7 @@
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="true">
 
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link {{ $isActiveGroup('dashboard') }}">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ $isActiveGroup('dashboard', 'school.dashboard', 'super-admin.dashboard', 'parent.dashboard') }}">
                         <i class="nav-icon bi bi-speedometer2"></i>
                         <p>{{ __('Dashboard') }}</p>
                     </a>

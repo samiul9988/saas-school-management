@@ -117,6 +117,17 @@
                 box-shadow: none !important;
             }
 
+            /* Let forms/listings use the full content width instead of a narrow centered column */
+            .app-content .max-w-xl,
+            .app-content .max-w-2xl,
+            .app-content .max-w-3xl,
+            .app-content .max-w-4xl,
+            .app-content .max-w-5xl,
+            .app-content .max-w-6xl,
+            .app-content .max-w-7xl {
+                max-width: 100% !important;
+            }
+
             .app-footer { background: #fff; border-top: 1px solid var(--panel-border); }
         </style>
     </head>
