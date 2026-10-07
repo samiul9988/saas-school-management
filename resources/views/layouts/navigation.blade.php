@@ -53,7 +53,7 @@
                     <i class="bi bi-mortarboard-fill text-white"></i>
                 @endif
             </span>
-            <span class="brand-text fw-semibold text-truncate">
+            <span class="brand-text fw-semibold" title="{{ $brandSchool?->name ?? config('app.name') }}">
                 {{ $brandSchool?->name ?? config('app.name') }}
             </span>
         </a>

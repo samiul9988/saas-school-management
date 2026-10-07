@@ -38,9 +38,21 @@
             .app-sidebar {
                 background: linear-gradient(180deg, var(--navy-1), var(--navy-2)) !important;
             }
+            .app-sidebar .sidebar-brand {
+                overflow: hidden;
+            }
             .app-sidebar .brand-link {
                 background: transparent;
                 border-bottom: 1px solid rgba(255,255,255,.08);
+                overflow: hidden;
+                min-width: 0;
+            }
+            .app-sidebar .brand-link .brand-text {
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: block;
             }
             .app-sidebar .sidebar-menu > .nav-item > .nav-link,
             .app-sidebar .nav-treeview .nav-link {
