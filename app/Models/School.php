@@ -12,7 +12,7 @@ class School extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug', 'email', 'phone', 'address', 'logo',
+        'name', 'slug', 'email', 'phone', 'address', 'logo', 'admit_card_template',
         'plan_id', 'status', 'trial_ends_at', 'subscription_ends_at',
     ];
 

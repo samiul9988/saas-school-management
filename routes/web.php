@@ -124,6 +124,7 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/exams-seat-plan', [SeatPlanController::class, 'index'])->name('exams.seat-plan');
         Route::get('/exams-seat-plan/admit-card', [SeatPlanController::class, 'downloadAdmitCard'])->name('exams.seat-plan.admit-card');
         Route::get('/exams-seat-plan/seats/{perPage}', [SeatPlanController::class, 'downloadSeatPlan'])->whereNumber('perPage')->name('exams.seat-plan.seats');
+        Route::post('/exams-seat-plan/template', [SeatPlanController::class, 'selectTemplate'])->name('exams.seat-plan.select-template');
 
         Route::get('/exams-top-sheet', [TopSheetController::class, 'index'])->name('exams.top-sheet');
         Route::get('/exams-top-sheet/download', [TopSheetController::class, 'download'])->name('exams.top-sheet.download');

@@ -8,18 +8,33 @@ use App\Models\Exam;
 use App\Models\Section;
 use App\Models\Student;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class SeatPlanController extends Controller
 {
+    public const TEMPLATES = 4;
+
     public function index(): View
     {
         $sections = Section::with('schoolClass')->get();
         $exams = Exam::orderByDesc('starts_on')->get();
+        $school = Auth::user()->school;
 
-        return view('school.exams.seat-plan', compact('sections', 'exams'));
+        return view('school.exams.seat-plan', compact('sections', 'exams', 'school'));
+    }
+
+    public function selectTemplate(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'template' => ['required', 'integer', 'min:1', 'max:'.self::TEMPLATES],
+        ]);
+
+        Auth::user()->school->update(['admit_card_template' => $data['template']]);
+
+        return redirect()->route('school.exams.seat-plan', ['tab' => 'template'])->with('status', "Template {$data['template']} selected for Admit Cards.");
     }
 
     public function downloadAdmitCard(Request $request)
@@ -31,7 +46,9 @@ class SeatPlanController extends Controller
             ->where('exam_id', $exam->id)
             ->first();
 
-        $pdf = Pdf::loadView('school.exams.pdf.admit-card', compact('school', 'section', 'exam', 'students', 'instruction'));
+        $template = in_array($school->admit_card_template, range(1, self::TEMPLATES)) ? $school->admit_card_template : 1;
+
+        $pdf = Pdf::loadView("school.exams.pdf.admit-card-template-{$template}", compact('school', 'section', 'exam', 'students', 'instruction'));
 
         return $pdf->download('admit-card.pdf');
     }
