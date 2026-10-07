@@ -143,7 +143,8 @@
                             <li class="nav-item"><a href="{{ route('school.exam-subjects.search') }}" class="nav-link"><i class="nav-icon bi bi-pencil-square"></i><p>{{ __('Mark Update') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.results.index') }}" class="nav-link {{ $isActiveGroup('school.results.*') }}"><i class="nav-icon bi bi-bar-chart"></i><p>{{ __('Result Process') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.exams.tabulation-sheet') }}" class="nav-link {{ $isActiveGroup('school.exams.tabulation-sheet') }}"><i class="nav-icon bi bi-table"></i><p>{{ __('Tabulation Sheet') }}</p></a></li>
-                            <li class="nav-item"><a href="{{ route('school.grades.index') }}" class="nav-link {{ $isActiveGroup('school.grades.*') }}"><i class="nav-icon bi bi-award"></i><p>{{ __('Settings') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.exams.settings') }}" class="nav-link {{ $isActiveGroup('school.exams.settings') }}"><i class="nav-icon bi bi-gear"></i><p>{{ __('Settings') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.exams.admit-instruction') }}" class="nav-link {{ $isActiveGroup('school.exams.admit-instruction') }}"><i class="nav-icon bi bi-card-text"></i><p>{{ __('Admit Instruction') }}</p></a></li>
                         </ul>
                     </li>
 

@@ -7,40 +7,46 @@ use App\Models\Exam;
 use App\Models\Grade;
 use App\Models\SchoolClass;
 use App\Models\Student;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class TabulationSheetController extends Controller
 {
-    public function index(Request $request): View
+    public function index(): View
     {
-        $classes = SchoolClass::orderBy('sort_order')->get();
         $exams = Exam::orderByDesc('starts_on')->get();
 
-        $examSubjects = collect();
-        $rows = collect();
+        return view('school.exams.tabulation-sheet', compact('exams'));
+    }
 
-        if ($request->filled('exam_id') && $request->filled('school_class_id')) {
-            $exam = Exam::with(['examSubjects' => fn ($q) => $q->where('school_class_id', $request->school_class_id)->with('subject', 'marks')])
-                ->findOrFail($request->exam_id);
+    public function download(Request $request)
+    {
+        $data = $request->validate([
+            'exam_id' => ['required', 'exists:exams,id'],
+        ]);
 
-            $examSubjects = $exam->examSubjects;
+        $exam = Exam::with('examSubjects.subject', 'examSubjects.marks')->findOrFail($data['exam_id']);
+        $school = Auth::user()->school;
 
-            $students = Student::where('school_class_id', $request->school_class_id)
-                ->where('status', 'active')
-                ->orderBy('roll')
-                ->get();
+        $classIds = $exam->examSubjects->pluck('school_class_id')->unique();
+        $classes = SchoolClass::whereIn('id', $classIds)->orderBy('sort_order')->get();
+
+        $classBlocks = $classes->map(function ($class) use ($exam) {
+            $examSubjects = $exam->examSubjects->where('school_class_id', $class->id);
+
+            $students = Student::where('school_class_id', $class->id)->where('status', 'active')->orderBy('roll')->get();
 
             $rows = $students->map(function ($student) use ($examSubjects) {
                 $totalFull = 0;
                 $totalObtained = 0;
-                $marksBySubject = [];
+                $marks = [];
 
                 foreach ($examSubjects as $examSubject) {
                     $mark = $examSubject->marks->firstWhere('student_id', $student->id);
                     $obtained = $mark && ! $mark->is_absent ? (float) $mark->marks_obtained : null;
-
-                    $marksBySubject[$examSubject->id] = $obtained;
+                    $marks[$examSubject->id] = $obtained;
                     $totalFull += $examSubject->full_marks;
                     $totalObtained += $obtained ?? 0;
                 }
@@ -49,15 +55,19 @@ class TabulationSheetController extends Controller
 
                 return [
                     'student' => $student,
-                    'marks' => $marksBySubject,
+                    'marks' => $marks,
                     'total_obtained' => $totalObtained,
                     'total_full' => $totalFull,
                     'percentage' => $percentage,
                     'grade' => Grade::forPercent($percentage)?->name,
                 ];
             })->sortByDesc('percentage')->values();
-        }
 
-        return view('school.exams.tabulation-sheet', compact('classes', 'exams', 'examSubjects', 'rows'));
+            return ['class' => $class, 'examSubjects' => $examSubjects, 'rows' => $rows];
+        });
+
+        $pdf = Pdf::loadView('school.exams.pdf.tabulation-sheet', compact('school', 'exam', 'classBlocks'))->setPaper('a4', 'landscape');
+
+        return $pdf->download('tabulation-sheet.pdf');
     }
 }

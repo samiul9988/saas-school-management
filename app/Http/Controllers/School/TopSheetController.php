@@ -4,37 +4,49 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\Exam;
-use App\Models\ExamSubject;
-use App\Models\SchoolClass;
+use App\Models\Section;
 use App\Models\Student;
-use App\Models\Subject;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class TopSheetController extends Controller
 {
-    public function index(Request $request): View
+    public function index(): View
     {
-        $classes = SchoolClass::orderBy('sort_order')->get();
+        $sections = Section::with('schoolClass')->get();
         $exams = Exam::orderByDesc('starts_on')->get();
-        $subjects = Subject::orderBy('name')->get();
 
-        $students = collect();
-        $examSubject = null;
+        return view('school.exams.top-sheet', compact('sections', 'exams'));
+    }
 
-        if ($request->filled(['exam_id', 'school_class_id', 'subject_id'])) {
-            $examSubject = ExamSubject::with('exam', 'schoolClass', 'subject')
-                ->where('exam_id', $request->exam_id)
-                ->where('school_class_id', $request->school_class_id)
-                ->where('subject_id', $request->subject_id)
-                ->first();
+    public function download(Request $request)
+    {
+        $data = $request->validate([
+            'section_id' => ['required', 'exists:sections,id'],
+            'exam_id' => ['required', 'exists:exams,id'],
+        ]);
 
-            $students = Student::where('school_class_id', $request->school_class_id)
-                ->where('status', 'active')
-                ->orderBy('roll')
-                ->get();
-        }
+        $section = Section::findOrFail($data['section_id']);
+        $exam = Exam::with(['examSubjects' => fn ($q) => $q->where('school_class_id', $section->school_class_id)->with('subject')])
+            ->findOrFail($data['exam_id']);
 
-        return view('school.exams.top-sheet', compact('classes', 'exams', 'subjects', 'students', 'examSubject'));
+        $students = Student::where('section_id', $section->id)
+            ->where('status', 'active')
+            ->orderBy('roll')
+            ->get();
+
+        $school = Auth::user()->school;
+
+        $pdf = Pdf::loadView('school.exams.pdf.top-sheet', [
+            'school' => $school,
+            'section' => $section,
+            'exam' => $exam,
+            'students' => $students,
+            'examSubjects' => $exam->examSubjects,
+        ]);
+
+        return $pdf->download('top-sheet.pdf');
     }
 }

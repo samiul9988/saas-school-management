@@ -10,6 +10,9 @@ use App\Http\Controllers\School\DashboardController as SchoolDashboardController
 use App\Http\Controllers\School\ExamController;
 use App\Http\Controllers\School\ExamSubjectController;
 use App\Http\Controllers\School\ExamSubjectSearchController;
+use App\Http\Controllers\School\ExamShortCodeController;
+use App\Http\Controllers\School\ExamSettingsController;
+use App\Http\Controllers\School\AdmitInstructionController;
 use App\Http\Controllers\School\SeatPlanController;
 use App\Http\Controllers\School\TabulationSheetController;
 use App\Http\Controllers\School\TopSheetController;
@@ -119,8 +122,21 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/results/{exam}/marksheet/{student}', [ResultController::class, 'marksheet'])->name('results.marksheet');
 
         Route::get('/exams-seat-plan', [SeatPlanController::class, 'index'])->name('exams.seat-plan');
+        Route::get('/exams-seat-plan/admit-card', [SeatPlanController::class, 'downloadAdmitCard'])->name('exams.seat-plan.admit-card');
+        Route::get('/exams-seat-plan/seats/{perPage}', [SeatPlanController::class, 'downloadSeatPlan'])->whereNumber('perPage')->name('exams.seat-plan.seats');
+
         Route::get('/exams-top-sheet', [TopSheetController::class, 'index'])->name('exams.top-sheet');
+        Route::get('/exams-top-sheet/download', [TopSheetController::class, 'download'])->name('exams.top-sheet.download');
+
         Route::get('/exams-tabulation-sheet', [TabulationSheetController::class, 'index'])->name('exams.tabulation-sheet');
+        Route::get('/exams-tabulation-sheet/download', [TabulationSheetController::class, 'download'])->name('exams.tabulation-sheet.download');
+
+        Route::get('/exams-settings', [ExamSettingsController::class, 'index'])->name('exams.settings');
+        Route::post('/exam-short-codes', [ExamShortCodeController::class, 'store'])->name('exam-short-codes.store');
+        Route::delete('/exam-short-codes/{examShortCode}', [ExamShortCodeController::class, 'destroy'])->name('exam-short-codes.destroy');
+
+        Route::get('/exams-admit-instruction', [AdmitInstructionController::class, 'index'])->name('exams.admit-instruction');
+        Route::post('/exams-admit-instruction', [AdmitInstructionController::class, 'store'])->name('exams.admit-instruction.store');
 
         Route::get('/routine', [RoutineController::class, 'index'])->name('routine.index');
         Route::get('/routine/create', [RoutineController::class, 'create'])->name('routine.create');
