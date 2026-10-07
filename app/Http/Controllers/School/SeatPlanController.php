@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SeatPlanController extends Controller
 {
@@ -48,7 +49,14 @@ class SeatPlanController extends Controller
 
         $template = in_array($school->admit_card_template, range(1, self::TEMPLATES)) ? $school->admit_card_template : 1;
 
-        $pdf = Pdf::loadView("school.exams.pdf.admit-card-template-{$template}", compact('school', 'section', 'exam', 'students', 'instruction'));
+        $qrCodes = $students->mapWithKeys(function ($student) {
+            $payload = "Student:{$student->id}|Roll:{$student->roll}|{$student->name}";
+            $png = base64_encode(QrCode::format('png')->size(90)->margin(0)->generate($payload));
+
+            return [$student->id => 'data:image/png;base64,'.$png];
+        });
+
+        $pdf = Pdf::loadView("school.exams.pdf.admit-card-template-{$template}", compact('school', 'section', 'exam', 'students', 'instruction', 'qrCodes'));
 
         return $pdf->download('admit-card.pdf');
     }
