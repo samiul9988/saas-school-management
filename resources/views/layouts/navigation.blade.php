@@ -1,7 +1,7 @@
 @php
     $isActiveGroup = fn (...$patterns) => request()->routeIs(...$patterns) ? 'active' : '';
     // Temporary: set to false to re-enable these sidebar modules.
-    $lockedMenu = true;
+    $lockedMenu = false;
     $locked = fn () => $lockedMenu ? 'nav-locked' : '';
 @endphp
 

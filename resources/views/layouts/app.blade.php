@@ -63,8 +63,11 @@
             }
             .app-sidebar .sidebar-menu > .nav-item > .nav-link,
             .app-sidebar .nav-treeview .nav-link {
-                border-radius: 0;
-                margin: 0;
+                border-radius: 8px;
+                margin: 2px 10px;
+            }
+            .app-sidebar .nav-treeview .nav-link {
+                margin-left: 10px;
             }
             .app-sidebar .sidebar-menu > .nav-item > .nav-link.active {
                 background: var(--top-active) !important;
@@ -108,8 +111,15 @@
             .text-indigo-600:hover, .hover\:text-indigo-800:hover { color: var(--brand-1) !important; }
             .text-red-600 { color: #dc2626 !important; }
 
-            /* Light blue table headers */
-            .bg-gray-50 { background: #f0f9ff !important; }
+            /* Light blue table headers, Dcampus-style */
+            .bg-gray-50 {
+                background: #cdeefc !important;
+            }
+            .bg-gray-50 th,
+            .bg-gray-50 .text-gray-500 {
+                color: #0f172a !important;
+                font-weight: 600 !important;
+            }
 
             /* Light blue bordered panels, Dcampus-style */
             .bg-white.shadow-sm {
