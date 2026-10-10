@@ -6,6 +6,7 @@ use App\Models\Concerns\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SchoolClass extends Model
 {
@@ -28,5 +29,10 @@ class SchoolClass extends Model
     public function subjects(): HasMany
     {
         return $this->hasMany(Subject::class);
+    }
+
+    public function grandFinal(): HasOne
+    {
+        return $this->hasOne(ResultBatch::class, 'school_class_id')->where('type', ResultBatch::TYPE_GRAND_FINAL);
     }
 }

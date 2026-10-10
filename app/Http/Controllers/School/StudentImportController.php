@@ -4,7 +4,7 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
-use App\Models\SchoolClass;
+use App\Models\Section;
 use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,43 +16,79 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class StudentImportController extends Controller
 {
-    private const SESSION_KEY = 'student_import_preview';
+    public const MODES = ['with-id', 'without-id'];
 
-    private const COLUMNS = ['Roll No', "Father's Name", "Mother's Name", 'Gender', 'Religion', 'Mobile No.'];
+    private const COLUMNS = ['Roll No', 'Name', 'Gender', 'Religion', "Father's Name", "Mother's Name", 'Mobile No.'];
 
     public function create(): View
     {
         $academicYears = AcademicYear::orderByDesc('starts_on')->get();
-        $classes = SchoolClass::with('sections')->orderBy('sort_order')->get();
-        $preview = Session::get(self::SESSION_KEY);
+        $sections = Section::with('schoolClass')->get();
+        $categories = ['Regular', 'Freedom Fighter Quota', 'Disabled Quota', 'Other'];
+        $groups = ['Science', 'Commerce', 'Arts', 'General'];
 
-        return view('school.students.import', compact('academicYears', 'classes', 'preview'));
+        $previewWithId = Session::get($this->sessionKey('with-id'));
+        $previewWithoutId = Session::get($this->sessionKey('without-id'));
+
+        return view('school.students.import', compact(
+            'academicYears', 'sections', 'categories', 'groups', 'previewWithId', 'previewWithoutId'
+        ));
     }
 
-    public function sample(): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function sample(string $mode): \Symfony\Component\HttpFoundation\StreamedResponse
     {
+        $this->assertMode($mode);
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->fromArray(array_merge(['Name'], self::COLUMNS), null, 'A1');
-        $sheet->fromArray(['John Doe', '1', 'Robert Doe', 'Jane Doe', 'Male', 'Islam', '01700000000'], null, 'A2');
+
+        $headers = $mode === 'with-id' ? array_merge(['Student ID'], self::COLUMNS) : self::COLUMNS;
+
+        $sheet->fromArray($headers, null, 'A1');
+
+        $lastColumn = $sheet->getHighestColumn();
+        $headerRange = "A1:{$lastColumn}1";
+
+        $sheet->getStyle($headerRange)->applyFromArray([
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '0B1F4E']],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
+        ]);
+
+        $dataRange = "A1:{$lastColumn}31";
+        $sheet->getStyle($dataRange)->applyFromArray([
+            'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN, 'color' => ['rgb' => 'D1D5DB']]],
+        ]);
+
+        foreach (range('A', $lastColumn) as $column) {
+            $sheet->getColumnDimension($column)->setWidth(18);
+        }
+        $sheet->getRowDimension(1)->setRowHeight(22);
 
         $writer = new Xlsx($spreadsheet);
 
         return response()->streamDownload(function () use ($writer) {
             $writer->save('php://output');
-        }, 'student-import-sample.xlsx');
+        }, "student-import-sample-{$mode}.xlsx");
     }
 
-    public function preview(Request $request): RedirectResponse
+    public function preview(Request $request, string $mode): RedirectResponse
     {
+        $this->assertMode($mode);
+
         $data = $request->validate([
-            'academic_year_id' => ['nullable', 'exists:academic_years,id'],
-            'school_class_id' => ['required', 'exists:school_classes,id'],
-            'section_id' => ['nullable', 'exists:sections,id'],
-            'group_name' => ['nullable', 'string', 'max:255'],
-            'category' => ['nullable', 'string', 'max:255'],
-            'file' => ['required', 'file', 'mimes:xlsx,xls,csv'],
+            'academic_year_id' => ['required', 'exists:academic_years,id'],
+            'section_id' => ['required', 'exists:sections,id'],
+            'group_name' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:255'],
+            'file' => ['required', 'file', function ($attribute, $value, $fail) {
+                if (! in_array(strtolower($value->getClientOriginalExtension()), ['csv', 'xls', 'xlsx'], true)) {
+                    $fail('The file must be a csv, xls, or xlsx file.');
+                }
+            }],
         ]);
+
+        $section = Section::findOrFail($data['section_id']);
 
         $spreadsheet = IOFactory::load($request->file('file')->getRealPath());
         $rows = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
@@ -69,6 +105,9 @@ class StudentImportController extends Controller
             }
 
             $parsed[] = [
+                'admission_number' => $mode === 'with-id'
+                    ? trim((string) ($row[$this->colLetter($map, 'Student ID')] ?? ''))
+                    : null,
                 'name' => $name,
                 'roll' => trim($row[$this->colLetter($map, 'Roll No')] ?? ''),
                 'father_name' => trim($row[$this->colLetter($map, "Father's Name")] ?? ''),
@@ -79,21 +118,23 @@ class StudentImportController extends Controller
             ];
         }
 
-        Session::put(self::SESSION_KEY, [
+        Session::put($this->sessionKey($mode), [
             'rows' => $parsed,
-            'academic_year_id' => $data['academic_year_id'] ?? null,
-            'school_class_id' => $data['school_class_id'],
-            'section_id' => $data['section_id'] ?? null,
-            'group_name' => $data['group_name'] ?? null,
-            'category' => $data['category'] ?? null,
+            'academic_year_id' => $data['academic_year_id'],
+            'school_class_id' => $section->school_class_id,
+            'section_id' => $section->id,
+            'group_name' => $data['group_name'],
+            'category' => $data['category'],
         ]);
 
         return redirect()->route('school.students.import.create')->with('status', count($parsed).' row(s) parsed. Review and click Save to import.');
     }
 
-    public function store(): RedirectResponse
+    public function store(string $mode): RedirectResponse
     {
-        $data = Session::get(self::SESSION_KEY);
+        $this->assertMode($mode);
+
+        $data = Session::get($this->sessionKey($mode));
 
         abort_unless($data, 404);
 
@@ -101,6 +142,10 @@ class StudentImportController extends Controller
         foreach ($data['rows'] as $row) {
             if ($row['gender'] && ! in_array($row['gender'], ['male', 'female', 'other'])) {
                 $row['gender'] = null;
+            }
+
+            if ($mode === 'without-id' || $row['admission_number'] === '') {
+                $row['admission_number'] = null;
             }
 
             Student::create([
@@ -115,16 +160,28 @@ class StudentImportController extends Controller
             $count++;
         }
 
-        Session::forget(self::SESSION_KEY);
+        Session::forget($this->sessionKey($mode));
 
         return redirect()->route('school.students.index')->with('status', "{$count} student(s) imported successfully.");
     }
 
-    public function cancel(): RedirectResponse
+    public function cancel(string $mode): RedirectResponse
     {
-        Session::forget(self::SESSION_KEY);
+        $this->assertMode($mode);
+
+        Session::forget($this->sessionKey($mode));
 
         return redirect()->route('school.students.import.create');
+    }
+
+    private function assertMode(string $mode): void
+    {
+        abort_unless(in_array($mode, self::MODES, true), 404);
+    }
+
+    private function sessionKey(string $mode): string
+    {
+        return 'student_import_preview_'.str_replace('-', '_', $mode);
     }
 
     private function colLetter(array $map, string $header): ?string

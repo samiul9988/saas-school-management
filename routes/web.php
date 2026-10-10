@@ -31,6 +31,15 @@ use App\Http\Controllers\School\MarkController;
 use App\Http\Controllers\School\NoticeController;
 use App\Http\Controllers\School\PayrollController;
 use App\Http\Controllers\School\ResultController;
+use App\Http\Controllers\School\ResultProcessController;
+use App\Http\Controllers\School\GrandFinalController;
+use App\Http\Controllers\School\SubjectConfigurationController;
+use App\Http\Controllers\School\MarkConfigurationController;
+use App\Http\Controllers\School\MarksheetTemplateController;
+use App\Http\Controllers\School\FourthSubjectController;
+use App\Http\Controllers\School\RemarksTemplateController;
+use App\Http\Controllers\School\MarkSheetController;
+use App\Http\Controllers\School\ReportController;
 use App\Http\Controllers\School\RouteStopController;
 use App\Http\Controllers\School\RoutineController;
 use App\Http\Controllers\School\SalaryStructureController;
@@ -101,10 +110,10 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::resource('subjects', SubjectController::class)->except('show');
         Route::resource('teachers', TeacherController::class);
         Route::get('/students/import', [StudentImportController::class, 'create'])->name('students.import.create');
-        Route::get('/students/import/sample', [StudentImportController::class, 'sample'])->name('students.import.sample');
-        Route::post('/students/import/preview', [StudentImportController::class, 'preview'])->name('students.import.preview');
-        Route::post('/students/import/store', [StudentImportController::class, 'store'])->name('students.import.store');
-        Route::post('/students/import/cancel', [StudentImportController::class, 'cancel'])->name('students.import.cancel');
+        Route::get('/students/import/{mode}/sample', [StudentImportController::class, 'sample'])->whereIn('mode', StudentImportController::MODES)->name('students.import.sample');
+        Route::post('/students/import/{mode}/preview', [StudentImportController::class, 'preview'])->whereIn('mode', StudentImportController::MODES)->name('students.import.preview');
+        Route::post('/students/import/{mode}/store', [StudentImportController::class, 'store'])->whereIn('mode', StudentImportController::MODES)->name('students.import.store');
+        Route::post('/students/import/{mode}/cancel', [StudentImportController::class, 'cancel'])->whereIn('mode', StudentImportController::MODES)->name('students.import.cancel');
         Route::resource('students', StudentController::class);
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
@@ -123,13 +132,67 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/mark-input', [MarkInputController::class, 'index'])->name('mark-input.index');
         Route::put('/mark-input/{examSubject}', [MarkInputController::class, 'update'])->name('mark-input.update');
         Route::get('/mark-input/template/download', [MarkInputController::class, 'downloadTemplate'])->name('mark-input.template');
-        Route::post('/mark-input/{examSubject}/upload', [MarkInputController::class, 'upload'])->name('mark-input.upload');
+        Route::post('/mark-input/upload', [MarkInputController::class, 'upload'])->name('mark-input.upload');
 
         Route::post('/subject-components', [SubjectComponentController::class, 'store'])->name('subject-components.store');
         Route::delete('/subject-components/{subjectComponent}', [SubjectComponentController::class, 'destroy'])->name('subject-components.destroy');
 
         Route::get('/results', [ResultController::class, 'index'])->name('results.index');
         Route::get('/results/{exam}/marksheet/{student}', [ResultController::class, 'marksheet'])->name('results.marksheet');
+
+        Route::get('/results-process/general-exam', [ResultProcessController::class, 'generalExam'])->name('results-process.general-exam');
+        Route::post('/results-process/general-exam/process', [ResultProcessController::class, 'processGeneralExam'])->name('results-process.general-exam.process');
+
+        Route::get('/results-process/grand-final', [GrandFinalController::class, 'processPage'])->name('results-process.grand-final');
+        Route::post('/results-process/grand-final/process', [GrandFinalController::class, 'processClass'])->name('results-process.grand-final.process');
+        Route::get('/exam-configuration', [GrandFinalController::class, 'index'])->name('exam-configuration.index');
+        Route::post('/exam-configuration', [GrandFinalController::class, 'store'])->name('exam-configuration.store');
+        Route::delete('/exam-configuration/{grandFinal}', [GrandFinalController::class, 'destroy'])->name('exam-configuration.destroy');
+        Route::put('/exam-configuration/{grandFinal}/merit-type', [GrandFinalController::class, 'updateMeritType'])->name('exam-configuration.update-merit-type');
+        Route::get('/exam-configuration/grand-final', [GrandFinalController::class, 'markConfigIndex'])->name('exam-configuration.grand-final');
+        Route::post('/exam-configuration/grand-final', [GrandFinalController::class, 'storeMarkConfig'])->name('exam-configuration.grand-final.store');
+
+        Route::get('/exam-configuration/subject', [SubjectConfigurationController::class, 'index'])->name('exam-configuration.subject');
+        Route::post('/exam-configuration/subject', [SubjectConfigurationController::class, 'store'])->name('exam-configuration.subject.store');
+        Route::put('/exam-configuration/subject', [SubjectConfigurationController::class, 'update'])->name('exam-configuration.subject.update');
+        Route::delete('/exam-configuration/subject/{subjectAssignment}', [SubjectConfigurationController::class, 'destroy'])->name('exam-configuration.subject.destroy');
+
+        Route::get('/exam-configuration/mark', [MarkConfigurationController::class, 'index'])->name('exam-configuration.mark');
+        Route::post('/exam-configuration/mark', [MarkConfigurationController::class, 'store'])->name('exam-configuration.mark.store');
+
+        Route::get('/exam-configuration/marksheet-template', [MarksheetTemplateController::class, 'index'])->name('exam-configuration.marksheet-template');
+        Route::post('/exam-configuration/marksheet-template', [MarksheetTemplateController::class, 'store'])->name('exam-configuration.marksheet-template.store');
+        Route::delete('/exam-configuration/marksheet-template/{marksheetTemplateConfig}', [MarksheetTemplateController::class, 'destroy'])->name('exam-configuration.marksheet-template.destroy');
+        Route::get('/exam-configuration/marksheet-template/preview/{number}', [MarksheetTemplateController::class, 'preview'])->whereNumber('number')->name('exam-configuration.marksheet-template.preview');
+
+        Route::get('/exam-configuration/fourth-subject', [FourthSubjectController::class, 'index'])->name('exam-configuration.fourth-subject');
+        Route::post('/exam-configuration/fourth-subject', [FourthSubjectController::class, 'store'])->name('exam-configuration.fourth-subject.store');
+        Route::delete('/exam-configuration/fourth-subject/{fourthSubjectAssignment}', [FourthSubjectController::class, 'destroy'])->name('exam-configuration.fourth-subject.destroy');
+
+        Route::get('/exam-configuration/remarks-template', [RemarksTemplateController::class, 'index'])->name('exam-configuration.remarks-template');
+        Route::post('/exam-configuration/remarks-template', [RemarksTemplateController::class, 'store'])->name('exam-configuration.remarks-template.store');
+        Route::put('/exam-configuration/remarks-template/{remarkTemplate}', [RemarksTemplateController::class, 'update'])->name('exam-configuration.remarks-template.update');
+        Route::delete('/exam-configuration/remarks-template/{remarkTemplate}', [RemarksTemplateController::class, 'destroy'])->name('exam-configuration.remarks-template.destroy');
+
+        Route::get('/results-process/merit-position', [ResultProcessController::class, 'meritPosition'])->name('results-process.merit-position');
+
+        Route::get('/results-process/give-remarks', [ResultProcessController::class, 'giveRemarks'])->name('results-process.give-remarks');
+        Route::post('/results-process/give-remarks', [ResultProcessController::class, 'saveRemarks'])->name('results-process.give-remarks.store');
+        Route::post('/results-process/remark-templates', [ResultProcessController::class, 'storeRemarkTemplate'])->name('results-process.remark-templates.store');
+
+        Route::get('/mark-sheets/general-exam', [MarkSheetController::class, 'generalExam'])->name('mark-sheets.general-exam');
+        Route::get('/mark-sheets/general-exam/download', [MarkSheetController::class, 'downloadGeneralExam'])->name('mark-sheets.general-exam.download');
+        Route::get('/mark-sheets/grand-final', [MarkSheetController::class, 'grandFinal'])->name('mark-sheets.grand-final');
+        Route::get('/mark-sheets/grand-final/{resultBatch}/download', [MarkSheetController::class, 'downloadGrandFinal'])->name('mark-sheets.grand-final.download');
+
+        Route::get('/reports/unassigned-marks', [ReportController::class, 'unassignedMarks'])->name('reports.unassigned-marks');
+        Route::get('/reports/section-result', [ReportController::class, 'sectionResult'])->name('reports.section-result');
+        Route::get('/reports/class-merit', [ReportController::class, 'classMerit'])->name('reports.class-merit');
+        Route::get('/reports/section-merit', [ReportController::class, 'sectionMerit'])->name('reports.section-merit');
+        Route::get('/reports/class-failed', [ReportController::class, 'classFailed'])->name('reports.class-failed');
+        Route::get('/reports/section-failed', [ReportController::class, 'sectionFailed'])->name('reports.section-failed');
+        Route::get('/reports/grading-summary', [ReportController::class, 'sectionWiseGradingSummary'])->name('reports.grading-summary');
+        Route::get('/reports/pass-fail-summary', [ReportController::class, 'sectionWisePassFailSummary'])->name('reports.pass-fail-summary');
 
         Route::get('/exams-seat-plan', [SeatPlanController::class, 'index'])->name('exams.seat-plan');
         Route::get('/exams-seat-plan/admit-card', [SeatPlanController::class, 'downloadAdmitCard'])->name('exams.seat-plan.admit-card');

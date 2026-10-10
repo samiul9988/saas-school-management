@@ -12,9 +12,14 @@
             <div class="bg-red-100 text-red-800 px-4 py-2 rounded">{{ $error }}</div>
         @endif
 
+        @if (session('error') && session('error') !== $error)
+            <div class="bg-red-100 text-red-800 px-4 py-2 rounded">{{ session('error') }}</div>
+        @endif
+
         <div class="bg-white shadow-sm rounded-lg overflow-hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
-                <form method="GET" class="p-6 space-y-4 lg:col-span-2">
+                <div class="lg:col-span-2">
+                <form method="GET" class="p-6 space-y-4">
                     <div>
                         <x-input-label for="section_id" value="Section" />
                         <select id="section_id" name="section_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
@@ -57,6 +62,71 @@
                         <i class="bi bi-search mr-1"></i> Search
                     </x-primary-button>
                 </form>
+
+                <div class="border-t px-6 pb-6">
+                    <form id="mark-input-upload-form" action="{{ route('school.mark-input.upload') }}" method="POST" enctype="multipart/form-data" class="flex flex-wrap items-center gap-3 pt-4"
+                          onsubmit="return window.markInputPrepareUpload(event)">
+                        @csrf
+                        <input type="hidden" name="section_id" id="upload_section_id">
+                        <input type="hidden" name="exam_id" id="upload_exam_id">
+                        <input type="hidden" name="subject_id" id="upload_subject_id">
+                        <input type="file" name="file" accept=".xlsx,.xls,.csv" class="text-sm" required>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#2196f3] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            Upload
+                        </button>
+                    </form>
+                    <a href="#" id="mark-input-download-link" onclick="return window.markInputDownload(event)" class="text-indigo-600 hover:underline text-sm inline-block mt-2">
+                        Download Excel Format
+                    </a>
+                </div>
+                </div>
+
+                <script>
+                    function markInputReadSelection() {
+                        var sectionId = document.getElementById('section_id').value;
+                        var groupName = document.getElementById('group_name').value;
+                        var examId = document.getElementById('exam_id').value;
+                        var subjectId = document.getElementById('subject_id').value;
+
+                        if (! sectionId || ! examId || ! subjectId) {
+                            alert('Please select Section, Exam and Subject first.');
+                            return null;
+                        }
+
+                        return { sectionId: sectionId, groupName: groupName, examId: examId, subjectId: subjectId };
+                    }
+
+                    window.markInputPrepareUpload = function (event) {
+                        var selection = markInputReadSelection();
+                        if (! selection) {
+                            event.preventDefault();
+                            return false;
+                        }
+
+                        document.getElementById('upload_section_id').value = selection.sectionId;
+                        document.getElementById('upload_exam_id').value = selection.examId;
+                        document.getElementById('upload_subject_id').value = selection.subjectId;
+                        return true;
+                    };
+
+                    window.markInputDownload = function (event) {
+                        event.preventDefault();
+                        var selection = markInputReadSelection();
+                        if (! selection) {
+                            return false;
+                        }
+
+                        var params = new URLSearchParams({
+                            section_id: selection.sectionId,
+                            exam_id: selection.examId,
+                            subject_id: selection.subjectId,
+                            group_name: selection.groupName,
+                        });
+
+                        window.location.href = '{{ route('school.mark-input.template') }}?' + params.toString();
+                        return false;
+                    };
+                </script>
 
                 <div class="border-t lg:border-t-0 lg:border-l bg-gray-50 p-6">
                     <table class="w-full text-sm text-left">
@@ -115,17 +185,6 @@
         </div>
 
         @if ($examSubject && $components->isNotEmpty())
-            <div class="bg-white shadow-sm rounded-lg p-6">
-                <form action="{{ route('school.mark-input.upload', $examSubject) }}" method="POST" enctype="multipart/form-data" class="flex flex-wrap items-center gap-3">
-                    @csrf
-                    <input type="file" name="file" accept=".csv" class="text-sm" required>
-                    <x-secondary-button type="submit">Upload</x-secondary-button>
-                </form>
-                <a href="{{ route('school.mark-input.template', request()->only('section_id', 'exam_id', 'subject_id', 'group_name')) }}" class="text-indigo-600 hover:underline text-sm inline-block mt-2">
-                    Download Excel Format
-                </a>
-            </div>
-
             <form action="{{ route('school.mark-input.update', $examSubject) }}" method="POST" class="bg-white shadow-sm rounded-lg overflow-hidden">
                 @csrf
                 @method('PUT')
