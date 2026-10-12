@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\School\AcademicYearController;
 use App\Http\Controllers\School\AttendanceController;
 use App\Http\Controllers\School\BookCategoryController;
@@ -71,6 +72,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// ------------------------------------ Site Maintenance (login-free with a key) ------------------------------------
+Route::middleware(\App\Http\Middleware\AllowActivationAccess::class)->prefix('dashboard/activation')->group(function () {
+    Route::get('/', [MaintenanceController::class, 'show'])->name('maintenance.show');
+    Route::post('/toggle', [MaintenanceController::class, 'toggle'])->name('maintenance.toggle');
+    Route::get('/preview', [MaintenanceController::class, 'preview'])->name('maintenance.preview');
 });
 
 Route::get('/dashboard', function () {

@@ -96,6 +96,12 @@
                             <p>{{ __('Plans') }}</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('maintenance.show') }}" class="nav-link {{ $isActiveGroup('maintenance.*') }}">
+                            <i class="nav-icon bi bi-toggle-on"></i>
+                            <p>{{ __('Site Maintenance') }}</p>
+                        </a>
+                    </li>
                 @elseif (Auth::user()->role === \App\Models\User::ROLE_SCHOOL_ADMIN)
                     <li class="nav-item has-treeview {{ request()->routeIs('school.students.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $isActiveGroup('school.students.*') }}">

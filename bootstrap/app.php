@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'super_admin' => \App\Http\Middleware\EnsureSuperAdmin::class,
             'school_context' => \App\Http\Middleware\EnsureSchoolContext::class,
             'parent_portal' => \App\Http\Middleware\EnsureParent::class,
+            'activation_access' => \App\Http\Middleware\AllowActivationAccess::class,
+        ]);
+        $middleware->web(append: [
+            \App\Http\Middleware\MaintenanceMode::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
