@@ -10,7 +10,7 @@ class AcademicYear extends Model
 {
     use BelongsToSchool, HasFactory;
 
-    protected $fillable = ['school_id', 'name', 'starts_on', 'ends_on', 'is_current'];
+    protected $fillable = ['school_id', 'name', 'starts_on', 'ends_on', 'is_current', 'serial', 'status'];
 
     protected $casts = [
         'starts_on' => 'date',

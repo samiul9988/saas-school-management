@@ -53,6 +53,14 @@ use App\Http\Controllers\Parent\PortalController as ParentPortalController;
 use App\Http\Controllers\School\SchoolClassController;
 use App\Http\Controllers\School\SectionController;
 use App\Http\Controllers\School\StudentController;
+use App\Http\Controllers\School\StudentUpdateController;
+use App\Http\Controllers\School\StudentReportController;
+use App\Http\Controllers\School\IdCardController;
+use App\Http\Controllers\School\TransferCertificateController;
+use App\Http\Controllers\School\TestimonialController;
+use App\Http\Controllers\School\InitialSetupController;
+use App\Http\Controllers\School\ClassConfigurationController;
+use App\Http\Controllers\School\GroupConfigurationController;
 use App\Http\Controllers\School\StudentImportController;
 use App\Http\Controllers\School\SubjectController;
 use App\Http\Controllers\School\TeacherController;
@@ -114,6 +122,69 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::post('/students/import/{mode}/preview', [StudentImportController::class, 'preview'])->whereIn('mode', StudentImportController::MODES)->name('students.import.preview');
         Route::post('/students/import/{mode}/store', [StudentImportController::class, 'store'])->whereIn('mode', StudentImportController::MODES)->name('students.import.store');
         Route::post('/students/import/{mode}/cancel', [StudentImportController::class, 'cancel'])->whereIn('mode', StudentImportController::MODES)->name('students.import.cancel');
+        Route::get('/students/update/basic', [StudentUpdateController::class, 'basic'])->name('students.update-basic');
+        Route::post('/students/update/basic', [StudentUpdateController::class, 'basicUpdate'])->name('students.update-basic.store');
+        Route::get('/students/update/photo', [StudentUpdateController::class, 'photo'])->name('students.update-photo');
+        Route::post('/students/update/photo', [StudentUpdateController::class, 'photoUpdate'])->name('students.update-photo.store');
+        Route::get('/students/update/academic-info', [StudentUpdateController::class, 'academic'])->name('students.update-academic');
+        Route::post('/students/update/academic-info', [StudentUpdateController::class, 'academicUpdate'])->name('students.update-academic.store');
+        Route::get('/students/update/migration-without-merit', [StudentUpdateController::class, 'migrationWithoutMerit'])->name('students.migration-without-merit');
+        Route::post('/students/update/migration-without-merit', [StudentUpdateController::class, 'migrationWithoutMeritStore'])->name('students.migration-without-merit.store');
+        Route::get('/students/update/migration-with-merit', [StudentUpdateController::class, 'migrationWithMerit'])->name('students.migration-with-merit');
+        Route::post('/students/update/migration-with-merit', [StudentUpdateController::class, 'migrationWithMeritStore'])->name('students.migration-with-merit.store');
+        Route::get('/students/update/enable-disable', [StudentUpdateController::class, 'enableDisable'])->name('students.enable-disable');
+        Route::post('/students/update/enable-disable', [StudentUpdateController::class, 'enableDisableStore'])->name('students.enable-disable.store');
+
+        Route::get('/students/report/all-student', [StudentReportController::class, 'allStudent'])->name('students.report.all');
+        Route::get('/students/report/section-wise-summary', [StudentReportController::class, 'sectionWiseSummary'])->name('students.report.section-summary');
+        Route::get('/students/report/section-wise', [StudentReportController::class, 'sectionWise'])->name('students.report.section-wise');
+        Route::get('/students/report/section-wise/pdf/{mode}', [StudentReportController::class, 'sectionWisePdf'])->whereIn('mode', ['with-image', 'without-image'])->name('students.report.section-wise.pdf');
+        Route::get('/students/report/section-wise/excel', [StudentReportController::class, 'sectionWiseExcel'])->name('students.report.section-wise.excel');
+        Route::get('/students/report/class-wise', [StudentReportController::class, 'classWise'])->name('students.report.class-wise');
+        Route::get('/students/report/class-wise/pdf', [StudentReportController::class, 'classWisePdf'])->name('students.report.class-wise.pdf');
+        Route::get('/students/report/class-wise/excel', [StudentReportController::class, 'classWiseExcel'])->name('students.report.class-wise.excel');
+        Route::get('/students/report/group-wise', [StudentReportController::class, 'groupWise'])->name('students.report.group-wise');
+        Route::get('/students/report/group-wise/pdf', [StudentReportController::class, 'groupWisePdf'])->name('students.report.group-wise.pdf');
+        Route::get('/students/report/group-wise/excel', [StudentReportController::class, 'groupWiseExcel'])->name('students.report.group-wise.excel');
+        Route::get('/students/report/gender-wise', [StudentReportController::class, 'genderWise'])->name('students.report.gender-wise');
+        Route::get('/students/report/gender-wise/pdf', [StudentReportController::class, 'genderWisePdf'])->name('students.report.gender-wise.pdf');
+        Route::get('/students/report/religion-wise', [StudentReportController::class, 'religionWise'])->name('students.report.religion-wise');
+        Route::get('/students/report/religion-wise/pdf', [StudentReportController::class, 'religionWisePdf'])->name('students.report.religion-wise.pdf');
+
+        Route::get('/students/id-card', [IdCardController::class, 'index'])->name('students.id-card.index');
+        Route::post('/students/id-card/template', [IdCardController::class, 'selectTemplate'])->name('students.id-card.select-template');
+        Route::get('/students/id-card/preview/{template}', [IdCardController::class, 'preview'])->whereNumber('template')->name('students.id-card.preview');
+        Route::get('/students/id-card/front', [IdCardController::class, 'downloadFront'])->name('students.id-card.front');
+        Route::get('/students/id-card/back', [IdCardController::class, 'downloadBack'])->name('students.id-card.back');
+
+        Route::get('/students/tc', [TransferCertificateController::class, 'create'])->name('students.tc.create');
+        Route::post('/students/tc', [TransferCertificateController::class, 'store'])->name('students.tc.store');
+        Route::get('/students/tc/all', [TransferCertificateController::class, 'index'])->name('students.tc.index');
+        Route::get('/students/tc/{transferCertificate}/download', [TransferCertificateController::class, 'download'])->name('students.tc.download');
+
+        Route::get('/students/testimonial', [TestimonialController::class, 'create'])->name('students.testimonial.create');
+        Route::post('/students/testimonial', [TestimonialController::class, 'store'])->name('students.testimonial.store');
+        Route::get('/students/testimonial/all', [TestimonialController::class, 'index'])->name('students.testimonial.index');
+        Route::get('/students/testimonial/{testimonial}/download', [TestimonialController::class, 'download'])->name('students.testimonial.download');
+
+        Route::get('/students/initial-setup/{type}', [InitialSetupController::class, 'index'])->whereIn('type', array_keys(InitialSetupController::TYPES))->name('students.initial-setup');
+        Route::post('/students/initial-setup/{type}', [InitialSetupController::class, 'store'])->whereIn('type', array_keys(InitialSetupController::TYPES))->name('students.initial-setup.store');
+        Route::put('/students/initial-setup/{type}/{id}', [InitialSetupController::class, 'update'])->whereIn('type', array_keys(InitialSetupController::TYPES))->whereNumber('id')->name('students.initial-setup.update');
+        Route::post('/students/initial-setup/{type}/{id}/toggle', [InitialSetupController::class, 'toggleStatus'])->whereIn('type', array_keys(InitialSetupController::TYPES))->whereNumber('id')->name('students.initial-setup.toggle');
+        Route::delete('/students/initial-setup/{type}/{id}', [InitialSetupController::class, 'destroy'])->whereIn('type', array_keys(InitialSetupController::TYPES))->whereNumber('id')->name('students.initial-setup.destroy');
+
+        Route::get('/students/configuration/class', [ClassConfigurationController::class, 'index'])->name('students.configuration.class');
+        Route::post('/students/configuration/class', [ClassConfigurationController::class, 'store'])->name('students.configuration.class.store');
+        Route::post('/students/configuration/class/update-serial', [ClassConfigurationController::class, 'updateSerial'])->name('students.configuration.class.update-serial');
+        Route::post('/students/configuration/class/{section}/toggle', [ClassConfigurationController::class, 'toggleStatus'])->name('students.configuration.class.toggle');
+        Route::post('/students/configuration/class/{section}/remove-shift', [ClassConfigurationController::class, 'destroy'])->name('students.configuration.class.destroy');
+
+        Route::get('/students/configuration/group', [GroupConfigurationController::class, 'index'])->name('students.configuration.group');
+        Route::post('/students/configuration/group', [GroupConfigurationController::class, 'store'])->name('students.configuration.group.store');
+        Route::post('/students/configuration/group/update', [GroupConfigurationController::class, 'update'])->name('students.configuration.group.update');
+        Route::post('/students/configuration/group/{classGroupAssignment}/toggle', [GroupConfigurationController::class, 'toggleStatus'])->name('students.configuration.group.toggle');
+        Route::post('/students/configuration/group/{classGroupAssignment}/delete', [GroupConfigurationController::class, 'destroy'])->name('students.configuration.group.destroy');
+
         Route::resource('students', StudentController::class);
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');

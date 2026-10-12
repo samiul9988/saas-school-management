@@ -12,11 +12,16 @@ class Section extends Model
 {
     use BelongsToSchool, HasFactory;
 
-    protected $fillable = ['school_id', 'school_class_id', 'name', 'capacity'];
+    protected $fillable = ['school_id', 'school_class_id', 'shift_id', 'name', 'capacity', 'serial', 'status'];
 
     public function schoolClass(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class);
+    }
+
+    public function shift(): BelongsTo
+    {
+        return $this->belongsTo(Shift::class);
     }
 
     public function students(): HasMany

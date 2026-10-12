@@ -1,7 +1,7 @@
 @php
     $isActiveGroup = fn (...$patterns) => request()->routeIs(...$patterns) ? 'active' : '';
     // Temporary: set to false to re-enable these sidebar modules.
-    $lockedMenu = false;
+    $lockedMenu = true;
     $locked = fn () => $lockedMenu ? 'nav-locked' : '';
 @endphp
 
@@ -25,7 +25,7 @@
             <ul class="navbar-nav d-none d-lg-flex flex-row gap-2 mx-auto">
                 <li class="nav-item"><a href="{{ route('school.students.create') }}" class="btn btn-sm btn-outline-secondary">{{ __('Add Student') }}</a></li>
                 <li class="nav-item {{ $locked() }}"><a href="{{ route('school.attendance.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Attendance') }}</a></li>
-                <li class="nav-item {{ $locked() }}"><a href="{{ route('school.exams.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Mark Input') }}</a></li>
+                <li class="nav-item"><a href="{{ route('school.mark-input.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Mark Input') }}</a></li>
                 <li class="nav-item {{ $locked() }}"><a href="{{ route('school.student-fees.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Fee Collect') }}</a></li>
                 <li class="nav-item {{ $locked() }}"><a href="{{ route('school.sms-settings.edit') }}" class="btn btn-sm btn-outline-secondary">{{ __('Send SMS') }}</a></li>
             </ul>
@@ -106,6 +106,52 @@
                             <li class="nav-item"><a href="{{ route('school.students.index') }}" class="nav-link {{ $isActiveGroup('school.students.index','school.students.show','school.students.edit') }}"><i class="nav-icon bi bi-list-ul"></i><p>{{ __('All Students') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.students.create') }}" class="nav-link {{ $isActiveGroup('school.students.create') }}"><i class="nav-icon bi bi-person-plus"></i><p>{{ __('Add Single Student') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.students.import.create') }}" class="nav-link {{ $isActiveGroup('school.students.import.*') }}"><i class="nav-icon bi bi-people"></i><p>{{ __('Add Multiple Student') }}</p></a></li>
+
+                            <li class="nav-item has-treeview {{ request()->routeIs('school.students.update-*','school.students.migration-*','school.students.enable-disable') ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-pencil-square"></i>
+                                    <p>{{ __('Update') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item"><a href="{{ route('school.students.update-basic') }}" class="nav-link {{ $isActiveGroup('school.students.update-basic*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Basic') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.update-photo') }}" class="nav-link {{ $isActiveGroup('school.students.update-photo*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Photo') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.update-academic') }}" class="nav-link {{ $isActiveGroup('school.students.update-academic*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Academic Info') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.migration-without-merit') }}" class="nav-link {{ $isActiveGroup('school.students.migration-without-merit*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Migration (Without Merit)') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.migration-with-merit') }}" class="nav-link {{ $isActiveGroup('school.students.migration-with-merit*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Migration (With Merit)') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.enable-disable') }}" class="nav-link {{ $isActiveGroup('school.students.enable-disable*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Enable / Disable') }}</p></a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item has-treeview {{ request()->routeIs('school.students.report.*') ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-clipboard-data"></i>
+                                    <p>{{ __('Report') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item"><a href="{{ route('school.students.report.all') }}" class="nav-link {{ $isActiveGroup('school.students.report.all') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('All Student') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.report.section-summary') }}" class="nav-link {{ $isActiveGroup('school.students.report.section-summary') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Section Wise Summary') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.report.section-wise') }}" class="nav-link {{ $isActiveGroup('school.students.report.section-wise*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Section Wise') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.report.class-wise') }}" class="nav-link {{ $isActiveGroup('school.students.report.class-wise*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Class Wise') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.report.group-wise') }}" class="nav-link {{ $isActiveGroup('school.students.report.group-wise*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Group Wise') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.report.gender-wise') }}" class="nav-link {{ $isActiveGroup('school.students.report.gender-wise*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Gender Wise') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.report.religion-wise') }}" class="nav-link {{ $isActiveGroup('school.students.report.religion-wise*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Religion Wise') }}</p></a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item"><a href="{{ route('school.students.id-card.index') }}" class="nav-link {{ $isActiveGroup('school.students.id-card.*') }}"><i class="nav-icon bi bi-person-badge"></i><p>{{ __('ID Card') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.students.tc.create') }}" class="nav-link {{ $isActiveGroup('school.students.tc.*') }}"><i class="nav-icon bi bi-file-earmark-text"></i><p>{{ __('TC') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.students.testimonial.create') }}" class="nav-link {{ $isActiveGroup('school.students.testimonial.*') }}"><i class="nav-icon bi bi-file-earmark-ruled"></i><p>{{ __('Testimonial') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.students.initial-setup', 'academic-year') }}" class="nav-link {{ $isActiveGroup('school.students.initial-setup*') }}"><i class="nav-icon bi bi-gear"></i><p>{{ __('Settings') }}</p></a></li>
+
+                            <li class="nav-item has-treeview {{ request()->routeIs('school.students.configuration.*') ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-sliders"></i>
+                                    <p>{{ __('Configuration') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item"><a href="{{ route('school.students.configuration.class') }}" class="nav-link {{ $isActiveGroup('school.students.configuration.class*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Class') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.students.configuration.group') }}" class="nav-link {{ $isActiveGroup('school.students.configuration.group*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Group') }}</p></a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item {{ $locked() }}">
@@ -130,7 +176,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.exams.*','school.results.*','school.results-process.*','school.mark-sheets.*','school.reports.*','school.exam-configuration.*','school.grades.*','school.marks.*','school.mark-input.*','school.exam-subjects.*','school.subject-components.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.exams.*','school.results.*','school.results-process.*','school.mark-sheets.*','school.reports.*','school.exam-configuration.*','school.grades.*','school.marks.*','school.mark-input.*','school.exam-subjects.*','school.subject-components.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-pencil-square"></i>
                             <p>{{ __('Exams & Results') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
