@@ -160,11 +160,19 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item {{ $locked() }}">
-                        <a href="{{ route('school.teachers.index') }}" class="nav-link {{ $isActiveGroup('school.teachers.*') }}">
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.teachers.*', 'school.designations.*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $isActiveGroup('school.teachers.*', 'school.designations.*') }}">
                             <i class="nav-icon bi bi-person-badge"></i>
-                            <p>{{ __('Teachers') }}</p>
+                            <p>{{ __('HR') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
                         </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"><a href="{{ route('school.teachers.hr-list') }}" class="nav-link {{ $isActiveGroup('school.teachers.hr-list') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('HR List') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.teachers.create') }}" class="nav-link {{ $isActiveGroup('school.teachers.create') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Add HR') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.teachers.id-card.index') }}" class="nav-link {{ $isActiveGroup('school.teachers.id-card.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('ID Card') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.teachers.hr-update') }}" class="nav-link {{ $isActiveGroup('school.teachers.hr-update') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Update') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.teachers.enable-disable') }}" class="nav-link {{ $isActiveGroup('school.teachers.enable-disable') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Enable / Disable') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.designations.index') }}" class="nav-link {{ $isActiveGroup('school.designations.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Create Designation') }}</p></a></li>
+                        </ul>
                     </li>
 
                     <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.classes.*','school.sections.*','school.subjects.*','school.academic-years.*','school.attendance.*','school.routine.*') ? 'menu-open' : '' }}">

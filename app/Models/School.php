@@ -13,7 +13,7 @@ class School extends Model
 
     protected $fillable = [
         'name', 'slug', 'email', 'phone', 'address', 'logo', 'admit_card_template', 'id_card_template',
-        'plan_id', 'status', 'trial_ends_at', 'subscription_ends_at',
+        'hr_id_card_template', 'plan_id', 'status', 'trial_ends_at', 'subscription_ends_at',
     ];
 
     protected $casts = [
