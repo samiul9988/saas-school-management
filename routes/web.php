@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\School\AcademicYearController;
 use App\Http\Controllers\School\AttendanceController;
+use App\Http\Controllers\School\StudentAttendanceController;
+use App\Http\Controllers\School\AttendanceReportController;
+use App\Http\Controllers\School\AttendanceSettingsController;
 use App\Http\Controllers\School\BookCategoryController;
 use App\Http\Controllers\School\BookController;
 use App\Http\Controllers\School\BookIssueController;
@@ -211,6 +214,25 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::resource('students', StudentController::class);
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
         Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+
+        Route::get('/student-attendance/input', [StudentAttendanceController::class, 'input'])->name('student-attendance.input');
+        Route::post('/student-attendance/input', [StudentAttendanceController::class, 'inputStore'])->name('student-attendance.input.store');
+        Route::get('/student-attendance/update', [StudentAttendanceController::class, 'update'])->name('student-attendance.update');
+        Route::post('/student-attendance/update', [StudentAttendanceController::class, 'updateStore'])->name('student-attendance.update.store');
+        Route::get('/student-attendance/leave', [StudentAttendanceController::class, 'leave'])->name('student-attendance.leave');
+        Route::post('/student-attendance/leave', [StudentAttendanceController::class, 'leaveStore'])->name('student-attendance.leave.store');
+        Route::get('/student-attendance/report/all-section-summary', [AttendanceReportController::class, 'allSectionSummary'])->name('student-attendance.report.all-section-summary');
+        Route::get('/student-attendance/report/section-details-day', [AttendanceReportController::class, 'sectionDetailsDay'])->name('student-attendance.report.section-details-day');
+        Route::get('/student-attendance/report/section-details-month', [AttendanceReportController::class, 'sectionDetailsMonth'])->name('student-attendance.report.section-details-month');
+        Route::get('/student-attendance/report/monthly-summary', [AttendanceReportController::class, 'monthlySummary'])->name('student-attendance.report.monthly-summary');
+        Route::get('/student-attendance/report/device-data', [AttendanceReportController::class, 'deviceData'])->name('student-attendance.report.device-data');
+
+        Route::get('/student-attendance/settings/period', [AttendanceSettingsController::class, 'periodSetup'])->name('student-attendance.settings.period');
+        Route::post('/student-attendance/settings/period', [AttendanceSettingsController::class, 'periodSetupStore'])->name('student-attendance.settings.period.store');
+        Route::get('/student-attendance/settings/time-config', [AttendanceSettingsController::class, 'timeConfig'])->name('student-attendance.settings.time-config');
+        Route::post('/student-attendance/settings/time-config', [AttendanceSettingsController::class, 'timeConfigStore'])->name('student-attendance.settings.time-config.store');
+        Route::get('/student-attendance/settings/manual-process', [AttendanceSettingsController::class, 'manualProcess'])->name('student-attendance.settings.manual-process');
+        Route::post('/student-attendance/settings/manual-process', [AttendanceSettingsController::class, 'manualProcessStore'])->name('student-attendance.settings.manual-process.store');
 
         Route::resource('grades', GradeController::class)->except('show');
 

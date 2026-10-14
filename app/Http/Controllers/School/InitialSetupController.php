@@ -5,6 +5,7 @@ namespace App\Http\Controllers\School;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Group;
+use App\Models\Period;
 use App\Models\SchoolClass;
 use App\Models\Section;
 use App\Models\Shift;
@@ -22,6 +23,7 @@ class InitialSetupController extends Controller
         'section' => ['model' => Section::class, 'label' => 'Section', 'placeholder' => 'Enter Section Name', 'needsClass' => true],
         'group' => ['model' => Group::class, 'label' => 'Group', 'placeholder' => 'Enter Group Name', 'needsClass' => false],
         'student-category' => ['model' => StudentCategory::class, 'label' => 'Student Category', 'placeholder' => 'Enter Category Name', 'needsClass' => false],
+        'period' => ['model' => Period::class, 'label' => 'Period', 'placeholder' => 'Enter Period Name', 'needsClass' => false],
     ];
 
     public function index(string $type): View

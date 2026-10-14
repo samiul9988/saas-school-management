@@ -175,6 +175,42 @@
                         </ul>
                     </li>
 
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.student-attendance.*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $isActiveGroup('school.student-attendance.*') }}">
+                            <i class="nav-icon bi bi-clipboard-check"></i>
+                            <p style="max-width:135px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;">{{ __('Student Attendance') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"><a href="{{ route('school.student-attendance.input') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.input') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Attendance Input') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.student-attendance.update') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.update') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Attendance Update') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.student-attendance.leave') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.leave') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Leave') }}</p></a></li>
+                            <li class="nav-item has-treeview {{ request()->routeIs('school.student-attendance.report.*') ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-clipboard-data"></i>
+                                    <p>{{ __('Report') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item"><a href="{{ route('school.student-attendance.report.all-section-summary') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.report.all-section-summary') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('All Section Summary (Daily)') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.student-attendance.report.section-details-day') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.report.section-details-day') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Section Details (Day)') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.student-attendance.report.section-details-month') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.report.section-details-month') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Section Details (Month)') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.student-attendance.report.monthly-summary') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.report.monthly-summary') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Monthly Section Summary') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.student-attendance.report.device-data') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.report.device-data') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Device Data') }}</p></a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item has-treeview {{ request()->routeIs('school.student-attendance.settings.*') ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-gear"></i>
+                                    <p>{{ __('Settings') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item"><a href="{{ route('school.student-attendance.settings.period') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.settings.period') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Set Period') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.student-attendance.settings.time-config') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.settings.time-config') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Set Time Configuration') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.student-attendance.settings.manual-process') }}" class="nav-link {{ $isActiveGroup('school.student-attendance.settings.manual-process') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Manual Attendance Process') }}</p></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.classes.*','school.sections.*','school.subjects.*','school.academic-years.*','school.attendance.*','school.routine.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-journal-bookmark"></i>

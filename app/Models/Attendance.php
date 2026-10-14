@@ -12,7 +12,7 @@ class Attendance extends Model
     use BelongsToSchool, HasFactory;
 
     protected $fillable = [
-        'school_id', 'student_id', 'school_class_id', 'section_id', 'date', 'status',
+        'school_id', 'student_id', 'school_class_id', 'section_id', 'period_id', 'date', 'status',
     ];
 
     protected $casts = [
@@ -32,5 +32,10 @@ class Attendance extends Model
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
+    }
+
+    public function period(): BelongsTo
+    {
+        return $this->belongsTo(Period::class);
     }
 }

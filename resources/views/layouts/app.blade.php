@@ -74,6 +74,13 @@
                 border-radius: 8px;
                 margin: 2px 10px;
             }
+            .app-sidebar .nav-sidebar .nav-link p {
+                display: block !important;
+                max-width: 135px !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+            }
             .app-sidebar .nav-treeview .nav-link {
                 margin-left: 10px;
             }
