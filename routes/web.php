@@ -7,6 +7,7 @@ use App\Http\Controllers\School\AttendanceController;
 use App\Http\Controllers\School\StudentAttendanceController;
 use App\Http\Controllers\School\AttendanceReportController;
 use App\Http\Controllers\School\AttendanceSettingsController;
+use App\Http\Controllers\School\StaffAttendanceController;
 use App\Http\Controllers\School\BookCategoryController;
 use App\Http\Controllers\School\BookController;
 use App\Http\Controllers\School\BookIssueController;
@@ -233,6 +234,23 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::post('/student-attendance/settings/time-config', [AttendanceSettingsController::class, 'timeConfigStore'])->name('student-attendance.settings.time-config.store');
         Route::get('/student-attendance/settings/manual-process', [AttendanceSettingsController::class, 'manualProcess'])->name('student-attendance.settings.manual-process');
         Route::post('/student-attendance/settings/manual-process', [AttendanceSettingsController::class, 'manualProcessStore'])->name('student-attendance.settings.manual-process.store');
+
+        Route::get('/hr-attendance/take-attendance', [StaffAttendanceController::class, 'takeAttendance'])->name('hr-attendance.take-attendance');
+        Route::post('/hr-attendance/take-attendance', [StaffAttendanceController::class, 'takeAttendanceStore'])->name('hr-attendance.take-attendance.store');
+        Route::get('/hr-attendance/update-attendance', [StaffAttendanceController::class, 'updateAttendance'])->name('hr-attendance.update-attendance');
+        Route::post('/hr-attendance/update-attendance', [StaffAttendanceController::class, 'updateAttendanceStore'])->name('hr-attendance.update-attendance.store');
+        Route::get('/hr-attendance/report/staff-in-out-time', [StaffAttendanceController::class, 'reportStaffInOutTime'])->name('hr-attendance.report.staff-in-out-time');
+        Route::get('/hr-attendance/report/date-wise', [StaffAttendanceController::class, 'reportDateWise'])->name('hr-attendance.report.date-wise');
+        Route::get('/hr-attendance/report/month-wise', [StaffAttendanceController::class, 'reportMonthWise'])->name('hr-attendance.report.month-wise');
+        Route::get('/hr-attendance/report/month-wise/excel', [StaffAttendanceController::class, 'reportMonthWiseExcel'])->name('hr-attendance.report.month-wise.excel');
+        Route::get('/hr-attendance/leave-input', [StaffAttendanceController::class, 'leaveInput'])->name('hr-attendance.leave-input');
+        Route::post('/hr-attendance/leave-input', [StaffAttendanceController::class, 'leaveInputStore'])->name('hr-attendance.leave-input.store');
+        Route::delete('/hr-attendance/leave-input/{leave}', [StaffAttendanceController::class, 'leaveInputDestroy'])->name('hr-attendance.leave-input.destroy');
+        Route::get('/hr-attendance/setting/time-configuration', [StaffAttendanceController::class, 'settingTimeConfiguration'])->name('hr-attendance.setting.time-configuration');
+        Route::post('/hr-attendance/setting/time-configuration', [StaffAttendanceController::class, 'settingTimeConfigurationStore'])->name('hr-attendance.setting.time-configuration.store');
+        Route::get('/hr-attendance/setting/machine-id-mapping', [StaffAttendanceController::class, 'settingMachineIdMapping'])->name('hr-attendance.setting.machine-id-mapping');
+        Route::post('/hr-attendance/setting/machine-id-mapping/{teacher}/update', [StaffAttendanceController::class, 'settingMachineIdMappingUpdate'])->name('hr-attendance.setting.machine-id-mapping.update');
+        Route::post('/hr-attendance/setting/machine-id-mapping/batch-update', [StaffAttendanceController::class, 'settingMachineIdMappingBatchUpdate'])->name('hr-attendance.setting.machine-id-mapping.batch-update');
 
         Route::resource('grades', GradeController::class)->except('show');
 
