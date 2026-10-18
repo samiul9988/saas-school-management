@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('sms_send_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
-            $table->string('idempotency_key')->unique();
+            $table->string('idempotency_key', 191)->unique();
             $table->json('recipients');
             $table->text('message');
             $table->string('context')->nullable();

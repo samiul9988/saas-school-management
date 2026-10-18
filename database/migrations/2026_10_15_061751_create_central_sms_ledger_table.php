@@ -13,7 +13,7 @@ return new class extends Migration
             $table->enum('type', ['purchase', 'usage', 'reversal', 'adjustment']);
             $table->bigInteger('credits');
             $table->bigInteger('balance_after');
-            $table->string('reference_type')->nullable();
+            $table->string('reference_type', 150)->nullable();
             $table->unsignedBigInteger('reference_id')->nullable();
             $table->string('note')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
