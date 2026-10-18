@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\SmsGatewaySetting;
+use App\Services\Sms\BulkSmsBdGateway;
+use App\Services\Sms\SmsGatewayAdapterInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(SmsGatewayAdapterInterface::class, function () {
+            return new BulkSmsBdGateway(SmsGatewaySetting::current());
+        });
     }
 
     /**

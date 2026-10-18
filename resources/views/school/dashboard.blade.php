@@ -55,7 +55,16 @@
                     </span>
                     <div>
                         <div class="fs-4 fw-bold">{{ $stats['sms_sent'] }}</div>
-                        <div class="text-muted small">SMS Sent &middot; <a href="{{ route('school.sms-settings.edit') }}" class="text-decoration-none">Settings</a></div>
+                        <div class="text-muted small">SMS Sent</div>
+                    </div>
+                </div>
+                <div class="bg-white shadow-sm rounded-lg p-3 d-flex align-items-center gap-3">
+                    <span class="d-flex align-items-center justify-content-center rounded-circle" style="width:48px;height:48px;background:#e0f2fe;color:#0284c7;">
+                        <i class="bi bi-wallet2 fs-5"></i>
+                    </span>
+                    <div>
+                        <div class="fs-4 fw-bold">{{ $stats['sms_wallet_balance'] }}</div>
+                        <div class="text-muted small">SMS Credits &middot; <a href="{{ route('school.sms-wallet.index') }}" class="text-decoration-none">Wallet</a></div>
                     </div>
                 </div>
                 <div class="bg-white shadow-sm rounded-lg p-3 d-flex align-items-center gap-3">

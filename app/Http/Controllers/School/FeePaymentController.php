@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\School;
 
+use App\Exceptions\Sms\SmsSendingException;
 use App\Http\Controllers\Controller;
 use App\Models\FeePayment;
 use App\Models\StudentFee;
-use App\Services\SmsService;
+use App\Services\Sms\SmsSendingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class FeePaymentController extends Controller
 {
-    public function __construct(private SmsService $sms)
-    {
-    }
+    public function __construct(private SmsSendingService $sms) {}
 
     public function create(StudentFee $studentFee): View
     {
@@ -46,16 +46,25 @@ class FeePaymentController extends Controller
         $studentFee->paid_amount += $data['amount'];
         $studentFee->recalculateStatus();
 
+        $smsStatus = null;
+
         if ($studentFee->student->guardian_phone) {
-            $this->sms->send(
-                $request->user()->school,
-                $studentFee->student->guardian_phone,
-                "Payment of {$data['amount']} received for {$studentFee->student->name}. Receipt: {$payment->receipt_number}.",
-                'fee_payment'
-            );
+            try {
+                $this->sms->send(
+                    $request->user()->school,
+                    [$studentFee->student->guardian_phone],
+                    "Payment of {$data['amount']} received for {$studentFee->student->name}. Receipt: {$payment->receipt_number}.",
+                    (string) Str::uuid(),
+                    'fee_payment',
+                    $request->user()->id,
+                );
+            } catch (SmsSendingException $e) {
+                $smsStatus = $e->getMessage();
+            }
         }
 
-        return redirect()->route('school.fee-payments.receipt', $payment)->with('status', 'Payment recorded.');
+        return redirect()->route('school.fee-payments.receipt', $payment)
+            ->with('status', 'Payment recorded.'.($smsStatus ? ' SMS not sent: '.$smsStatus : ''));
     }
 
     public function receipt(FeePayment $feePayment): View

@@ -21,13 +21,13 @@
             </li>
         </ul>
 
-        @if (Auth::user()->role === \App\Models\User::ROLE_SCHOOL_ADMIN)
+        @if (Auth::user()->isSchoolStaff())
             <ul class="navbar-nav d-none d-lg-flex flex-row gap-2 mx-auto">
                 <li class="nav-item"><a href="{{ route('school.students.create') }}" class="btn btn-sm btn-outline-secondary">{{ __('Add Student') }}</a></li>
                 <li class="nav-item {{ $locked() }}"><a href="{{ route('school.attendance.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Attendance') }}</a></li>
                 <li class="nav-item"><a href="{{ route('school.mark-input.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Mark Input') }}</a></li>
                 <li class="nav-item {{ $locked() }}"><a href="{{ route('school.student-fees.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Fee Collect') }}</a></li>
-                <li class="nav-item {{ $locked() }}"><a href="{{ route('school.sms-settings.edit') }}" class="btn btn-sm btn-outline-secondary">{{ __('Send SMS') }}</a></li>
+                <li class="nav-item"><a href="{{ route('school.sms-wallet.index') }}" class="btn btn-sm btn-outline-secondary">{{ __('Send SMS') }}</a></li>
             </ul>
         @endif
 
@@ -96,13 +96,21 @@
                             <p>{{ __('Plans') }}</p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('maintenance.show') }}" class="nav-link {{ $isActiveGroup('maintenance.*') }}">
-                            <i class="nav-icon bi bi-toggle-on"></i>
-                            <p>{{ __('Site Maintenance') }}</p>
+
+                    <li class="nav-item has-treeview {{ request()->routeIs('super-admin.sms-*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $isActiveGroup('super-admin.sms-*') }}">
+                            <i class="nav-icon bi bi-chat-dots"></i>
+                            <p>{{ __('SMS Credits') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
                         </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"><a href="{{ route('super-admin.sms-gateway.edit') }}" class="nav-link {{ $isActiveGroup('super-admin.sms-gateway.*') }}"><i class="nav-icon bi bi-gear"></i><p>{{ __('Gateway Settings') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('super-admin.sms-credit-purchases.index') }}" class="nav-link {{ $isActiveGroup('super-admin.sms-credit-purchases.*') }}"><i class="nav-icon bi bi-bag-plus"></i><p>{{ __('Provider Purchases') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('super-admin.sms-schools.index') }}" class="nav-link {{ $isActiveGroup('super-admin.sms-schools.*') }}"><i class="nav-icon bi bi-building"></i><p>{{ __('School Wallets') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('super-admin.sms-credit-orders.index') }}" class="nav-link {{ $isActiveGroup('super-admin.sms-credit-orders.*') }}"><i class="nav-icon bi bi-card-checklist"></i><p>{{ __('Pending Orders') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('super-admin.sms-usage-report.index') }}" class="nav-link {{ $isActiveGroup('super-admin.sms-usage-report.*') }}"><i class="nav-icon bi bi-bar-chart"></i><p>{{ __('Usage Reports') }}</p></a></li>
+                        </ul>
                     </li>
-                @elseif (Auth::user()->role === \App\Models\User::ROLE_SCHOOL_ADMIN)
+                @elseif (Auth::user()->isSchoolStaff())
                     <li class="nav-item has-treeview {{ request()->routeIs('school.students.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $isActiveGroup('school.students.*') }}">
                             <i class="nav-icon bi bi-mortarboard"></i>
@@ -389,14 +397,46 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.notices.*','school.sms-settings.*') ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon bi bi-megaphone"></i>
-                            <p>{{ __('Communication') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.sms-*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $isActiveGroup('school.sms-*') }}">
+                            <i class="nav-icon bi bi-chat-dots"></i>
+                            <p>{{ __('SMS') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item"><a href="{{ route('school.notices.index') }}" class="nav-link {{ $isActiveGroup('school.notices.*') }}"><i class="nav-icon bi bi-bell"></i><p>{{ __('Notices') }}</p></a></li>
-                            <li class="nav-item"><a href="{{ route('school.sms-settings.edit') }}" class="nav-link {{ $isActiveGroup('school.sms-settings.*') }}"><i class="nav-icon bi bi-chat-dots"></i><p>{{ __('SMS Settings') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-wallet.index') }}" class="nav-link {{ $isActiveGroup('school.sms-wallet.*') }}"><i class="nav-icon bi bi-wallet2"></i><p>{{ __('SMS Wallet') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-credit-orders.create') }}" class="nav-link {{ $isActiveGroup('school.sms-credit-orders.*') }}"><i class="nav-icon bi bi-cart-plus"></i><p>{{ __('Purchase SMS') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-send.hr.index') }}" class="nav-link {{ $isActiveGroup('school.sms-send.hr.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('To HR') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-send.guardian.index') }}" class="nav-link {{ $isActiveGroup('school.sms-send.guardian.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('To Guardian') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-send.dynamic.index') }}" class="nav-link {{ $isActiveGroup('school.sms-send.dynamic.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('By Excel') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-send.result.index') }}" class="nav-link {{ $isActiveGroup('school.sms-send.result.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Result SMS') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-send.due-fee.index') }}" class="nav-link {{ $isActiveGroup('school.sms-send.due-fee.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Due Fee SMS') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-send.attendance.index') }}" class="nav-link {{ $isActiveGroup('school.sms-send.attendance.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Attendance SMS') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.sms-send.birthday.index') }}" class="nav-link {{ $isActiveGroup('school.sms-send.birthday.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Birthday SMS') }}</p></a></li>
+
+                            <li class="nav-item has-treeview {{ request()->routeIs('school.sms-reports.*') ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ $isActiveGroup('school.sms-reports.*') }}">
+                                    <i class="nav-icon bi bi-bar-chart"></i>
+                                    <p>{{ __('Report') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item"><a href="{{ route('school.sms-reports.date-wise') }}" class="nav-link {{ $isActiveGroup('school.sms-reports.date-wise') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Date Wise Send') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.sms-reports.purchases') }}" class="nav-link {{ $isActiveGroup('school.sms-reports.purchases') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Purchase Report') }}</p></a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item"><a href="{{ route('school.sms-templates.index') }}" class="nav-link {{ $isActiveGroup('school.sms-templates.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Template Settings') }}</p></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.profile.*','school.signatures.*','school.users.*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon bi bi-building"></i>
+                            <p>{{ __('Institute Setting') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"><a href="{{ route('school.profile.edit') }}" class="nav-link {{ $isActiveGroup('school.profile.*') }}"><i class="nav-icon bi bi-pencil-square"></i><p>{{ __('Institute Update') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.signatures.index') }}" class="nav-link {{ $isActiveGroup('school.signatures.*') }}"><i class="nav-icon bi bi-vector-pen"></i><p>{{ __('Default Signature') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.users.index') }}" class="nav-link {{ $isActiveGroup('school.users.*') }}"><i class="nav-icon bi bi-people"></i><p>{{ __('User List') }}</p></a></li>
                         </ul>
                     </li>
                 @elseif (Auth::user()->isParent())

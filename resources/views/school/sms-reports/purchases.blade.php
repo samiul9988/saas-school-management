@@ -1,0 +1,49 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('SMS Report - Purchase Report') }}</h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <form method="GET" class="bg-white shadow-sm sm:rounded-lg p-6 flex items-end gap-4">
+                <div>
+                    <x-input-label for="from" value="From" />
+                    <x-text-input id="from" name="from" type="date" class="mt-1 block w-full" value="{{ $from->format('Y-m-d') }}" />
+                </div>
+                <div>
+                    <x-input-label for="to" value="To" />
+                    <x-text-input id="to" name="to" type="date" class="mt-1 block w-full" value="{{ $to->format('Y-m-d') }}" />
+                </div>
+                <x-primary-button>Filter</x-primary-button>
+            </form>
+
+            <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-gray-50">
+                        <tr class="text-gray-500">
+                            <th class="py-2 px-4">Credits</th>
+                            <th class="py-2 px-4">Amount</th>
+                            <th class="py-2 px-4">Method</th>
+                            <th class="py-2 px-4">Status</th>
+                            <th class="py-2 px-4">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($orders as $order)
+                            <tr class="border-t">
+                                <td class="py-2 px-4">{{ number_format($order->credits) }}</td>
+                                <td class="py-2 px-4">{{ number_format($order->amount, 2) }}</td>
+                                <td class="py-2 px-4">{{ $order->method }}</td>
+                                <td class="py-2 px-4 capitalize">{{ $order->status }}</td>
+                                <td class="py-2 px-4">{{ $order->created_at->format('Y-m-d H:i') }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="5" class="py-4 px-4 text-center text-gray-400">No purchase requests in this range.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+                <div class="p-4">{{ $orders->links() }}</div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

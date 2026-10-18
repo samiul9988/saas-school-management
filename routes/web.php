@@ -1,79 +1,98 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\Parent\PortalController as ParentPortalController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\School\AcademicYearController;
+use App\Http\Controllers\School\AdmitInstructionController;
 use App\Http\Controllers\School\AttendanceController;
-use App\Http\Controllers\School\StudentAttendanceController;
 use App\Http\Controllers\School\AttendanceReportController;
 use App\Http\Controllers\School\AttendanceSettingsController;
-use App\Http\Controllers\School\StaffAttendanceController;
+use App\Http\Controllers\School\AttendanceSmsController;
+use App\Http\Controllers\School\BirthdaySmsController;
 use App\Http\Controllers\School\BookCategoryController;
 use App\Http\Controllers\School\BookController;
 use App\Http\Controllers\School\BookIssueController;
+use App\Http\Controllers\School\ClassConfigurationController;
 use App\Http\Controllers\School\DashboardController as SchoolDashboardController;
+use App\Http\Controllers\School\DesignationController;
+use App\Http\Controllers\School\DueFeeSmsController;
+use App\Http\Controllers\School\DynamicSmsController;
 use App\Http\Controllers\School\ExamController;
+use App\Http\Controllers\School\ExamSettingsController;
+use App\Http\Controllers\School\ExamShortCodeController;
 use App\Http\Controllers\School\ExamSubjectController;
 use App\Http\Controllers\School\ExamSubjectSearchController;
-use App\Http\Controllers\School\ExamShortCodeController;
-use App\Http\Controllers\School\ExamSettingsController;
-use App\Http\Controllers\School\MarkInputController;
-use App\Http\Controllers\School\SubjectComponentController;
-use App\Http\Controllers\School\AdmitInstructionController;
-use App\Http\Controllers\School\SeatPlanController;
-use App\Http\Controllers\School\TabulationSheetController;
-use App\Http\Controllers\School\TopSheetController;
 use App\Http\Controllers\School\ExpenseController;
 use App\Http\Controllers\School\FeePaymentController;
 use App\Http\Controllers\School\FeeTypeController;
 use App\Http\Controllers\School\FinanceReportController;
+use App\Http\Controllers\School\FourthSubjectController;
 use App\Http\Controllers\School\GradeController;
+use App\Http\Controllers\School\GrandFinalController;
+use App\Http\Controllers\School\GroupConfigurationController;
+use App\Http\Controllers\School\GuardianSmsController;
+use App\Http\Controllers\School\HrIdCardController;
+use App\Http\Controllers\School\HrSmsController;
+use App\Http\Controllers\School\IdCardController;
 use App\Http\Controllers\School\IncomeController;
+use App\Http\Controllers\School\InitialSetupController;
 use App\Http\Controllers\School\InventoryCategoryController;
 use App\Http\Controllers\School\InventoryItemController;
 use App\Http\Controllers\School\InventoryTransactionController;
+use App\Http\Controllers\School\MarkConfigurationController;
 use App\Http\Controllers\School\MarkController;
+use App\Http\Controllers\School\MarkInputController;
+use App\Http\Controllers\School\MarkSheetController;
+use App\Http\Controllers\School\MarksheetTemplateController;
 use App\Http\Controllers\School\NoticeController;
 use App\Http\Controllers\School\PayrollController;
+use App\Http\Controllers\School\RemarksTemplateController;
+use App\Http\Controllers\School\ReportController;
 use App\Http\Controllers\School\ResultController;
 use App\Http\Controllers\School\ResultProcessController;
-use App\Http\Controllers\School\GrandFinalController;
-use App\Http\Controllers\School\SubjectConfigurationController;
-use App\Http\Controllers\School\MarkConfigurationController;
-use App\Http\Controllers\School\MarksheetTemplateController;
-use App\Http\Controllers\School\FourthSubjectController;
-use App\Http\Controllers\School\RemarksTemplateController;
-use App\Http\Controllers\School\MarkSheetController;
-use App\Http\Controllers\School\ReportController;
+use App\Http\Controllers\School\ResultSmsController;
 use App\Http\Controllers\School\RouteStopController;
 use App\Http\Controllers\School\RoutineController;
 use App\Http\Controllers\School\SalaryStructureController;
-use App\Http\Controllers\School\SmsSettingController;
+use App\Http\Controllers\School\SchoolClassController;
+use App\Http\Controllers\School\SchoolProfileController;
+use App\Http\Controllers\School\SchoolUserController;
+use App\Http\Controllers\School\SeatPlanController;
+use App\Http\Controllers\School\SectionController;
+use App\Http\Controllers\School\SignatureController;
+use App\Http\Controllers\School\SmsCreditOrderController;
+use App\Http\Controllers\School\SmsReportController;
+use App\Http\Controllers\School\SmsTemplateController;
+use App\Http\Controllers\School\SmsWalletController;
+use App\Http\Controllers\School\StaffAttendanceController;
+use App\Http\Controllers\School\StudentAttendanceController;
+use App\Http\Controllers\School\StudentController;
 use App\Http\Controllers\School\StudentFeeController;
+use App\Http\Controllers\School\StudentImportController;
 use App\Http\Controllers\School\StudentPortalAccountController;
+use App\Http\Controllers\School\StudentReportController;
 use App\Http\Controllers\School\StudentTransportController;
+use App\Http\Controllers\School\StudentUpdateController;
+use App\Http\Controllers\School\SubjectComponentController;
+use App\Http\Controllers\School\SubjectConfigurationController;
+use App\Http\Controllers\School\SubjectController;
+use App\Http\Controllers\School\TabulationSheetController;
+use App\Http\Controllers\School\TeacherController;
+use App\Http\Controllers\School\TestimonialController;
+use App\Http\Controllers\School\TopSheetController;
+use App\Http\Controllers\School\TransferCertificateController;
 use App\Http\Controllers\School\TransportRouteController;
 use App\Http\Controllers\School\VehicleController;
-use App\Http\Controllers\Parent\PortalController as ParentPortalController;
-use App\Http\Controllers\School\SchoolClassController;
-use App\Http\Controllers\School\SectionController;
-use App\Http\Controllers\School\StudentController;
-use App\Http\Controllers\School\StudentUpdateController;
-use App\Http\Controllers\School\StudentReportController;
-use App\Http\Controllers\School\IdCardController;
-use App\Http\Controllers\School\TransferCertificateController;
-use App\Http\Controllers\School\TestimonialController;
-use App\Http\Controllers\School\InitialSetupController;
-use App\Http\Controllers\School\ClassConfigurationController;
-use App\Http\Controllers\School\GroupConfigurationController;
-use App\Http\Controllers\School\StudentImportController;
-use App\Http\Controllers\School\SubjectController;
-use App\Http\Controllers\School\TeacherController;
-use App\Http\Controllers\School\HrIdCardController;
-use App\Http\Controllers\School\DesignationController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
 use App\Http\Controllers\SuperAdmin\PlanController;
 use App\Http\Controllers\SuperAdmin\SchoolController;
+use App\Http\Controllers\SuperAdmin\SchoolSmsCreditOrderController;
+use App\Http\Controllers\SuperAdmin\SmsCreditPurchaseController;
+use App\Http\Controllers\SuperAdmin\SmsGatewaySettingController;
+use App\Http\Controllers\SuperAdmin\SmsSchoolOverviewController;
+use App\Http\Controllers\SuperAdmin\SmsUsageReportController;
+use App\Http\Middleware\AllowActivationAccess;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -81,7 +100,7 @@ Route::get('/', function () {
 });
 
 // ------------------------------------ Site Maintenance (login-free with a key) ------------------------------------
-Route::middleware(\App\Http\Middleware\AllowActivationAccess::class)->prefix('dashboard/activation')->group(function () {
+Route::middleware(AllowActivationAccess::class)->prefix('dashboard/activation')->group(function () {
     Route::get('/', [MaintenanceController::class, 'show'])->name('maintenance.show');
     Route::post('/toggle', [MaintenanceController::class, 'toggle'])->name('maintenance.toggle');
     Route::get('/preview', [MaintenanceController::class, 'preview'])->name('maintenance.preview');
@@ -119,6 +138,23 @@ Route::middleware(['auth', 'verified', 'super_admin'])
         Route::get('/dashboard', SuperAdminDashboardController::class)->name('dashboard');
         Route::resource('schools', SchoolController::class);
         Route::resource('plans', PlanController::class)->except('show');
+
+        Route::get('/sms-gateway', [SmsGatewaySettingController::class, 'edit'])->name('sms-gateway.edit');
+        Route::put('/sms-gateway', [SmsGatewaySettingController::class, 'update'])->name('sms-gateway.update');
+        Route::post('/sms-gateway/sync-balance', [SmsGatewaySettingController::class, 'syncBalance'])->name('sms-gateway.sync-balance');
+
+        Route::get('/sms-credit-purchases', [SmsCreditPurchaseController::class, 'index'])->name('sms-credit-purchases.index');
+        Route::get('/sms-credit-purchases/create', [SmsCreditPurchaseController::class, 'create'])->name('sms-credit-purchases.create');
+        Route::post('/sms-credit-purchases', [SmsCreditPurchaseController::class, 'store'])->name('sms-credit-purchases.store');
+
+        Route::get('/sms-schools', [SmsSchoolOverviewController::class, 'index'])->name('sms-schools.index');
+        Route::get('/sms-schools/{school}', [SmsSchoolOverviewController::class, 'show'])->name('sms-schools.show');
+
+        Route::get('/sms-credit-orders', [SchoolSmsCreditOrderController::class, 'index'])->name('sms-credit-orders.index');
+        Route::post('/sms-credit-orders/{order}/approve', [SchoolSmsCreditOrderController::class, 'approve'])->name('sms-credit-orders.approve');
+        Route::post('/sms-credit-orders/{order}/reject', [SchoolSmsCreditOrderController::class, 'reject'])->name('sms-credit-orders.reject');
+
+        Route::get('/sms-usage-report', [SmsUsageReportController::class, 'index'])->name('sms-usage-report.index');
     });
 
 Route::middleware(['auth', 'verified', 'school_context'])
@@ -362,8 +398,51 @@ Route::middleware(['auth', 'verified', 'school_context'])
 
         Route::resource('notices', NoticeController::class)->except('show');
 
-        Route::get('/sms-settings', [SmsSettingController::class, 'edit'])->name('sms-settings.edit');
-        Route::put('/sms-settings', [SmsSettingController::class, 'update'])->name('sms-settings.update');
+        Route::get('/sms-wallet', [SmsWalletController::class, 'index'])->name('sms-wallet.index');
+        Route::get('/sms-wallet/buy', [SmsCreditOrderController::class, 'create'])->name('sms-credit-orders.create');
+        Route::post('/sms-wallet/buy', [SmsCreditOrderController::class, 'store'])->name('sms-credit-orders.store');
+
+        Route::get('/sms-send/guardian', [GuardianSmsController::class, 'index'])->name('sms-send.guardian.index');
+        Route::post('/sms-send/guardian', [GuardianSmsController::class, 'store'])->name('sms-send.guardian.store');
+
+        Route::get('/sms-send/hr', [HrSmsController::class, 'index'])->name('sms-send.hr.index');
+        Route::post('/sms-send/hr', [HrSmsController::class, 'store'])->name('sms-send.hr.store');
+
+        Route::get('/sms-send/dynamic', [DynamicSmsController::class, 'index'])->name('sms-send.dynamic.index');
+        Route::post('/sms-send/dynamic', [DynamicSmsController::class, 'store'])->name('sms-send.dynamic.store');
+
+        Route::get('/sms-send/result', [ResultSmsController::class, 'index'])->name('sms-send.result.index');
+        Route::post('/sms-send/result', [ResultSmsController::class, 'store'])->name('sms-send.result.store');
+
+        Route::get('/sms-send/due-fee', [DueFeeSmsController::class, 'index'])->name('sms-send.due-fee.index');
+        Route::post('/sms-send/due-fee', [DueFeeSmsController::class, 'store'])->name('sms-send.due-fee.store');
+
+        Route::get('/sms-send/attendance', [AttendanceSmsController::class, 'index'])->name('sms-send.attendance.index');
+        Route::post('/sms-send/attendance', [AttendanceSmsController::class, 'store'])->name('sms-send.attendance.store');
+
+        Route::get('/sms-send/birthday', [BirthdaySmsController::class, 'index'])->name('sms-send.birthday.index');
+        Route::post('/sms-send/birthday', [BirthdaySmsController::class, 'store'])->name('sms-send.birthday.store');
+
+        Route::get('/sms-reports/date-wise', [SmsReportController::class, 'dateWise'])->name('sms-reports.date-wise');
+        Route::get('/sms-reports/purchases', [SmsReportController::class, 'purchases'])->name('sms-reports.purchases');
+
+        Route::get('/sms-templates', [SmsTemplateController::class, 'index'])->name('sms-templates.index');
+        Route::post('/sms-templates', [SmsTemplateController::class, 'store'])->name('sms-templates.store');
+        Route::put('/sms-templates/{smsTemplate}', [SmsTemplateController::class, 'update'])->name('sms-templates.update');
+        Route::delete('/sms-templates/{smsTemplate}', [SmsTemplateController::class, 'destroy'])->name('sms-templates.destroy');
+
+        Route::get('/school-profile', [SchoolProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/school-profile', [SchoolProfileController::class, 'update'])->name('profile.update');
+
+        Route::get('/signatures', [SignatureController::class, 'index'])->name('signatures.index');
+        Route::post('/signatures', [SignatureController::class, 'store'])->name('signatures.store');
+        Route::post('/signatures/{signature}/image', [SignatureController::class, 'uploadImage'])->name('signatures.upload-image');
+        Route::delete('/signatures/{signature}', [SignatureController::class, 'destroy'])->name('signatures.destroy');
+
+        Route::get('/users', [SchoolUserController::class, 'index'])->name('users.index');
+        Route::post('/users', [SchoolUserController::class, 'store'])->name('users.store');
+        Route::post('/users/{user}/toggle-status', [SchoolUserController::class, 'toggleStatus'])->name('users.toggle-status');
+        Route::delete('/users/{user}', [SchoolUserController::class, 'destroy'])->name('users.destroy');
 
         Route::post('/students/{student}/portal-account', [StudentPortalAccountController::class, 'store'])->name('students.portal-account.store');
         Route::delete('/students/{student}/portal-account', [StudentPortalAccountController::class, 'destroy'])->name('students.portal-account.destroy');

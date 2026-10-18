@@ -6,16 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Attendance;
 use App\Models\SchoolClass;
-use App\Models\SmsLog;
+use App\Models\SmsSendRequest;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Services\Sms\SchoolSmsWalletService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(SchoolSmsWalletService $wallets): View
     {
         $school = Auth::user()->school;
 
@@ -23,7 +24,8 @@ class DashboardController extends Controller
             'total_students' => Student::count(),
             'total_teachers' => Teacher::count(),
             'total_users' => User::where('school_id', $school->id)->count(),
-            'sms_sent' => SmsLog::whereIn('status', ['sent', 'queued'])->count(),
+            'sms_sent' => SmsSendRequest::where('status', 'sent')->count(),
+            'sms_wallet_balance' => $wallets->walletFor($school)->balance,
             'present_today' => Attendance::where('date', today())->where('status', 'present')->count(),
             'absent_today' => Attendance::where('date', today())->where('status', 'absent')->count(),
         ];

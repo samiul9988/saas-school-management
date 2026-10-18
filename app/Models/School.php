@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class School extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug', 'email', 'phone', 'address', 'logo', 'admit_card_template', 'id_card_template',
-        'hr_id_card_template', 'plan_id', 'status', 'trial_ends_at', 'subscription_ends_at',
+        'name', 'admin_name', 'slug', 'email', 'phone', 'contact_number', 'address', 'logo',
+        'admit_card_template', 'id_card_template', 'hr_id_card_template', 'plan_id', 'academic_year_id',
+        'status', 'trial_ends_at', 'subscription_ends_at',
     ];
 
     protected $casts = [
@@ -54,6 +56,21 @@ class School extends Model
     public function activeSubscription(): HasMany
     {
         return $this->subscriptions()->where('status', 'active');
+    }
+
+    public function smsWallet(): HasOne
+    {
+        return $this->hasOne(SchoolSmsWallet::class);
+    }
+
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class);
+    }
+
+    public function signatures(): HasMany
+    {
+        return $this->hasMany(Signature::class);
     }
 
     public function isActive(): bool
