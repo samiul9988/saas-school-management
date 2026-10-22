@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChartOfAccount;
 use App\Models\Payroll;
 use App\Models\SalaryStructure;
+use App\Services\Accounting\AccountingService;
+use App\Services\Accounting\ChartOfAccountSeeder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -60,9 +63,21 @@ class PayrollController extends Controller
         return redirect()->route('school.payrolls.index', $data)->with('status', "Generated payroll for {$count} teacher(s).");
     }
 
-    public function markPaid(Payroll $payroll): RedirectResponse
+    public function markPaid(Request $request, Payroll $payroll, AccountingService $accounting): RedirectResponse
     {
-        $payroll->update(['status' => 'paid', 'paid_on' => now()]);
+        $data = $request->validate([
+            'method' => ['required', 'in:cash,bank'],
+        ]);
+
+        if (ChartOfAccount::count() === 0) {
+            ChartOfAccountSeeder::seedFor($request->user()->school);
+        }
+
+        $accountCode = $data['method'] === 'cash' ? ChartOfAccountSeeder::CASH : ChartOfAccountSeeder::BANK;
+        $paymentAccount = ChartOfAccount::where('code', $accountCode)->firstOrFail();
+
+        $payroll->update(['status' => 'paid', 'paid_on' => now(), 'method' => $data['method']]);
+        $accounting->postPayroll($payroll, $paymentAccount, $request->user());
 
         return redirect()->back()->with('status', 'Marked as paid.');
     }

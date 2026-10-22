@@ -4,17 +4,21 @@ namespace App\Http\Controllers\School;
 
 use App\Exceptions\Sms\SmsSendingException;
 use App\Http\Controllers\Controller;
+use App\Models\ChartOfAccount;
 use App\Models\FeePayment;
 use App\Models\StudentFee;
+use App\Services\Accounting\AccountingService;
+use App\Services\Accounting\ChartOfAccountSeeder;
 use App\Services\Sms\SmsSendingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class FeePaymentController extends Controller
 {
-    public function __construct(private SmsSendingService $sms) {}
+    public function __construct(private SmsSendingService $sms, private AccountingService $accounting) {}
 
     public function create(StudentFee $studentFee): View
     {
@@ -32,19 +36,31 @@ class FeePaymentController extends Controller
             'paid_on' => ['required', 'date'],
         ]);
 
-        $payment = FeePayment::create([
-            'student_fee_id' => $studentFee->id,
-            'student_id' => $studentFee->student_id,
-            'receipt_number' => FeePayment::generateReceiptNumber($studentFee->school_id),
-            'amount' => $data['amount'],
-            'method' => $data['method'],
-            'transaction_id' => $data['transaction_id'] ?? null,
-            'paid_on' => $data['paid_on'],
-            'received_by' => $request->user()->id,
-        ]);
+        $payment = DB::transaction(function () use ($data, $studentFee, $request) {
+            $payment = FeePayment::create([
+                'student_fee_id' => $studentFee->id,
+                'student_id' => $studentFee->student_id,
+                'receipt_number' => FeePayment::generateReceiptNumber($studentFee->school_id),
+                'amount' => $data['amount'],
+                'method' => $data['method'],
+                'transaction_id' => $data['transaction_id'] ?? null,
+                'paid_on' => $data['paid_on'],
+                'received_by' => $request->user()->id,
+            ]);
 
-        $studentFee->paid_amount += $data['amount'];
-        $studentFee->recalculateStatus();
+            $studentFee->paid_amount += $data['amount'];
+            $studentFee->recalculateStatus();
+
+            if (ChartOfAccount::count() === 0) {
+                ChartOfAccountSeeder::seedFor($request->user()->school);
+            }
+
+            $accountCode = $data['method'] === 'cash' ? ChartOfAccountSeeder::CASH : ChartOfAccountSeeder::BANK;
+            $paymentAccount = ChartOfAccount::where('code', $accountCode)->firstOrFail();
+            $this->accounting->postFeePayment($payment, $paymentAccount, $request->user());
+
+            return $payment;
+        });
 
         $smsStatus = null;
 

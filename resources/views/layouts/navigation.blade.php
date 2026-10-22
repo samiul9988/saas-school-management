@@ -337,7 +337,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.finance.*','school.fee-types.*','school.student-fees.*','school.incomes.*','school.expenses.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.finance.*','school.fee-types.*','school.student-fees.*','school.incomes.*','school.expenses.*','school.accounts.*','school.journal-entries.*','school.accounting-reports.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-cash-coin"></i>
                             <p>{{ __('Finance') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -348,6 +348,25 @@
                             <li class="nav-item"><a href="{{ route('school.student-fees.index') }}" class="nav-link {{ $isActiveGroup('school.student-fees.*') }}"><i class="nav-icon bi bi-receipt"></i><p>{{ __('Student Fees') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.incomes.index') }}" class="nav-link {{ $isActiveGroup('school.incomes.*') }}"><i class="nav-icon bi bi-graph-up-arrow"></i><p>{{ __('Income') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.expenses.index') }}" class="nav-link {{ $isActiveGroup('school.expenses.*') }}"><i class="nav-icon bi bi-graph-down"></i><p>{{ __('Expenses') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.accounts.index') }}" class="nav-link {{ $isActiveGroup('school.accounts.*') }}"><i class="nav-icon bi bi-journal-text"></i><p>{{ __('Chart of Accounts') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.journal-entries.index') }}" class="nav-link {{ $isActiveGroup('school.journal-entries.*') }}"><i class="nav-icon bi bi-journal-plus"></i><p>{{ __('Journal Entries') }}</p></a></li>
+
+                            <li class="nav-item has-treeview {{ request()->routeIs('school.accounting-reports.*') ? 'menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ $isActiveGroup('school.accounting-reports.*') }}">
+                                    <i class="nav-icon bi bi-bar-chart"></i>
+                                    <p>{{ __('Accounting Reports') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item"><a href="{{ route('school.accounting-reports.income-expense') }}" class="nav-link {{ $isActiveGroup('school.accounting-reports.income-expense') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Income & Expense') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.accounting-reports.cash-book') }}" class="nav-link {{ $isActiveGroup('school.accounting-reports.cash-book') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Cash Book') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.accounting-reports.bank-book') }}" class="nav-link {{ $isActiveGroup('school.accounting-reports.bank-book') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Bank Book') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.accounting-reports.ledger') }}" class="nav-link {{ $isActiveGroup('school.accounting-reports.ledger') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Account Ledger') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.accounting-reports.trial-balance') }}" class="nav-link {{ $isActiveGroup('school.accounting-reports.trial-balance') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Trial Balance') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.accounting-reports.profit-loss') }}" class="nav-link {{ $isActiveGroup('school.accounting-reports.profit-loss') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Profit & Loss') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.accounting-reports.balance-sheet') }}" class="nav-link {{ $isActiveGroup('school.accounting-reports.balance-sheet') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Balance Sheet') }}</p></a></li>
+                                    <li class="nav-item"><a href="{{ route('school.accounting-reports.fee-collection') }}" class="nav-link {{ $isActiveGroup('school.accounting-reports.fee-collection') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Fee Collection & Dues') }}</p></a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
 
@@ -386,7 +405,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.salary-structures.*','school.payrolls.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.salary-structures.*','school.payrolls.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-wallet2"></i>
                             <p>{{ __('Payroll') }}<i class="nav-arrow bi bi-chevron-right"></i></p>

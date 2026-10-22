@@ -14,6 +14,7 @@ class Payroll extends Model
     protected $fillable = [
         'school_id', 'teacher_id', 'month', 'year',
         'basic_salary', 'allowances', 'deductions', 'net_salary', 'status', 'paid_on',
+        'method', 'payment_account_id', 'journal_entry_id',
     ];
 
     protected $casts = [
@@ -23,5 +24,15 @@ class Payroll extends Model
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class);
+    }
+
+    public function paymentAccount(): BelongsTo
+    {
+        return $this->belongsTo(ChartOfAccount::class, 'payment_account_id');
+    }
+
+    public function journalEntry(): BelongsTo
+    {
+        return $this->belongsTo(JournalEntry::class);
     }
 }

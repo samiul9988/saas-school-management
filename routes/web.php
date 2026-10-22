@@ -4,6 +4,8 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\Parent\PortalController as ParentPortalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\School\AcademicYearController;
+use App\Http\Controllers\School\AccountController;
+use App\Http\Controllers\School\AccountingReportController;
 use App\Http\Controllers\School\AdmitInstructionController;
 use App\Http\Controllers\School\AttendanceController;
 use App\Http\Controllers\School\AttendanceReportController;
@@ -40,6 +42,7 @@ use App\Http\Controllers\School\InitialSetupController;
 use App\Http\Controllers\School\InventoryCategoryController;
 use App\Http\Controllers\School\InventoryItemController;
 use App\Http\Controllers\School\InventoryTransactionController;
+use App\Http\Controllers\School\JournalEntryController;
 use App\Http\Controllers\School\MarkConfigurationController;
 use App\Http\Controllers\School\MarkController;
 use App\Http\Controllers\School\MarkInputController;
@@ -395,6 +398,26 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/fee-payments/{feePayment}/receipt', [FeePaymentController::class, 'receipt'])->name('fee-payments.receipt');
         Route::resource('incomes', IncomeController::class)->only(['index', 'create', 'store', 'destroy']);
         Route::resource('expenses', ExpenseController::class)->only(['index', 'create', 'store', 'destroy']);
+
+        Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
+        Route::post('/accounts', [AccountController::class, 'store'])->name('accounts.store');
+        Route::put('/accounts/{account}', [AccountController::class, 'update'])->name('accounts.update');
+        Route::delete('/accounts/{account}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+
+        Route::get('/journal-entries', [JournalEntryController::class, 'index'])->name('journal-entries.index');
+        Route::get('/journal-entries/create', [JournalEntryController::class, 'create'])->name('journal-entries.create');
+        Route::post('/journal-entries', [JournalEntryController::class, 'store'])->name('journal-entries.store');
+        Route::get('/journal-entries/{journalEntry}', [JournalEntryController::class, 'show'])->name('journal-entries.show');
+        Route::post('/journal-entries/{journalEntry}/reverse', [JournalEntryController::class, 'reverse'])->name('journal-entries.reverse');
+
+        Route::get('/accounting-reports/income-expense', [AccountingReportController::class, 'incomeExpense'])->name('accounting-reports.income-expense');
+        Route::get('/accounting-reports/cash-book', [AccountingReportController::class, 'cashBook'])->name('accounting-reports.cash-book');
+        Route::get('/accounting-reports/bank-book', [AccountingReportController::class, 'bankBook'])->name('accounting-reports.bank-book');
+        Route::get('/accounting-reports/ledger', [AccountingReportController::class, 'ledger'])->name('accounting-reports.ledger');
+        Route::get('/accounting-reports/trial-balance', [AccountingReportController::class, 'trialBalance'])->name('accounting-reports.trial-balance');
+        Route::get('/accounting-reports/profit-loss', [AccountingReportController::class, 'profitAndLoss'])->name('accounting-reports.profit-loss');
+        Route::get('/accounting-reports/balance-sheet', [AccountingReportController::class, 'balanceSheet'])->name('accounting-reports.balance-sheet');
+        Route::get('/accounting-reports/fee-collection', [AccountingReportController::class, 'feeCollection'])->name('accounting-reports.fee-collection');
 
         Route::resource('notices', NoticeController::class)->except('show');
 

@@ -14,6 +14,7 @@ class FeePayment extends Model
     protected $fillable = [
         'school_id', 'student_fee_id', 'student_id', 'receipt_number',
         'amount', 'method', 'transaction_id', 'paid_on', 'received_by',
+        'payment_account_id', 'journal_entry_id',
     ];
 
     protected $casts = [
@@ -33,6 +34,16 @@ class FeePayment extends Model
     public function receivedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'received_by');
+    }
+
+    public function paymentAccount(): BelongsTo
+    {
+        return $this->belongsTo(ChartOfAccount::class, 'payment_account_id');
+    }
+
+    public function journalEntry(): BelongsTo
+    {
+        return $this->belongsTo(JournalEntry::class);
     }
 
     public static function generateReceiptNumber(int $schoolId): string

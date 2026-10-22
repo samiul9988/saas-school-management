@@ -52,12 +52,16 @@
                                 <td class="py-3 px-4 capitalize">{{ $payroll->status }}</td>
                                 <td class="py-3 px-4">
                                     @if ($payroll->status === 'pending')
-                                        <form action="{{ route('school.payrolls.mark-paid', $payroll) }}" method="POST">
+                                        <form action="{{ route('school.payrolls.mark-paid', $payroll) }}" method="POST" class="flex items-center gap-2">
                                             @csrf
+                                            <select name="method" class="text-xs border-gray-300 rounded-md">
+                                                <option value="cash">Cash</option>
+                                                <option value="bank">Bank</option>
+                                            </select>
                                             <button type="submit" class="text-indigo-600 hover:underline">Mark Paid</button>
                                         </form>
                                     @else
-                                        <span class="text-xs text-gray-500">Paid {{ $payroll->paid_on?->format('Y-m-d') }}</span>
+                                        <span class="text-xs text-gray-500">Paid {{ $payroll->paid_on?->format('Y-m-d') }} via {{ $payroll->method }}</span>
                                     @endif
                                 </td>
                             </tr>
