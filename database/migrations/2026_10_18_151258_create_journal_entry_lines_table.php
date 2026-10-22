@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('journal_entry_lines', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->foreignId('journal_entry_id')->constrained('journal_entries')->cascadeOnDelete();
             $table->foreignId('account_id')->constrained('chart_of_accounts')->restrictOnDelete();
