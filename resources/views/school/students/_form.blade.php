@@ -36,7 +36,7 @@
         <x-input-label for="group_name" value="Group" />
         <select id="group_name" name="group_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
             <option value="">— Select Group —</option>
-            @foreach (['Science', 'Commerce', 'Arts', 'General'] as $group)
+            @foreach ($groups as $group)
                 <option value="{{ $group }}" @selected(old('group_name', $student?->group_name) === $group)>{{ $group }}</option>
             @endforeach
         </select>

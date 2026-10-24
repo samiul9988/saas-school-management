@@ -45,7 +45,7 @@
         </div>
 
         @if ($section)
-            <form method="POST" action="{{ route('school.students.enable-disable.store') }}">
+            <form method="POST" action="{{ route('school.students.enable-disable.store') }}" onsubmit="return confirm('Are you sure you want to {{ $mode }} the selected student(s)?')">
                 @csrf
                 <input type="hidden" name="section_id" value="{{ $section->id }}">
                 <input type="hidden" name="mode" value="{{ $mode }}">

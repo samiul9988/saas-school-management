@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('sms_templates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
-            $table->enum('category', ['guardian', 'hr', 'result', 'due_fee', 'attendance', 'birthday', 'dynamic']);
+            $table->enum('category', ['guardian', 'hr', 'result', 'due_fee', 'attendance', 'birthday', 'dynamic', 'admission']);
             $table->string('title');
             $table->text('content');
             $table->boolean('is_default')->default(false);

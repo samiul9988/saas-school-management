@@ -12,7 +12,16 @@
         @endif
 
         <div class="bg-white shadow-sm rounded-lg p-6">
-            <form method="GET" class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+            <form method="GET" class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end">
+                <div>
+                    <x-input-label value="Target Academic Year" />
+                    <select name="target_academic_year_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                        <option value="">Select</option>
+                        @foreach ($academicYears as $year)
+                            <option value="{{ $year->id }}" @selected((string) request('target_academic_year_id') === (string) $year->id)>{{ $year->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div>
                     <x-input-label value="Section" />
                     <select name="section_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required onchange="this.form.submit()">
@@ -54,6 +63,7 @@
                 @csrf
                 <input type="hidden" name="section_id" value="{{ $section->id }}">
                 <input type="hidden" name="result_batch_id" value="{{ $resultBatchId }}">
+                <input type="hidden" name="target_academic_year_id" value="{{ request('target_academic_year_id') }}">
 
                 <div class="text-right text-sm text-gray-500">Total Found {{ $rows->count() }}</div>
 

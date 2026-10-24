@@ -4,6 +4,7 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
+use App\Models\Group;
 use App\Models\ResultBatch;
 use App\Models\ResultBatchResult;
 use App\Models\SchoolClass;
@@ -16,7 +17,12 @@ use Illuminate\View\View;
 
 class StudentUpdateController extends Controller
 {
-    public const GROUPS = ['Science', 'Commerce', 'Arts', 'General'];
+    private function groups(): array
+    {
+        $groups = Group::where('status', 'enable')->orderBy('serial')->pluck('name')->all();
+
+        return $groups ?: ['Science', 'Commerce', 'Arts', 'General'];
+    }
 
     private function sections()
     {
@@ -109,7 +115,7 @@ class StudentUpdateController extends Controller
             $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
         }
 
-        $groups = self::GROUPS;
+        $groups = $this->groups();
 
         return view('school.students.update-academic', compact('sections', 'classes', 'section', 'students', 'groups'));
     }
@@ -140,7 +146,7 @@ class StudentUpdateController extends Controller
         $academicYears = AcademicYear::orderByDesc('starts_on')->get();
         $sections = $this->sections();
         $classes = $this->classes();
-        $groups = self::GROUPS;
+        $groups = $this->groups();
 
         $section = null;
         $groupName = $request->get('group_name');
@@ -218,6 +224,7 @@ class StudentUpdateController extends Controller
         $data = $request->validate([
             'section_id' => ['required', 'exists:sections,id'],
             'result_batch_id' => ['required', 'exists:result_batches,id'],
+            'target_academic_year_id' => ['required', 'exists:academic_years,id'],
             'student_ids' => ['required', 'array', 'min:1'],
             'student_ids.*' => ['exists:students,id'],
             'rolls' => ['array'],
@@ -226,6 +233,7 @@ class StudentUpdateController extends Controller
 
         foreach ($data['student_ids'] as $studentId) {
             Student::whereKey($studentId)->update([
+                'academic_year_id' => $data['target_academic_year_id'],
                 'roll' => $data['rolls'][$studentId] ?? null,
             ]);
         }

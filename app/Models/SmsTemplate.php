@@ -9,7 +9,7 @@ class SmsTemplate extends Model
 {
     use BelongsToSchool;
 
-    public const CATEGORIES = ['guardian', 'hr', 'result', 'due_fee', 'attendance', 'birthday', 'dynamic'];
+    public const CATEGORIES = ['guardian', 'hr', 'result', 'due_fee', 'attendance', 'birthday', 'dynamic', 'admission'];
 
     protected $fillable = ['school_id', 'category', 'title', 'content', 'is_default'];
 
