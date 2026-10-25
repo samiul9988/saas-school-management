@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Student extends Model
 {
@@ -15,8 +16,8 @@ class Student extends Model
     protected $fillable = [
         'school_id', 'academic_year_id', 'school_class_id', 'section_id',
         'group_name', 'category', 'admission_number', 'roll', 'name', 'date_of_birth', 'gender',
-        'religion', 'guardian_name', 'father_name', 'mother_name', 'guardian_phone',
-        'address', 'photo', 'status', 'portal_user_id',
+        'religion', 'blood_group', 'guardian_name', 'father_name', 'mother_name', 'guardian_phone',
+        'address', 'village', 'post_office', 'upazila_thana', 'district', 'photo', 'status', 'portal_user_id',
     ];
 
     protected $casts = [
@@ -53,7 +54,7 @@ class Student extends Model
         return $this->belongsTo(User::class, 'portal_user_id');
     }
 
-    public function transport(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function transport(): HasOne
     {
         return $this->hasOne(StudentTransport::class);
     }

@@ -61,7 +61,11 @@ class StudentUpdateController extends Controller
             'religion' => ['nullable', 'string', 'max:255'],
             'guardian_name' => ['nullable', 'string', 'max:255'],
             'guardian_phone' => ['nullable', 'string', 'max:30'],
-            'address' => ['nullable', 'string', 'max:255'],
+            'blood_group' => ['nullable', 'string', 'max:10'],
+            'village' => ['nullable', 'string', 'max:255'],
+            'post_office' => ['nullable', 'string', 'max:255'],
+            'upazila_thana' => ['nullable', 'string', 'max:255'],
+            'district' => ['nullable', 'string', 'max:255'],
         ]);
 
         Student::findOrFail($data['student_id'])->update(collect($data)->except(['section_id', 'student_id'])->all());
@@ -108,22 +112,29 @@ class StudentUpdateController extends Controller
         $sections = $this->sections();
         $classes = $this->classes();
         $section = null;
+        $showAll = $request->get('section_id') === 'all';
         $students = collect();
 
-        if ($request->filled('section_id')) {
+        if ($showAll) {
+            $students = Student::orderBy('roll')->get();
+        } elseif ($request->filled('section_id')) {
             $section = Section::findOrFail($request->section_id);
             $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
         }
 
         $groups = $this->groups();
 
-        return view('school.students.update-academic', compact('sections', 'classes', 'section', 'students', 'groups'));
+        return view('school.students.update-academic', compact('sections', 'classes', 'section', 'showAll', 'students', 'groups'));
     }
 
     public function academicUpdate(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'section_id' => ['required', 'exists:sections,id'],
+            'section_id' => ['required', function ($attribute, $value, $fail) {
+                if ($value !== 'all' && ! Section::whereKey($value)->exists()) {
+                    $fail('The selected section is invalid.');
+                }
+            }],
             'student_id' => ['required', 'exists:students,id'],
             'school_class_id' => ['required', 'exists:school_classes,id'],
             'new_section_id' => ['required', 'exists:sections,id'],

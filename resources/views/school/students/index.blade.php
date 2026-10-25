@@ -30,6 +30,7 @@
                             <th class="py-3 px-4">Name</th>
                             <th class="py-3 px-4">Admission No.</th>
                             <th class="py-3 px-4">Class</th>
+                            <th class="py-3 px-4">Roll</th>
                             <th class="py-3 px-4">Section</th>
                             <th class="py-3 px-4">Status</th>
                             <th class="py-3 px-4">Actions</th>
@@ -43,6 +44,7 @@
                                 </td>
                                 <td class="py-3 px-4">{{ $student->admission_number ?? '—' }}</td>
                                 <td class="py-3 px-4">{{ $student->schoolClass?->name ?? '—' }}</td>
+                                <td class="py-3 px-4">{{ $student->roll ?? '—' }}</td>
                                 <td class="py-3 px-4">{{ $student->section?->name ?? '—' }}</td>
                                 <td class="py-3 px-4 capitalize">{{ $student->status }}</td>
                                 <td class="py-3 px-4 space-x-2">

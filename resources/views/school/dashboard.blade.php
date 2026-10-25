@@ -25,7 +25,40 @@
 
             <div class="bg-white shadow-sm rounded-lg p-4">
                 <h3 class="text-center fw-semibold mb-3" style="color: var(--brand-2);">Class Wise Student Summary</h3>
-                <canvas id="classSummaryChart" height="110"></canvas>
+                <div class="table-responsive">
+                    <table class="w-100 text-sm text-start">
+                        <thead>
+                            <tr class="text-muted border-bottom">
+                                <th class="py-2">Class</th>
+                                <th class="py-2 text-center">Male</th>
+                                <th class="py-2 text-center">Female</th>
+                                <th class="py-2 text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($classSummary as $class)
+                                <tr class="border-bottom">
+                                    <td class="py-2 fw-semibold">{{ $class->name }}</td>
+                                    <td class="py-2 text-center">{{ $class->male_count }}</td>
+                                    <td class="py-2 text-center">{{ $class->female_count }}</td>
+                                    <td class="py-2 text-center fw-semibold">{{ $class->students_count }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="4" class="py-4 text-center text-muted">No classes yet.</td></tr>
+                            @endforelse
+                        </tbody>
+                        @if ($classSummary->isNotEmpty())
+                            <tfoot>
+                                <tr class="border-top fw-bold">
+                                    <td class="py-2">Total</td>
+                                    <td class="py-2 text-center">{{ $classSummary->sum('male_count') }}</td>
+                                    <td class="py-2 text-center">{{ $classSummary->sum('female_count') }}</td>
+                                    <td class="py-2 text-center">{{ $classSummary->sum('students_count') }}</td>
+                                </tr>
+                            </tfoot>
+                        @endif
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -122,24 +155,4 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
-    <script>
-        new Chart(document.getElementById('classSummaryChart'), {
-            type: 'bar',
-            data: {
-                labels: @json($classSummary->pluck('name')),
-                datasets: [{
-                    label: 'Students',
-                    data: @json($classSummary->pluck('students_count')),
-                    backgroundColor: '#22a559',
-                    borderRadius: 4,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-            }
-        });
-    </script>
 </x-app-layout>

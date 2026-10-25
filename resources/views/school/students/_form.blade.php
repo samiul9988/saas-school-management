@@ -113,9 +113,36 @@
         <x-text-input id="guardian_name" name="guardian_name" class="mt-1 block w-full" value="{{ old('guardian_name', $student?->guardian_name) }}" />
     </div>
 </div>
-<div>
-    <x-input-label for="address" value="Address" />
-    <x-text-input id="address" name="address" class="mt-1 block w-full" value="{{ old('address', $student?->address) }}" />
+<div class="grid grid-cols-2 gap-4">
+    <div>
+        <x-input-label for="blood_group" value="Blood Group" />
+        <select id="blood_group" name="blood_group" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+            <option value="">— Select Blood Group —</option>
+            @foreach (['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $bloodGroup)
+                <option value="{{ $bloodGroup }}" @selected(old('blood_group', $student?->blood_group) === $bloodGroup)>{{ $bloodGroup }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+    <div>
+        <x-input-label for="village" value="Village" />
+        <x-text-input id="village" name="village" class="mt-1 block w-full" value="{{ old('village', $student?->village) }}" />
+    </div>
+    <div>
+        <x-input-label for="post_office" value="Post Office" />
+        <x-text-input id="post_office" name="post_office" class="mt-1 block w-full" value="{{ old('post_office', $student?->post_office) }}" />
+    </div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+    <div>
+        <x-input-label for="upazila_thana" value="Upazila / Thana" />
+        <x-text-input id="upazila_thana" name="upazila_thana" class="mt-1 block w-full" value="{{ old('upazila_thana', $student?->upazila_thana) }}" />
+    </div>
+    <div>
+        <x-input-label for="district" value="District" />
+        <x-text-input id="district" name="district" class="mt-1 block w-full" value="{{ old('district', $student?->district) }}" />
+    </div>
 </div>
 <div>
     <x-input-label for="status" value="Status" />

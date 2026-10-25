@@ -55,7 +55,11 @@
                                            data-religion="{{ $student->religion }}"
                                            data-guardian="{{ $student->guardian_name }}"
                                            data-phone="{{ $student->guardian_phone }}"
-                                           data-address="{{ $student->address }}">
+                                           data-blood="{{ $student->blood_group }}"
+                                           data-village="{{ $student->village }}"
+                                           data-post-office="{{ $student->post_office }}"
+                                           data-upazila="{{ $student->upazila_thana }}"
+                                           data-district="{{ $student->district }}">
                                 </td>
                                 <td class="py-2 px-4">{{ $student->admission_number }}</td>
                                 <td class="py-2 px-4">{{ $student->name }}</td>
@@ -121,9 +125,36 @@
                             <x-text-input name="guardian_name" id="f_guardian" class="mt-1 block w-full" />
                         </div>
                     </div>
-                    <div>
-                        <x-input-label value="Address" />
-                        <x-text-input name="address" id="f_address" class="mt-1 block w-full" />
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label value="Blood Group" />
+                            <select name="blood_group" id="f_blood" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                <option value="">Select</option>
+                                @foreach (['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $bloodGroup)
+                                    <option value="{{ $bloodGroup }}">{{ $bloodGroup }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label value="Village" />
+                            <x-text-input name="village" id="f_village" class="mt-1 block w-full" />
+                        </div>
+                        <div>
+                            <x-input-label value="Post Office" />
+                            <x-text-input name="post_office" id="f_post_office" class="mt-1 block w-full" />
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label value="Upazila / Thana" />
+                            <x-text-input name="upazila_thana" id="f_upazila" class="mt-1 block w-full" />
+                        </div>
+                        <div>
+                            <x-input-label value="District" />
+                            <x-text-input name="district" id="f_district" class="mt-1 block w-full" />
+                        </div>
                     </div>
 
                     <div class="flex justify-end">
@@ -148,7 +179,11 @@
                         document.getElementById('f_religion').value = radio.dataset.religion || '';
                         document.getElementById('f_guardian').value = radio.dataset.guardian || '';
                         document.getElementById('f_phone').value = radio.dataset.phone || '';
-                        document.getElementById('f_address').value = radio.dataset.address || '';
+                        document.getElementById('f_blood').value = radio.dataset.blood || '';
+                        document.getElementById('f_village').value = radio.dataset.village || '';
+                        document.getElementById('f_post_office').value = radio.dataset.postOffice || '';
+                        document.getElementById('f_upazila').value = radio.dataset.upazila || '';
+                        document.getElementById('f_district').value = radio.dataset.district || '';
                         panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                     });
                 });

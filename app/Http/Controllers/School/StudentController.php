@@ -25,7 +25,7 @@ class StudentController extends Controller
     {
         $students = Student::with('schoolClass', 'section')
             ->when($request->filled('school_class_id'), fn ($q) => $q->where('school_class_id', $request->school_class_id))
-            ->latest()
+            ->orderBy('roll')
             ->paginate(20)
             ->withQueryString();
 
@@ -128,11 +128,15 @@ class StudentController extends Controller
             'date_of_birth' => ['nullable', 'date'],
             'gender' => ['nullable', 'in:male,female,other'],
             'religion' => ['nullable', 'string', 'max:255'],
+            'blood_group' => ['nullable', 'string', 'max:10'],
             'guardian_name' => ['nullable', 'string', 'max:255'],
             'father_name' => ['nullable', 'string', 'max:255'],
             'mother_name' => ['nullable', 'string', 'max:255'],
             'guardian_phone' => ['nullable', 'string', 'max:30'],
-            'address' => ['nullable', 'string', 'max:255'],
+            'village' => ['nullable', 'string', 'max:255'],
+            'post_office' => ['nullable', 'string', 'max:255'],
+            'upazila_thana' => ['nullable', 'string', 'max:255'],
+            'district' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:active,inactive,transferred,graduated'],
         ]);
     }

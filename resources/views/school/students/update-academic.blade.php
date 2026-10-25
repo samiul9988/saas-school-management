@@ -16,6 +16,7 @@
                 <div class="w-64">
                     <select name="section_id" class="block w-full border-gray-300 rounded-md shadow-sm" required onchange="this.form.submit()">
                         <option value="">Select</option>
+                        <option value="all" @selected($showAll)>All Sections</option>
                         @foreach ($sections as $sectionOption)
                             <option value="{{ $sectionOption->id }}" @selected($section && $section->id === $sectionOption->id)>
                                 {{ $sectionOption->schoolClass?->name }} - {{ $sectionOption->name }}
@@ -29,7 +30,7 @@
             </form>
         </div>
 
-        @if ($section)
+        @if ($section || $showAll)
             <div class="bg-white shadow-sm rounded-lg overflow-hidden overflow-x-auto">
                 <table class="w-full text-sm text-left">
                     <thead class="bg-blue-100">
@@ -72,7 +73,7 @@
                 <h3 class="font-semibold mb-4">Update Academic Info</h3>
                 <form method="POST" action="{{ route('school.students.update-academic.store') }}" class="space-y-4">
                     @csrf
-                    <input type="hidden" name="section_id" value="{{ $section->id }}">
+                    <input type="hidden" name="section_id" value="{{ $showAll ? 'all' : $section->id }}">
                     <input type="hidden" name="student_id" id="f_student_id">
 
                     <div class="grid grid-cols-2 gap-4">

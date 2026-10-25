@@ -41,6 +41,7 @@ class IdCardController extends Controller
         $school = Auth::user()->school;
         $side = in_array($request->get('side'), ['front', 'back']) ? $request->get('side') : 'both';
         $student = (object) [
+            'id' => 0,
             'name' => 'Nazmus Sakib',
             'admission_number' => '123456',
             'roll' => '01',
@@ -48,6 +49,9 @@ class IdCardController extends Controller
             'schoolClass' => (object) ['name' => 'Nine'],
             'section' => (object) ['name' => 'Lal'],
             'group_name' => 'Science',
+            'father_name' => 'Md. Karim',
+            'mother_name' => 'Mst. Rahima',
+            'blood_group' => 'B+',
             'guardian_phone' => '01861006000',
         ];
 

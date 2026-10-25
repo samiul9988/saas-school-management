@@ -4,6 +4,7 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
+use App\Models\Group;
 use App\Models\SchoolClass;
 use App\Models\Section;
 use App\Models\Student;
@@ -45,7 +46,7 @@ class StudentReportController extends Controller
                     $q->where($searchColumn, 'like', "%{$searchValue}%");
                 }
             })
-            ->latest()
+            ->orderBy('roll')
             ->get();
 
         $searchColumns = self::SEARCH_COLUMNS;
@@ -92,10 +93,10 @@ class StudentReportController extends Controller
         $section = Section::with('schoolClass')->findOrFail($request->section_id);
         $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
 
-        $headers = ['ID', 'Name', 'Roll', 'Father', 'Mother', 'Gender', 'Religion', 'Mobile'];
+        $headers = ['ID', 'Name', 'Roll', 'Father', 'Mother', 'Gender', 'Religion', 'Mobile', 'Village', 'Upazila'];
         $rows = $students->map(fn ($s) => [
             $s->admission_number, $s->name, $s->roll, $s->father_name, $s->mother_name,
-            ucfirst((string) $s->gender), $s->religion, $s->guardian_phone,
+            ucfirst((string) $s->gender), $s->religion, $s->guardian_phone, $s->village, $s->upazila_thana,
         ])->all();
 
         return $this->excelDownload('Section Wise Student Report '.$section->name, $headers, $rows);
@@ -143,7 +144,7 @@ class StudentReportController extends Controller
     public function groupWise(Request $request): View
     {
         $classes = SchoolClass::orderBy('sort_order')->get();
-        $groups = StudentUpdateController::GROUPS;
+        $groups = Group::where('status', 'enable')->orderBy('serial')->pluck('name')->all() ?: ['Science', 'Commerce', 'Arts', 'General'];
         $class = null;
         $groupName = $request->get('group_name');
         $students = collect();
@@ -271,7 +272,7 @@ class StudentReportController extends Controller
 
     private function excelDownload(string $title, array $headers, array $rows): StreamedResponse
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle(substr($title, 0, 31));
 

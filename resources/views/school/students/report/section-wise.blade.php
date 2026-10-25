@@ -52,7 +52,7 @@
                                 <td class="py-2 px-4">{{ $student->religion }}</td>
                                 <td class="py-2 px-4">{{ $student->guardian_phone }}</td>
                                 <td class="py-2 px-4">
-                                    <div class="w-9 h-9 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
+                                    <div class="w-9 h-9 rounded-md bg-gray-100 overflow-hidden flex items-center justify-center">
                                         @if ($student->photo)
                                             <img src="{{ asset('storage/'.$student->photo) }}" class="w-full h-full object-cover" alt="">
                                         @else

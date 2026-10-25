@@ -45,7 +45,7 @@
                         @forelse ($students as $student)
                             <tr class="border-t">
                                 <td class="py-2 px-4">
-                                    <div class="w-10 h-10 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
+                                    <div class="w-10 h-10 rounded-md bg-gray-100 overflow-hidden flex items-center justify-center">
                                         @if ($student->photo)
                                             <img src="{{ asset('storage/'.$student->photo) }}" class="w-full h-full object-cover" alt="">
                                         @else
