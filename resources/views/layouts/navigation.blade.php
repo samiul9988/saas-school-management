@@ -59,7 +59,7 @@
     @php($brandSchool = Auth::user()->school)
     <div class="sidebar-brand">
         <a href="{{ route('dashboard') }}" class="brand-link d-flex align-items-center gap-2">
-            <span class="d-flex align-items-center justify-content-center rounded overflow-hidden flex-shrink-0" style="width:44px;height:44px;background:linear-gradient(135deg,var(--brand-1),var(--brand-2));">
+            <span class="d-flex align-items-center justify-content-center rounded overflow-hidden flex-shrink-0" style="width:60px;height:60px;background:linear-gradient(135deg,var(--brand-1),var(--brand-2));">
                 @if ($brandSchool?->logo)
                     <img src="{{ Storage::url($brandSchool->logo) }}" alt="{{ $brandSchool->name }}" class="w-100 h-100" style="object-fit:cover;">
                 @else

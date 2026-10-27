@@ -60,6 +60,10 @@
                 background: transparent;
                 overflow: hidden;
                 min-width: 0;
+                height: auto;
+                min-height: 72px;
+                padding-top: .5rem;
+                padding-bottom: .5rem;
             }
             .app-sidebar .brand-link .brand-text {
                 min-width: 0;
