@@ -56,6 +56,26 @@ class StudentUpdateBatchTest extends TestCase
         $this->assertSame('Dinajpur', $student->district);
     }
 
+    public function test_update_basic_page_uses_all_students_style_table_with_edit_and_delete(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Class 10']);
+        $section = Section::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'name' => 'A']);
+        $student = Student::create([
+            'school_id' => $admin->school_id, 'school_class_id' => $class->id, 'section_id' => $section->id,
+            'name' => 'Table Test Student', 'admission_number' => '9001', 'roll' => '7', 'status' => 'active',
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('school.students.update-basic', ['section_id' => $section->id]));
+
+        $response->assertOk()
+            ->assertSee('Table Test Student')
+            ->assertSee('9001')
+            ->assertSee('Admission No.')
+            ->assertSee(route('school.students.edit', $student), false)
+            ->assertSee(route('school.students.destroy', $student), false);
+    }
+
     public function test_update_basic_saves_blood_group_and_address_parts(): void
     {
         $admin = $this->makeSchoolAdmin();
