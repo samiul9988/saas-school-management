@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\Period;
 use App\Models\Section;
 use App\Models\Student;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,7 +34,7 @@ class StudentAttendanceController extends Controller
 
         if ($request->filled('section_id')) {
             $section = Section::findOrFail($request->section_id);
-            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderByRoll()->get();
         }
 
         return view('school.attendance.input', compact('sections', 'periods', 'date', 'section', 'students'));
@@ -79,7 +80,7 @@ class StudentAttendanceController extends Controller
 
         if ($request->filled('section_id')) {
             $section = Section::findOrFail($request->section_id);
-            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderByRoll()->get();
 
             $existing = Attendance::where('date', $date)
                 ->where('period_id', $request->get('period_id') ?: null)
@@ -152,7 +153,7 @@ class StudentAttendanceController extends Controller
         ]);
 
         $student = Student::findOrFail($data['student_id']);
-        $period = \Carbon\CarbonPeriod::create($data['from_date'], $data['to_date']);
+        $period = CarbonPeriod::create($data['from_date'], $data['to_date']);
 
         foreach ($period as $date) {
             Attendance::updateOrCreate(

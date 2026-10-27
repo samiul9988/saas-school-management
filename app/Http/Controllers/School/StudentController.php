@@ -25,7 +25,7 @@ class StudentController extends Controller
     {
         $students = Student::with('schoolClass', 'section')
             ->when($request->filled('school_class_id'), fn ($q) => $q->where('school_class_id', $request->school_class_id))
-            ->orderBy('roll')
+            ->orderByRoll()
             ->paginate(20)
             ->withQueryString();
 

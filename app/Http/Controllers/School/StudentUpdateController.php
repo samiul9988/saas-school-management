@@ -42,7 +42,7 @@ class StudentUpdateController extends Controller
 
         if ($request->filled('section_id')) {
             $section = Section::findOrFail($request->section_id);
-            $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->orderByRoll()->get();
         }
 
         return view('school.students.update-basic', compact('sections', 'section', 'students'));
@@ -81,7 +81,7 @@ class StudentUpdateController extends Controller
 
         if ($request->filled('section_id')) {
             $section = Section::findOrFail($request->section_id);
-            $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->orderByRoll()->get();
         }
 
         return view('school.students.update-photo', compact('sections', 'section', 'students'));
@@ -116,10 +116,10 @@ class StudentUpdateController extends Controller
         $students = collect();
 
         if ($showAll) {
-            $students = Student::orderBy('roll')->get();
+            $students = Student::orderByRoll()->get();
         } elseif ($request->filled('section_id')) {
             $section = Section::findOrFail($request->section_id);
-            $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->orderByRoll()->get();
         }
 
         $groups = $this->groups();
@@ -167,7 +167,7 @@ class StudentUpdateController extends Controller
             $section = Section::findOrFail($request->section_id);
             $students = Student::where('section_id', $section->id)
                 ->when($groupName, fn ($q) => $q->where('group_name', $groupName))
-                ->orderBy('roll')
+                ->orderByRoll()
                 ->get();
         }
 
@@ -264,7 +264,7 @@ class StudentUpdateController extends Controller
             $section = Section::findOrFail($request->section_id);
             $students = Student::where('section_id', $section->id)
                 ->where('status', $mode === 'disable' ? 'active' : 'inactive')
-                ->orderBy('roll')
+                ->orderByRoll()
                 ->get();
         }
 

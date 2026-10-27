@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToSchool;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Student extends Model
 {
@@ -57,5 +59,18 @@ class Student extends Model
     public function transport(): HasOne
     {
         return $this->hasOne(StudentTransport::class);
+    }
+
+    /**
+     * Order by roll numerically rather than lexicographically ("2" before "10"),
+     * since `roll` is stored as a string. Falls back to string order for ties
+     * (e.g. non-numeric rolls) so nothing is silently dropped from the sort.
+     */
+    public function scopeOrderByRoll(Builder $query): Builder
+    {
+        $driver = DB::connection()->getDriverName();
+        $castType = $driver === 'sqlite' ? 'INTEGER' : 'UNSIGNED';
+
+        return $query->orderByRaw("CAST(roll AS {$castType}), roll");
     }
 }

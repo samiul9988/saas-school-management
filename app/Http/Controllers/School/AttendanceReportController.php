@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\Period;
 use App\Models\Section;
 use App\Models\Student;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -61,7 +62,7 @@ class AttendanceReportController extends Controller
             $section = Section::findOrFail($request->section_id);
             $periodId = $request->get('period_id') ?: null;
 
-            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderByRoll()->get();
             $attendances = Attendance::where('date', $date)->where('period_id', $periodId)
                 ->whereIn('student_id', $students->pluck('id'))->pluck('status', 'student_id');
 
@@ -88,9 +89,9 @@ class AttendanceReportController extends Controller
             $periodId = $request->get('period_id') ?: null;
             $year = (int) $request->year;
             $month = (int) $request->month;
-            $daysInMonth = \Carbon\Carbon::createFromDate($year, $month, 1)->daysInMonth;
+            $daysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
 
-            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderByRoll()->get();
             $attendances = Attendance::where('period_id', $periodId)
                 ->whereIn('student_id', $students->pluck('id'))
                 ->whereYear('date', $year)->whereMonth('date', $month)
@@ -123,7 +124,7 @@ class AttendanceReportController extends Controller
             $year = (int) $request->year;
             $month = (int) $request->month;
 
-            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->where('status', 'active')->orderByRoll()->get();
             $attendances = Attendance::where('period_id', $periodId)
                 ->whereIn('student_id', $students->pluck('id'))
                 ->whereYear('date', $year)->whereMonth('date', $month)

@@ -46,7 +46,7 @@ class StudentReportController extends Controller
                     $q->where($searchColumn, 'like', "%{$searchValue}%");
                 }
             })
-            ->orderBy('roll')
+            ->orderByRoll()
             ->get();
 
         $searchColumns = self::SEARCH_COLUMNS;
@@ -70,7 +70,7 @@ class StudentReportController extends Controller
 
         if ($request->filled('section_id')) {
             $section = Section::findOrFail($request->section_id);
-            $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
+            $students = Student::where('section_id', $section->id)->orderByRoll()->get();
         }
 
         return view('school.students.report.section-wise', compact('sections', 'section', 'students'));
@@ -79,7 +79,7 @@ class StudentReportController extends Controller
     public function sectionWisePdf(Request $request, string $mode): Response
     {
         $section = Section::with('schoolClass')->findOrFail($request->section_id);
-        $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
+        $students = Student::where('section_id', $section->id)->orderByRoll()->get();
         $school = Auth::user()->school;
         $withImage = $mode === 'with-image';
 
@@ -91,7 +91,7 @@ class StudentReportController extends Controller
     public function sectionWiseExcel(Request $request): StreamedResponse
     {
         $section = Section::with('schoolClass')->findOrFail($request->section_id);
-        $students = Student::where('section_id', $section->id)->orderBy('roll')->get();
+        $students = Student::where('section_id', $section->id)->orderByRoll()->get();
 
         $headers = ['ID', 'Name', 'Roll', 'Father', 'Mother', 'Gender', 'Religion', 'Mobile', 'Village', 'Upazila'];
         $rows = $students->map(fn ($s) => [
@@ -110,7 +110,7 @@ class StudentReportController extends Controller
 
         if ($request->filled('school_class_id')) {
             $class = SchoolClass::findOrFail($request->school_class_id);
-            $students = Student::with('section')->where('school_class_id', $class->id)->orderBy('roll')->get();
+            $students = Student::with('section')->where('school_class_id', $class->id)->orderByRoll()->get();
         }
 
         return view('school.students.report.class-wise', compact('classes', 'class', 'students'));
@@ -119,7 +119,7 @@ class StudentReportController extends Controller
     public function classWisePdf(Request $request): Response
     {
         $class = SchoolClass::findOrFail($request->school_class_id);
-        $students = Student::with('section')->where('school_class_id', $class->id)->orderBy('roll')->get();
+        $students = Student::with('section')->where('school_class_id', $class->id)->orderByRoll()->get();
         $school = Auth::user()->school;
 
         $pdf = Pdf::loadView('school.students.report.pdf.class-wise', compact('school', 'class', 'students'));
@@ -130,7 +130,7 @@ class StudentReportController extends Controller
     public function classWiseExcel(Request $request): StreamedResponse
     {
         $class = SchoolClass::findOrFail($request->school_class_id);
-        $students = Student::with('section')->where('school_class_id', $class->id)->orderBy('roll')->get();
+        $students = Student::with('section')->where('school_class_id', $class->id)->orderByRoll()->get();
 
         $headers = ['ID', 'Name', 'Class', 'Section', 'Roll', 'Group', 'Father', 'Mother', 'Gender', 'Religion', 'Mobile No.'];
         $rows = $students->map(fn ($s) => [
@@ -151,7 +151,7 @@ class StudentReportController extends Controller
 
         if ($request->filled('school_class_id') && $groupName) {
             $class = SchoolClass::findOrFail($request->school_class_id);
-            $students = Student::where('school_class_id', $class->id)->where('group_name', $groupName)->orderBy('roll')->get();
+            $students = Student::where('school_class_id', $class->id)->where('group_name', $groupName)->orderByRoll()->get();
         }
 
         return view('school.students.report.group-wise', compact('classes', 'groups', 'class', 'groupName', 'students'));
@@ -161,7 +161,7 @@ class StudentReportController extends Controller
     {
         $class = SchoolClass::findOrFail($request->school_class_id);
         $groupName = $request->group_name;
-        $students = Student::where('school_class_id', $class->id)->where('group_name', $groupName)->orderBy('roll')->get();
+        $students = Student::where('school_class_id', $class->id)->where('group_name', $groupName)->orderByRoll()->get();
         $school = Auth::user()->school;
 
         $pdf = Pdf::loadView('school.students.report.pdf.group-wise', compact('school', 'class', 'groupName', 'students'));
@@ -173,7 +173,7 @@ class StudentReportController extends Controller
     {
         $class = SchoolClass::findOrFail($request->school_class_id);
         $groupName = $request->group_name;
-        $students = Student::where('school_class_id', $class->id)->where('group_name', $groupName)->orderBy('roll')->get();
+        $students = Student::where('school_class_id', $class->id)->where('group_name', $groupName)->orderByRoll()->get();
 
         $headers = ['ID', 'Name', 'Roll', 'Group', 'Father', 'Mother', 'Gender', 'Religion', 'Mobile'];
         $rows = $students->map(fn ($s) => [

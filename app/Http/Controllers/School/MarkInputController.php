@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MarkInputController extends Controller
 {
@@ -62,7 +63,7 @@ class MarkInputController extends Controller
                 $students = Student::where('section_id', $section->id)
                     ->where('status', 'active')
                     ->when($request->filled('group_name'), fn ($q) => $q->where('group_name', $data['group_name']))
-                    ->orderBy('roll')
+                    ->orderByRoll()
                     ->get();
 
                 $marks = Mark::where('exam_subject_id', $examSubject->id)
@@ -126,7 +127,7 @@ class MarkInputController extends Controller
         return redirect()->back()->with('status', 'Marks saved successfully.');
     }
 
-    public function downloadTemplate(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse|RedirectResponse
+    public function downloadTemplate(Request $request): StreamedResponse|RedirectResponse
     {
         $data = $request->validate([
             'section_id' => ['required', 'exists:sections,id'],
@@ -153,7 +154,7 @@ class MarkInputController extends Controller
         $students = Student::where('section_id', $section->id)
             ->where('status', 'active')
             ->when($request->filled('group_name'), fn ($q) => $q->where('group_name', $data['group_name']))
-            ->orderBy('roll')
+            ->orderByRoll()
             ->get();
 
         $marks = Mark::where('exam_subject_id', $examSubject->id)
@@ -167,7 +168,7 @@ class MarkInputController extends Controller
             $components->pluck('shortCode.name')->all()
         );
 
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Mark Input Excel Sheet');
         $sheet->fromArray($headers, null, 'A1');

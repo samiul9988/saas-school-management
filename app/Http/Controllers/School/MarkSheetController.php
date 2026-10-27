@@ -5,7 +5,6 @@ namespace App\Http\Controllers\School;
 use App\Http\Controllers\Controller;
 use App\Models\Exam;
 use App\Models\Grade;
-use App\Models\Mark;
 use App\Models\MarksheetTemplateConfig;
 use App\Models\ResultBatch;
 use App\Models\Section;
@@ -44,7 +43,7 @@ class MarkSheetController extends Controller
             ->where('status', 'active')
             ->when($request->filled('from_roll') && (int) $request->from_roll > 0, fn ($q) => $q->where('roll', '>=', $request->from_roll))
             ->when($request->filled('to_roll') && (int) $request->to_roll > 0, fn ($q) => $q->where('roll', '<=', $request->to_roll))
-            ->orderBy('roll')
+            ->orderByRoll()
             ->get();
 
         $results = ResultCalculator::forExam($exam, $section->school_class_id, $students);
@@ -66,7 +65,7 @@ class MarkSheetController extends Controller
             ? $resultBatch->results()->whereIn('student_id', $students->pluck('id'))->get()->keyBy('student_id')
             : collect();
 
-        $pages = $students->map(function ($student) use ($results, $exam, $section, $examSubjects, $highestBySubject, $templateNumber, $grades, $templateConfig, $processedResults) {
+        $pages = $students->map(function ($student) use ($results, $exam, $section, $examSubjects, $highestBySubject, $templateNumber, $grades, $processedResults) {
             $result = $results[$student->id] ?? null;
 
             $subjectRows = $examSubjects->map(function ($examSubject) use ($student, $highestBySubject) {
@@ -177,7 +176,7 @@ class MarkSheetController extends Controller
             ->where('status', 'active')
             ->when($request->filled('from_roll') && (int) $request->from_roll > 0, fn ($q) => $q->where('roll', '>=', $request->from_roll))
             ->when($request->filled('to_roll') && (int) $request->to_roll > 0, fn ($q) => $q->where('roll', '<=', $request->to_roll))
-            ->orderBy('roll')
+            ->orderByRoll()
             ->get();
 
         $components = $resultBatch->components()->with('exam')->get();

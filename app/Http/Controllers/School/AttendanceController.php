@@ -27,7 +27,7 @@ class AttendanceController extends Controller
             $students = Student::where('school_class_id', $request->school_class_id)
                 ->when($request->filled('section_id'), fn ($q) => $q->where('section_id', $request->section_id))
                 ->where('status', 'active')
-                ->orderBy('roll')
+                ->orderByRoll()
                 ->get();
 
             $existing = Attendance::whereIn('student_id', $students->pluck('id'))

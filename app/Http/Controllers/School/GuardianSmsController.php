@@ -24,9 +24,9 @@ class GuardianSmsController extends Controller
         $students = collect();
 
         if ($request->filled('school_class_id')) {
-            $students = Student::where('school_class_id', $request->integer('school_class_id'))->where('status', 'active')->orderBy('roll')->get();
+            $students = Student::where('school_class_id', $request->integer('school_class_id'))->where('status', 'active')->orderByRoll()->get();
         } elseif ($request->filled('section_id')) {
-            $students = Student::where('section_id', $request->integer('section_id'))->where('status', 'active')->orderBy('roll')->get();
+            $students = Student::where('section_id', $request->integer('section_id'))->where('status', 'active')->orderByRoll()->get();
         }
 
         $defaultContent = SmsTemplate::defaultContentFor('guardian');

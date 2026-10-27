@@ -36,7 +36,7 @@ class TabulationSheetController extends Controller
         $classBlocks = $classes->map(function ($class) use ($exam) {
             $examSubjects = $exam->examSubjects->where('school_class_id', $class->id);
 
-            $students = Student::where('school_class_id', $class->id)->where('status', 'active')->orderBy('roll')->get();
+            $students = Student::where('school_class_id', $class->id)->where('status', 'active')->orderByRoll()->get();
 
             $rows = $students->map(function ($student) use ($examSubjects) {
                 $totalFull = 0;

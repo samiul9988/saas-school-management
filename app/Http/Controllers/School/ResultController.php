@@ -8,6 +8,7 @@ use App\Models\Grade;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class ResultController extends Controller
@@ -68,12 +69,12 @@ class ResultController extends Controller
         ]);
     }
 
-    private function buildClassResult(int $examId, int $classId): \Illuminate\Support\Collection
+    private function buildClassResult(int $examId, int $classId): Collection
     {
         $exam = Exam::with(['examSubjects.subject', 'examSubjects.marks'])->findOrFail($examId);
         $examSubjects = $exam->examSubjects->where('school_class_id', $classId);
 
-        $students = Student::where('school_class_id', $classId)->where('status', 'active')->orderBy('roll')->get();
+        $students = Student::where('school_class_id', $classId)->where('status', 'active')->orderByRoll()->get();
 
         $results = $students->map(function ($student) use ($examSubjects) {
             $totalFull = 0;

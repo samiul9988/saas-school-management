@@ -56,6 +56,35 @@ class StudentUpdateBatchTest extends TestCase
         $this->assertSame('Dinajpur', $student->district);
     }
 
+    public function test_roll_ordering_is_numeric_not_lexicographic_on_update_basic_and_photo(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Class 10']);
+        $section = Section::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'name' => 'A']);
+
+        // Deliberately created in an order that would expose lexicographic sort:
+        // string order would be "10", "2", "3"; numeric order must be "2", "3", "10".
+        Student::create(['school_id' => $admin->school_id, 'section_id' => $section->id, 'name' => 'Roll Ten', 'roll' => '10', 'status' => 'active']);
+        Student::create(['school_id' => $admin->school_id, 'section_id' => $section->id, 'name' => 'Roll Two', 'roll' => '2', 'status' => 'active']);
+        Student::create(['school_id' => $admin->school_id, 'section_id' => $section->id, 'name' => 'Roll Three', 'roll' => '3', 'status' => 'active']);
+
+        $basic = $this->actingAs($admin)->get(route('school.students.update-basic', ['section_id' => $section->id]));
+        $basicContent = $basic->getContent();
+        $this->assertTrue(
+            strpos($basicContent, 'Roll Two') < strpos($basicContent, 'Roll Three')
+            && strpos($basicContent, 'Roll Three') < strpos($basicContent, 'Roll Ten'),
+            'Update-Basic must order 2, 3, 10 numerically, not lexicographically.'
+        );
+
+        $photo = $this->actingAs($admin)->get(route('school.students.update-photo', ['section_id' => $section->id]));
+        $photoContent = $photo->getContent();
+        $this->assertTrue(
+            strpos($photoContent, 'Roll Two') < strpos($photoContent, 'Roll Three')
+            && strpos($photoContent, 'Roll Three') < strpos($photoContent, 'Roll Ten'),
+            'Update-Photo must order 2, 3, 10 numerically, not lexicographically.'
+        );
+    }
+
     public function test_update_basic_page_uses_all_students_style_table_with_edit_and_delete(): void
     {
         $admin = $this->makeSchoolAdmin();

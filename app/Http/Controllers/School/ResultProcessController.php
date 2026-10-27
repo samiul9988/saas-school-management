@@ -70,7 +70,7 @@ class ResultProcessController extends Controller
         $students = Student::where('section_id', $section->id)
             ->where('status', 'active')
             ->when($request->filled('group_name'), fn ($q) => $q->where('group_name', $data['group_name']))
-            ->orderBy('roll')
+            ->orderByRoll()
             ->get();
 
         if ($students->isEmpty()) {

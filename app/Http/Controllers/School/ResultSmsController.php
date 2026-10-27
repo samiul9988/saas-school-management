@@ -86,7 +86,7 @@ class ResultSmsController extends Controller
         $exam = Exam::with(['examSubjects.subject', 'examSubjects.marks'])->findOrFail($examId);
         $examSubjects = $exam->examSubjects->where('school_class_id', $classId);
 
-        $students = Student::where('school_class_id', $classId)->where('status', 'active')->orderBy('roll')->get();
+        $students = Student::where('school_class_id', $classId)->where('status', 'active')->orderByRoll()->get();
 
         return $students->map(function ($student) use ($examSubjects) {
             $totalFull = 0;

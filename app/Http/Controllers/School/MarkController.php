@@ -16,7 +16,7 @@ class MarkController extends Controller
     {
         $students = Student::where('school_class_id', $examSubject->school_class_id)
             ->where('status', 'active')
-            ->orderBy('roll')
+            ->orderByRoll()
             ->get();
 
         $existing = Mark::where('exam_subject_id', $examSubject->id)

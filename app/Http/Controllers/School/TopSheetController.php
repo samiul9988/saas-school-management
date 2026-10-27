@@ -33,7 +33,7 @@ class TopSheetController extends Controller
 
         $students = Student::where('section_id', $section->id)
             ->where('status', 'active')
-            ->orderBy('roll')
+            ->orderByRoll()
             ->get();
 
         $school = Auth::user()->school;

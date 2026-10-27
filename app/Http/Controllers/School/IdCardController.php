@@ -72,7 +72,7 @@ class IdCardController extends Controller
             ->where('section_id', $section->id)
             ->when($data['from_roll'] ?? null, fn ($q) => $q->where('roll', '>=', $data['from_roll']))
             ->when($data['to_roll'] ?? null, fn ($q) => $q->where('roll', '<=', $data['to_roll']))
-            ->orderByRaw('CAST(roll AS UNSIGNED)')
+            ->orderByRoll()
             ->get();
 
         return [$section, $students];

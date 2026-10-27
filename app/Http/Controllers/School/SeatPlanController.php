@@ -98,7 +98,7 @@ class SeatPlanController extends Controller
             ->where('status', 'active')
             ->when($request->filled('from_roll') && (int) $request->from_roll > 0, fn ($q) => $q->where('roll', '>=', $request->from_roll))
             ->when($request->filled('to_roll') && (int) $request->to_roll > 0, fn ($q) => $q->where('roll', '<=', $request->to_roll))
-            ->orderBy('roll')
+            ->orderByRoll()
             ->get();
 
         return [$section, $exam, $students];

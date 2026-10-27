@@ -40,7 +40,7 @@ class FourthSubjectController extends Controller
 
             $students = Student::where('section_id', $section->id)
                 ->where('group_name', $groupName)
-                ->orderBy('roll')
+                ->orderByRoll()
                 ->get();
 
             $subjects = Subject::where('school_class_id', $section->school_class_id)

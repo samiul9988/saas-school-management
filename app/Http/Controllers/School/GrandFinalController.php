@@ -56,7 +56,7 @@ class GrandFinalController extends Controller
         $grandFinal = ResultBatch::findOrFail($data['result_batch_id']);
         abort_unless($grandFinal->type === ResultBatch::TYPE_GRAND_FINAL, 404);
 
-        $students = Student::where('school_class_id', $class->id)->where('status', 'active')->orderBy('roll')->get();
+        $students = Student::where('school_class_id', $class->id)->where('status', 'active')->orderByRoll()->get();
 
         if ($students->isEmpty()) {
             return redirect()->back()->with('error', 'No active students found for this class.');
