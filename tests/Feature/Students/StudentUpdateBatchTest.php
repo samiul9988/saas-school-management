@@ -150,7 +150,7 @@ class StudentUpdateBatchTest extends TestCase
         $response->assertOk()->assertSee('Humanities');
     }
 
-    public function test_dashboard_class_summary_table_shows_gender_breakdown(): void
+    public function test_dashboard_class_summary_chart_includes_class_data(): void
     {
         $admin = $this->makeSchoolAdmin();
         $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Class 5']);
@@ -159,7 +159,10 @@ class StudentUpdateBatchTest extends TestCase
 
         $response = $this->actingAs($admin)->get(route('school.dashboard'));
 
-        $response->assertOk()->assertSee('Class 5')->assertSee('Class Wise Student Summary');
+        $response->assertOk()
+            ->assertSee('Class Wise Student Summary')
+            ->assertSee('classSummaryChart', false)
+            ->assertSee('Class 5');
     }
 
     public function test_section_wise_excel_export_includes_village_and_upazila(): void

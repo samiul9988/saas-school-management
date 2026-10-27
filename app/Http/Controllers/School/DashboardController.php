@@ -32,11 +32,7 @@ class DashboardController extends Controller
 
         $currentYear = AcademicYear::where('is_current', true)->first() ?? AcademicYear::orderByDesc('starts_on')->first();
 
-        $classSummary = SchoolClass::withCount([
-            'students',
-            'students as male_count' => fn ($q) => $q->where('gender', 'male'),
-            'students as female_count' => fn ($q) => $q->where('gender', 'female'),
-        ])->orderBy('sort_order')->get();
+        $classSummary = SchoolClass::withCount('students')->orderBy('sort_order')->get();
 
         $recentStudents = Student::with('schoolClass', 'section')->latest()->limit(10)->get();
 
