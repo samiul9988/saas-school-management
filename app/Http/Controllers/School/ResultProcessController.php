@@ -101,6 +101,7 @@ class ResultProcessController extends Controller
                         'grade_id' => $result['grade']?->id,
                         'position' => $result['position'],
                         'is_passed' => $result['is_passed'],
+                        'failed_subjects_count' => $result['failed_subjects_count'],
                     ]
                 );
             }

@@ -25,6 +25,7 @@ class ResultCalculator
             $totalObtained = 0;
             $gradePoints = [];
             $hasFailed = $examSubjects->isEmpty();
+            $failedSubjectsCount = 0;
 
             foreach ($examSubjects as $examSubject) {
                 $mark = $examSubject->marks->firstWhere('student_id', $student->id);
@@ -38,6 +39,7 @@ class ResultCalculator
 
                 if (! $subjectPassed) {
                     $hasFailed = true;
+                    $failedSubjectsCount++;
                 }
 
                 $subjectPercent = $examSubject->full_marks > 0 ? ($obtained / $examSubject->full_marks) * 100 : 0;
@@ -56,6 +58,7 @@ class ResultCalculator
                 'gpa' => $gpa,
                 'grade' => $grade,
                 'is_passed' => ! $hasFailed,
+                'failed_subjects_count' => $failedSubjectsCount,
             ]];
         });
     }

@@ -360,6 +360,8 @@ Route::middleware(['auth', 'verified', 'school_context'])
 
         Route::get('/reports/unassigned-marks', [ReportController::class, 'unassignedMarks'])->name('reports.unassigned-marks');
         Route::get('/reports/section-result', [ReportController::class, 'sectionResult'])->name('reports.section-result');
+        Route::get('/reports/section-result/pdf', [ReportController::class, 'sectionResultPdf'])->name('reports.section-result.pdf');
+        Route::get('/reports/section-result/excel', [ReportController::class, 'sectionResultExcel'])->name('reports.section-result.excel');
         Route::get('/reports/class-merit', [ReportController::class, 'classMerit'])->name('reports.class-merit');
         Route::get('/reports/section-merit', [ReportController::class, 'sectionMerit'])->name('reports.section-merit');
         Route::get('/reports/class-failed', [ReportController::class, 'classFailed'])->name('reports.class-failed');

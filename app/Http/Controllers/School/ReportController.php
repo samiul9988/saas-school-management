@@ -9,8 +9,19 @@ use App\Models\Grade;
 use App\Models\ResultBatch;
 use App\Models\SchoolClass;
 use App\Models\Section;
+use App\Models\Student;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
@@ -24,7 +35,7 @@ class ReportController extends Controller
             $exam = Exam::with('examSubjects.subject', 'examSubjects.schoolClass')->findOrFail($request->exam_id);
 
             $rows = $exam->examSubjects->map(function ($examSubject) {
-                $totalStudents = \App\Models\Student::where('school_class_id', $examSubject->school_class_id)
+                $totalStudents = Student::where('school_class_id', $examSubject->school_class_id)
                     ->where('status', 'active')
                     ->count();
 
@@ -49,6 +60,66 @@ class ReportController extends Controller
     public function sectionResult(Request $request): View
     {
         return $this->renderList($request, 'section', false, 'roll', 'Section Wise Result');
+    }
+
+    public function sectionResultPdf(Request $request): Response
+    {
+        [$rows, $section] = $this->sectionResultRows($request);
+
+        $pdf = Pdf::loadView('school.reports.section-result-pdf', [
+            'school' => Auth::user()->school,
+            'section' => $section,
+            'rows' => $rows,
+        ]);
+
+        return $pdf->download('Section Wise Result'.($section ? ' - '.$section->schoolClass?->name.' '.$section->name : '').'.pdf');
+    }
+
+    public function sectionResultExcel(Request $request): StreamedResponse
+    {
+        [$rows] = $this->sectionResultRows($request);
+
+        $headers = ['ID No', 'Roll', 'Name', 'Percentage', 'GPA', 'Grade', 'Position', 'Status', 'Total Failed Subject'];
+        $excelRows = $rows->map(fn ($row) => [
+            $row->student->admission_number,
+            $row->student->roll,
+            $row->student->name,
+            $row->percentage.'%',
+            $row->gpa,
+            $row->grade?->name ?? '—',
+            $row->is_passed ? $row->position : '—',
+            $row->is_passed ? 'Pass' : 'Fail',
+            $row->failed_subjects_count,
+        ])->all();
+
+        return $this->excelDownload('Section Wise Result', $headers, $excelRows);
+    }
+
+    /**
+     * @return array{0: Collection, 1: Section|null}
+     */
+    private function sectionResultRows(Request $request): array
+    {
+        $data = $request->validate([
+            'exam_id' => ['required', 'exists:exams,id'],
+            'section_id' => ['required', 'exists:sections,id'],
+        ]);
+
+        $section = Section::with('schoolClass')->find($data['section_id']);
+
+        $resultBatch = ResultBatch::where('type', ResultBatch::TYPE_EXAM)->where('exam_id', $data['exam_id'])->first();
+
+        $rows = collect();
+
+        if ($resultBatch) {
+            $rows = $resultBatch->results()->with('student', 'grade')
+                ->where('section_id', $data['section_id'])
+                ->get()
+                ->sortBy(fn ($row) => (int) $row->student->roll)
+                ->values();
+        }
+
+        return [$rows, $section];
     }
 
     public function sectionMerit(Request $request): View
@@ -192,5 +263,41 @@ class ReportController extends Controller
         }
 
         return view('school.reports.pass-fail-summary', compact('academicYears', 'exams', 'summary', 'resultBatch', 'exam'));
+    }
+
+    private function excelDownload(string $title, array $headers, array $rows): StreamedResponse
+    {
+        $spreadsheet = new Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle(substr($title, 0, 31));
+
+        $sheet->fromArray($headers, null, 'A1');
+        $sheet->fromArray($rows, null, 'A2');
+
+        $lastColumn = chr(ord('A') + count($headers) - 1);
+        $headerRange = "A1:{$lastColumn}1";
+        $sheet->getStyle($headerRange)->applyFromArray([
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0B1F4E']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+        ]);
+
+        $fullRange = "A1:{$lastColumn}".(count($rows) + 1);
+        $sheet->getStyle($fullRange)->applyFromArray([
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'D1D5DB']]],
+        ]);
+
+        foreach (range('A', $lastColumn) as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = $title.'.xlsx';
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }

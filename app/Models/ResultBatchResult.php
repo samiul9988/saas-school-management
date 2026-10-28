@@ -13,7 +13,7 @@ class ResultBatchResult extends Model
 
     protected $fillable = [
         'school_id', 'result_batch_id', 'student_id', 'school_class_id', 'section_id', 'group_name',
-        'total_obtained', 'total_full', 'percentage', 'gpa', 'grade_id', 'position', 'is_passed', 'remarks',
+        'total_obtained', 'total_full', 'percentage', 'gpa', 'grade_id', 'position', 'is_passed', 'failed_subjects_count', 'remarks',
     ];
 
     protected $casts = [
