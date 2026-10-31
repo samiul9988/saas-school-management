@@ -69,7 +69,7 @@
                                             <td class="info-cell">
                                                 <table class="info">
                                                     <tr><td class="label">Name</td><td>: {{ $student->name }}</td></tr>
-                                                    <tr><td class="label">Student ID</td><td>: {{ $student->id }}</td></tr>
+                                                    <tr><td class="label">Student ID</td><td>: {{ $student->admission_number ?: $student->id }}</td></tr>
                                                     <tr><td class="label">Class</td><td>: {{ $section->schoolClass?->name }}</td></tr>
                                                     <tr><td class="label">Section</td><td>: {{ $section->name }}</td></tr>
                                                     <tr><td class="label">Group</td><td>: {{ $student->group_name ?: 'N/A' }}</td></tr>
