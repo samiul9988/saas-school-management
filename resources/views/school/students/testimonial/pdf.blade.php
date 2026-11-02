@@ -25,7 +25,7 @@
         .body-text { font-size: 13px; line-height: 2.1; margin-top: 30px; }
         .blank { display: inline-block; border-bottom: 1px dotted #333; min-width: 120px; text-align: center; font-weight: bold; font-style: italic; padding: 0 4px; }
 
-        .sign-area { margin-top: 90px; text-align: right; }
+        .sign-area { margin-top: 90px; text-align: left; }
         .sign-area .line { display: inline-block; width: 180px; border-top: 1px solid #333; margin-bottom: 4px; }
         .sign-area .head-label { font-weight: bold; }
         .sign-area .school-sub { color: #7c2d12; }
@@ -66,8 +66,14 @@
             <span class="blank">{{ $testimonial->father_name ?: 'N/A' }}</span>
             and <span class="blank">{{ $testimonial->mother_name ?: 'N/A' }}</span>
             of <span class="blank">{{ $testimonial->address ?: 'N/A' }}</span>
+            <br>
             continued <span class="blank">{{ $testimonial->class_name ?: 'N/A' }}</span>
-            bearing Roll No. <span class="blank">{{ $testimonial->roll ?: 'N/A' }}</span>.
+            bearing Roll No. <span class="blank">{{ $testimonial->roll ?: 'N/A' }}</span>
+            bearing Registration No. <span class="blank">{{ $testimonial->registration_number ?: 'null' }}</span>
+            <br>
+            in the session <span class="blank">{{ $testimonial->session ?: 'null' }}</span>
+            and achieved GPA <span class="blank">{{ $testimonial->gpa ?: 'null' }}</span>.
+            His/her date of birth is <span class="blank">{{ $testimonial->date_of_birth?->format('d/m/Y') ?? 'N/A' }}</span>.
             <br><br>
             He/She is Bangladeshi by birth. To the best of my knowledge he/she did not take part in any subversive activity against the discipline of state.
             <br><br>
@@ -76,8 +82,7 @@
 
         <div class="sign-area">
             <div><div class="line"></div></div>
-            <div class="head-label">Head</div>
-            <div class="school-sub">{{ $school?->name }}</div>
+            <div class="head-label">Class Teacher</div>
         </div>
 
         <div class="footer-credit">SaaS School Management :: Powered by SaaS School Management</div>

@@ -17,8 +17,10 @@
 
     /* Template 2 */
     .tpl2 { background: linear-gradient(180deg, #38bdf8, #0284c7); color: #fff; text-align: center; }
-    .tpl2 .seal { position: absolute; top: 8px; left: 10px; width: 22px; height: 22px; border-radius: 50%; background: #fff; }
-    .tpl2 .photo-wrap { margin-top: 14px; }
+    .tpl2 .seal { position: absolute; top: 8px; left: 10px; width: 24px; height: 24px; border-radius: 50%; background: #fff; overflow: hidden; }
+    .tpl2 .seal img { width: 100%; height: 100%; object-fit: cover; }
+    .tpl2 .sname-top { font-size: 9px; font-weight: bold; padding: 8px 32px 0 32px; line-height: 1.15; }
+    .tpl2 .photo-wrap { margin-top: 8px; }
     .tpl2 .photo { width: 58px; height: 58px; border-radius: 6px; border: 2px solid #fff; object-fit: cover; background: #ddd; }
     .tpl2 .sname-student { font-weight: bold; font-size: 11.5px; margin-top: 4px; }
     .tpl2 .info-list { text-align: left; display: inline-block; margin-top: 6px; font-size: 7.5px; }
@@ -28,7 +30,8 @@
     /* Back side (both templates share this layout) */
     .id-card-back { text-align: center; padding-top: 10px; box-sizing: border-box; background: #fff; }
     .id-card-back .tag { font-size: 8px; font-weight: bold; color: #333; letter-spacing: .5px; }
-    .id-card-back .seal-big { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #4a1942; margin: 10px auto 6px auto; }
+    .id-card-back .seal-big { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #0284c7; margin: 10px auto 6px auto; overflow: hidden; }
+    .id-card-back .seal-big img { width: 100%; height: 100%; object-fit: cover; }
     .id-card-back .sname { font-size: 10px; font-weight: bold; color: #222; }
     .id-card-back .saddr { font-size: 7px; color: #666; margin-top: 2px; }
     .id-card-back .sphone { font-size: 7px; color: #666; }

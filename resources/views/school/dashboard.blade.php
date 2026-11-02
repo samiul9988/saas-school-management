@@ -3,10 +3,16 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Dashboard') }}</h2>
     </x-slot>
 
+    <style>
+        @media (max-width: 575.98px) {
+            .dashboard-identity-logo { width: 140px !important; height: 140px !important; margin: 0 auto; }
+        }
+    </style>
+
     <div class="row g-3">
         <div class="col-12 col-lg-8">
-            <div class="bg-white shadow-sm rounded-lg p-4 d-flex align-items-center gap-4 mb-3">
-                <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle overflow-hidden bg-light" style="width:90px;height:90px;">
+            <div class="bg-white shadow-sm rounded-lg p-4 d-flex flex-column flex-sm-row align-items-center text-center text-sm-start gap-4 mb-3">
+                <div class="dashboard-identity-logo flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle overflow-hidden bg-light" style="width:90px;height:90px;">
                     @if ($school->logo)
                         <img src="{{ Storage::url($school->logo) }}" alt="{{ $school->name }}" class="w-100 h-100" style="object-fit:cover;">
                     @else

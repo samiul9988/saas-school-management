@@ -79,7 +79,7 @@
 
         <div class="sign-area">
             <div><div class="line"></div></div>
-            <div class="head-label">Head</div>
+            <div class="head-label">Head Teacher</div>
             <div class="school-sub">{{ $school?->name }}</div>
         </div>
 

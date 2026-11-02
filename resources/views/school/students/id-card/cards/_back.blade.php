@@ -1,9 +1,17 @@
+@php($forPdf = $forPdf ?? false)
 <div class="id-card id-card-back">
     <div class="tag">IF FOUND, PLEASE RETURN TO</div>
-    <div class="seal-big"></div>
+    <div class="seal-big">
+        @if ($school->logo)
+            <img src="{{ $forPdf ? public_path('storage/'.$school->logo) : asset('storage/'.$school->logo) }}" alt="">
+        @endif
+    </div>
     <div class="sname">{{ $school->name }}</div>
     @if ($school->address)
         <div class="saddr">{{ $school->address }}</div>
+    @endif
+    @if ($school->email)
+        <div class="sphone">Email: {{ $school->email }}</div>
     @endif
     @if ($school->phone)
         <div class="sphone">Official Mobile No: {{ $school->phone }}</div>

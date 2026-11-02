@@ -30,7 +30,12 @@
     </div>
 @else
     <div class="id-card tpl2">
-        <div class="seal"></div>
+        <div class="seal">
+            @if ($school->logo)
+                <img src="{{ $forPdf ? public_path('storage/'.$school->logo) : asset('storage/'.$school->logo) }}" alt="">
+            @endif
+        </div>
+        <div class="sname-top">{{ $school->name }}</div>
         <div class="photo-wrap">
             @if ($photoSrc)
                 <img src="{{ $photoSrc }}" class="photo" alt="">

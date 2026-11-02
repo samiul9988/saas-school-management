@@ -135,21 +135,30 @@ class StudentUpdateController extends Controller
                     $fail('The selected section is invalid.');
                 }
             }],
-            'student_id' => ['required', 'exists:students,id'],
+            'student_ids' => ['required', 'array', 'min:1'],
+            'student_ids.*' => ['exists:students,id'],
             'school_class_id' => ['required', 'exists:school_classes,id'],
             'new_section_id' => ['required', 'exists:sections,id'],
             'group_name' => ['nullable', 'string', 'max:255'],
             'roll' => ['nullable', 'string', 'max:50'],
         ]);
 
-        Student::findOrFail($data['student_id'])->update([
+        $updates = [
             'school_class_id' => $data['school_class_id'],
             'section_id' => $data['new_section_id'],
             'group_name' => $data['group_name'],
-            'roll' => $data['roll'],
-        ]);
+        ];
 
-        return redirect()->route('school.students.update-academic', ['section_id' => $data['section_id']])->with('status', 'Student academic info updated.');
+        if (count($data['student_ids']) === 1 && $data['roll']) {
+            $updates['roll'] = $data['roll'];
+        }
+
+        Student::whereIn('id', $data['student_ids'])->update($updates);
+
+        $count = count($data['student_ids']);
+
+        return redirect()->route('school.students.update-academic', ['section_id' => $data['section_id']])
+            ->with('status', $count > 1 ? "{$count} students' academic info updated." : 'Student academic info updated.');
     }
 
     public function migrationWithoutMerit(Request $request): View

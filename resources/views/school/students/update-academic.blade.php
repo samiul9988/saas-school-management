@@ -35,7 +35,7 @@
                 <table class="w-full text-sm text-left">
                     <thead class="bg-blue-100">
                         <tr class="text-gray-700">
-                            <th class="py-3 px-4"></th>
+                            <th class="py-3 px-4"><input type="checkbox" id="select-all-students"></th>
                             <th class="py-3 px-4">ID</th>
                             <th class="py-3 px-4">Name</th>
                             <th class="py-3 px-4">Class</th>
@@ -48,7 +48,7 @@
                         @forelse ($students as $student)
                             <tr class="border-t">
                                 <td class="py-2 px-4">
-                                    <input type="radio" name="pick" class="student-pick"
+                                    <input type="checkbox" name="pick" class="student-pick"
                                            data-id="{{ $student->id }}"
                                            data-class="{{ $student->school_class_id }}"
                                            data-section="{{ $student->section_id }}"
@@ -70,11 +70,12 @@
             </div>
 
             <div id="edit-panel" class="bg-white shadow-sm rounded-lg p-6 hidden">
-                <h3 class="font-semibold mb-4">Update Academic Info</h3>
+                <h3 class="font-semibold mb-1">Update Academic Info</h3>
+                <p class="text-sm text-gray-500 mb-4"><span id="selected-count">0</span> student(s) selected</p>
                 <form method="POST" action="{{ route('school.students.update-academic.store') }}" class="space-y-4">
                     @csrf
                     <input type="hidden" name="section_id" value="{{ $showAll ? 'all' : $section->id }}">
-                    <input type="hidden" name="student_id" id="f_student_id">
+                    <div id="f_student_ids"></div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -108,9 +109,10 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div>
+                        <div id="f_roll_wrap">
                             <x-input-label value="Roll" />
                             <x-text-input name="roll" id="f_roll" class="mt-1 block w-full" />
+                            <p id="f_roll_hint" class="text-xs text-gray-400 mt-1 hidden">Roll is only applied when a single student is selected.</p>
                         </div>
                     </div>
 
@@ -123,18 +125,59 @@
             </div>
 
             <script>
-                document.querySelectorAll('.student-pick').forEach(function (radio) {
-                    radio.addEventListener('change', function () {
-                        var panel = document.getElementById('edit-panel');
-                        panel.classList.remove('hidden');
-                        document.getElementById('f_student_id').value = radio.dataset.id;
-                        document.getElementById('f_class').value = radio.dataset.class || '';
-                        document.getElementById('f_section').value = radio.dataset.section || '';
-                        document.getElementById('f_group').value = radio.dataset.group || '';
-                        document.getElementById('f_roll').value = radio.dataset.roll || '';
-                        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                var selectAll = document.getElementById('select-all-students');
+                var picks = document.querySelectorAll('.student-pick');
+
+                function syncPanel() {
+                    var checked = Array.from(picks).filter(function (p) { return p.checked; });
+                    var panel = document.getElementById('edit-panel');
+                    var idsWrap = document.getElementById('f_student_ids');
+                    var rollHint = document.getElementById('f_roll_hint');
+
+                    idsWrap.innerHTML = '';
+                    checked.forEach(function (p) {
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'student_ids[]';
+                        input.value = p.dataset.id;
+                        idsWrap.appendChild(input);
                     });
+
+                    document.getElementById('selected-count').textContent = checked.length;
+
+                    if (checked.length === 0) {
+                        panel.classList.add('hidden');
+                        return;
+                    }
+
+                    panel.classList.remove('hidden');
+
+                    if (checked.length === 1) {
+                        document.getElementById('f_class').value = checked[0].dataset.class || '';
+                        document.getElementById('f_section').value = checked[0].dataset.section || '';
+                        document.getElementById('f_group').value = checked[0].dataset.group || '';
+                        document.getElementById('f_roll').value = checked[0].dataset.roll || '';
+                        document.getElementById('f_roll').disabled = false;
+                        rollHint.classList.add('hidden');
+                    } else {
+                        document.getElementById('f_roll').value = '';
+                        document.getElementById('f_roll').disabled = true;
+                        rollHint.classList.remove('hidden');
+                    }
+
+                    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+
+                picks.forEach(function (checkbox) {
+                    checkbox.addEventListener('change', syncPanel);
                 });
+
+                if (selectAll) {
+                    selectAll.addEventListener('change', function () {
+                        picks.forEach(function (checkbox) { checkbox.checked = selectAll.checked; });
+                        syncPanel();
+                    });
+                }
             </script>
         @endif
     </div>

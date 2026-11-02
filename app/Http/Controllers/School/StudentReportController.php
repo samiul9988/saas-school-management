@@ -92,6 +92,7 @@ class StudentReportController extends Controller
     {
         $section = Section::with('schoolClass')->findOrFail($request->section_id);
         $students = Student::where('section_id', $section->id)->orderByRoll()->get();
+        $school = Auth::user()->school;
 
         $headers = ['ID', 'Name', 'Roll', 'Father', 'Mother', 'Gender', 'Religion', 'Mobile', 'Village', 'Upazila'];
         $rows = $students->map(fn ($s) => [
@@ -99,7 +100,14 @@ class StudentReportController extends Controller
             ucfirst((string) $s->gender), $s->religion, $s->guardian_phone, $s->village, $s->upazila_thana,
         ])->all();
 
-        return $this->excelDownload('Section Wise Student Report '.$section->name, $headers, $rows);
+        $infoLines = [
+            $school->name,
+            $school->address,
+            'Student Report (Section Wise)',
+            'Class: '.$section->schoolClass?->name.', Section: '.$section->name,
+        ];
+
+        return $this->excelDownload('Section Wise Student Report '.$section->name, $headers, $rows, $infoLines);
     }
 
     public function classWise(Request $request): View
@@ -270,24 +278,40 @@ class StudentReportController extends Controller
         return $pdf->download('Student_Summary(Religion_Wise).pdf');
     }
 
-    private function excelDownload(string $title, array $headers, array $rows): StreamedResponse
+    /**
+     * @param  array<int, string>  $infoLines  Optional lines (school name, address, report title, class/section) rendered above the header row.
+     */
+    private function excelDownload(string $title, array $headers, array $rows, array $infoLines = []): StreamedResponse
     {
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle(substr($title, 0, 31));
 
-        $sheet->fromArray($headers, null, 'A1');
-        $sheet->fromArray($rows, null, 'A2');
-
         $lastColumn = chr(ord('A') + count($headers) - 1);
-        $headerRange = "A1:{$lastColumn}1";
+        $headerRowNumber = 1;
+
+        foreach ($infoLines as $index => $line) {
+            $rowNumber = $index + 1;
+            $sheet->setCellValue("A{$rowNumber}", $line);
+            $sheet->mergeCells("A{$rowNumber}:{$lastColumn}{$rowNumber}");
+            $sheet->getStyle("A{$rowNumber}")->applyFromArray([
+                'font' => ['bold' => $index === 0, 'size' => $index === 0 ? 13 : 10],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+            ]);
+            $headerRowNumber = $rowNumber + 1;
+        }
+
+        $sheet->fromArray($headers, null, "A{$headerRowNumber}");
+        $sheet->fromArray($rows, null, 'A'.($headerRowNumber + 1));
+
+        $headerRange = "A{$headerRowNumber}:{$lastColumn}{$headerRowNumber}";
         $sheet->getStyle($headerRange)->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0B1F4E']],
             'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
         ]);
 
-        $fullRange = "A1:{$lastColumn}".(count($rows) + 1);
+        $fullRange = "A{$headerRowNumber}:{$lastColumn}".($headerRowNumber + count($rows));
         $sheet->getStyle($fullRange)->applyFromArray([
             'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'D1D5DB']]],
         ]);
