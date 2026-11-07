@@ -40,7 +40,7 @@ class SignatureTest extends TestCase
 
         $response = $this->actingAs($admin)->post(route('school.signatures.store'), [
             'title' => 'Head Teacher',
-            'position' => 'Head Teacher',
+            'position' => 'Admit Card Right',
             'status' => 'active',
             'image' => UploadedFile::fake()->image('sign.png'),
         ]);
@@ -49,8 +49,46 @@ class SignatureTest extends TestCase
 
         $signature = Signature::first();
         $this->assertSame('Head Teacher', $signature->title);
+        $this->assertSame('Admit Card Right', $signature->position);
         $this->assertNotNull($signature->image_path);
         Storage::disk('public')->assertExists($signature->image_path);
+    }
+
+    public function test_position_must_be_one_of_the_predefined_options(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+
+        $response = $this->actingAs($admin)->post(route('school.signatures.store'), [
+            'title' => 'Head Teacher',
+            'position' => 'Some Made Up Position',
+            'status' => 'active',
+        ]);
+
+        $response->assertSessionHasErrors('position');
+        $this->assertDatabaseCount('signatures', 0);
+    }
+
+    public function test_selecting_an_already_used_position_replaces_its_signature_instead_of_duplicating(): void
+    {
+        Storage::fake('public');
+        $admin = $this->makeSchoolAdmin();
+
+        $this->actingAs($admin)->post(route('school.signatures.store'), [
+            'title' => 'First Head',
+            'position' => 'Admit Card Right',
+            'status' => 'active',
+            'image' => UploadedFile::fake()->image('first.png'),
+        ]);
+
+        $this->actingAs($admin)->post(route('school.signatures.store'), [
+            'title' => 'Second Head',
+            'position' => 'Admit Card Right',
+            'status' => 'active',
+            'image' => UploadedFile::fake()->image('second.png'),
+        ]);
+
+        $this->assertDatabaseCount('signatures', 1);
+        $this->assertSame('Second Head', Signature::first()->title);
     }
 
     public function test_image_can_be_replaced_and_old_file_removed(): void

@@ -30,6 +30,14 @@
                         <tr><td class="py-2 text-gray-500">Received By</td><td class="py-2">{{ $feePayment->receivedBy?->name ?? '—' }}</td></tr>
                     </tbody>
                 </table>
+
+                @php($__receiptSignature = \App\Models\Signature::activeForPosition('Student Fee Receipt Bottom'))
+                @if ($__receiptSignature && $__receiptSignature->imageUrl())
+                    <div class="mt-8 text-right">
+                        <img src="{{ $__receiptSignature->imageUrl() }}" alt="{{ $__receiptSignature->title }}" class="h-10 inline-block">
+                        <div class="text-sm text-gray-600">{{ $__receiptSignature->title }}</div>
+                    </div>
+                @endif
             </div>
 
             <a href="{{ route('school.student-fees.index') }}" class="text-indigo-600 hover:underline print:hidden block mt-4">&larr; Back to student fees</a>

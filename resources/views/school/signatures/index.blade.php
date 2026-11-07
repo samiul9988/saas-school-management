@@ -20,8 +20,13 @@
                         <x-text-input id="title" name="title" class="mt-1 block w-full" value="{{ old('title') }}" required />
                     </div>
                     <div>
-                        <x-input-label for="position" value="Position" />
-                        <x-text-input id="position" name="position" class="mt-1 block w-full" value="{{ old('position') }}" placeholder="e.g. Head Teacher" required />
+                        <x-input-label for="position" value="Select Position" />
+                        <select id="position" name="position" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                            <option value="">Select Position</option>
+                            @foreach ($positions as $position)
+                                <option value="{{ $position }}" @selected(old('position') === $position)>{{ $position }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div>
                         <x-input-label for="status" value="Sign Status" />
@@ -44,11 +49,11 @@
                 <table class="w-full text-sm text-left">
                     <thead class="bg-gray-50">
                         <tr class="text-gray-500">
-                            <th class="py-3 px-4">Position</th>
-                            <th class="py-3 px-4">Title</th>
-                            <th class="py-3 px-4">Status</th>
+                            <th class="py-3 px-4">Position Name</th>
+                            <th class="py-3 px-4">Signature Title</th>
+                            <th class="py-3 px-4">Signature Status</th>
                             <th class="py-3 px-4">Sign</th>
-                            <th class="py-3 px-4">Replace</th>
+                            <th class="py-3 px-4">Upload Image</th>
                             <th class="py-3 px-4">Delete</th>
                         </tr>
                     </thead>
@@ -69,7 +74,9 @@
                                     <form method="POST" action="{{ route('school.signatures.upload-image', $signature) }}" enctype="multipart/form-data" class="flex items-center gap-2">
                                         @csrf
                                         <input type="file" name="image" accept="image/*" required class="text-xs">
-                                        <button type="submit" class="text-indigo-600 hover:underline text-xs">Upload</button>
+                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-[#2196f3] rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-600">
+                                            <i class="bi bi-cloud-upload mr-1"></i> Upload Image
+                                        </button>
                                     </form>
                                 </td>
                                 <td class="py-3 px-4">

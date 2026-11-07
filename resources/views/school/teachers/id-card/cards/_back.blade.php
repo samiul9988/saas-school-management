@@ -9,7 +9,12 @@
         <div class="sphone">Official Mobile No: {{ $school->phone }}</div>
     @endif
     <div class="sign">
-        <div class="line"></div>
+        @php($__idSignature = \App\Models\Signature::activeForPosition('HR ID Card'))
+        @if ($__idSignature && $__idSignature->imageUrl())
+            <img src="{{ $forPdf ?? false ? public_path('storage/'.$__idSignature->image_path) : $__idSignature->imageUrl() }}" alt="" style="height: 22px; display: block; margin: 0 auto;">
+        @else
+            <div class="line"></div>
+        @endif
         Authorised Signature
     </div>
 </div>

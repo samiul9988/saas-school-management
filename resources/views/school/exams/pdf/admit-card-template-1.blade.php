@@ -91,7 +91,7 @@
                 </div>
 
                 <div class="sign">
-                    <span class="line">Authorized Signature</span>
+                    @include('school.partials.signature-slot', ['position' => 'Admit Card Right', 'label' => 'Authorized Signature'])
                 </div>
             </div>
         </div>

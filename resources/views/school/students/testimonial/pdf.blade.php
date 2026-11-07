@@ -81,7 +81,12 @@
         </div>
 
         <div class="sign-area">
-            <div><div class="line"></div></div>
+            @php($__testimonialSignature = \App\Models\Signature::activeForPosition('Testimonial Left'))
+            @if ($__testimonialSignature && $__testimonialSignature->imageUrl())
+                <img src="{{ $__testimonialSignature->imageUrl() }}" alt="" style="height: 30px;">
+            @else
+                <div><div class="line"></div></div>
+            @endif
             <div class="head-label">Class Teacher</div>
         </div>
 

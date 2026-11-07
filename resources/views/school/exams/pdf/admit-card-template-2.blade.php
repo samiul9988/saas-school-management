@@ -90,7 +90,7 @@
             </div>
 
             <div class="sign">
-                <span class="line">Headmaster</span>
+                @include('school.partials.signature-slot', ['position' => 'Admit Card Right', 'label' => 'Headmaster'])
             </div>
         </div>
         @if (($loop->index + 1) % 3 === 0 && ! $loop->last)

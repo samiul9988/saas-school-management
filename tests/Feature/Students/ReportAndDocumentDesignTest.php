@@ -5,11 +5,14 @@ namespace Tests\Feature\Students;
 use App\Models\School;
 use App\Models\SchoolClass;
 use App\Models\Section;
+use App\Models\Signature;
 use App\Models\Student;
 use App\Models\Testimonial;
 use App\Models\TransferCertificate;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Tests\TestCase;
@@ -121,5 +124,24 @@ class ReportAndDocumentDesignTest extends TestCase
             ->assertSee("Father's Name", false)
             ->assertSee('Blood Group')
             ->assertSee('IF FOUND, PLEASE RETURN TO');
+    }
+
+    public function test_id_card_preview_shows_the_uploaded_signature_for_its_matching_position(): void
+    {
+        Storage::fake('public');
+        $admin = $this->makeSchoolAdmin();
+
+        $this->actingAs($admin)->post(route('school.signatures.store'), [
+            'title' => 'Principal',
+            'position' => 'Student ID Card',
+            'status' => 'active',
+            'image' => UploadedFile::fake()->image('sign.png'),
+        ]);
+
+        $signature = Signature::first();
+
+        $response = $this->actingAs($admin)->get(route('school.students.id-card.preview', ['template' => 2]));
+
+        $response->assertOk()->assertSee($signature->imageUrl(), false);
     }
 }

@@ -78,7 +78,12 @@
         </div>
 
         <div class="sign-area">
-            <div><div class="line"></div></div>
+            @php($__tcSignature = \App\Models\Signature::activeForPosition('TC Right'))
+            @if ($__tcSignature && $__tcSignature->imageUrl())
+                <img src="{{ $__tcSignature->imageUrl() }}" alt="" style="height: 30px;">
+            @else
+                <div><div class="line"></div></div>
+            @endif
             <div class="head-label">Head Teacher</div>
             <div class="school-sub">{{ $school?->name }}</div>
         </div>

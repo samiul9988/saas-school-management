@@ -158,8 +158,8 @@
 
         <table class="sign-table">
             <tr>
-                <td>Signature of Section Teacher</td>
-                <td>Signature of Headmaster</td>
+                <td>@include('school.partials.signature-slot', ['position' => 'Mark Sheet Left', 'label' => 'Signature of Section Teacher'])</td>
+                <td>@include('school.partials.signature-slot', ['position' => 'Mark Sheet Right', 'label' => 'Signature of Headmaster'])</td>
             </tr>
         </table>
 

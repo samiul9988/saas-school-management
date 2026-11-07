@@ -7,6 +7,7 @@ use App\Models\Signature;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class SignatureController extends Controller
@@ -14,15 +15,16 @@ class SignatureController extends Controller
     public function index(): View
     {
         $signatures = Signature::latest()->get();
+        $positions = Signature::POSITIONS;
 
-        return view('school.signatures.index', compact('signatures'));
+        return view('school.signatures.index', compact('signatures', 'positions'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'position' => ['required', 'string', 'max:255'],
+            'position' => ['required', 'string', Rule::in(Signature::POSITIONS)],
             'status' => ['required', 'in:active,inactive'],
             'image' => ['nullable', 'image', 'max:2048'],
         ]);
@@ -33,9 +35,14 @@ class SignatureController extends Controller
 
         unset($data['image']);
 
-        Signature::create($data);
+        // Each position holds exactly one signature, so selecting a position
+        // that already has one replaces it rather than creating a duplicate row.
+        Signature::updateOrCreate(
+            ['school_id' => $request->user()->school_id, 'position' => $data['position']],
+            $data
+        );
 
-        return redirect()->route('school.signatures.index')->with('status', 'Signature created.');
+        return redirect()->route('school.signatures.index')->with('status', 'Signature saved.');
     }
 
     public function uploadImage(Request $request, Signature $signature): RedirectResponse
