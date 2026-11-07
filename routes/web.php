@@ -167,7 +167,9 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/dashboard', SchoolDashboardController::class)->name('dashboard');
         Route::resource('academic-years', AcademicYearController::class)->except('show')->parameters(['academic-years' => 'academicYear']);
         Route::resource('classes', SchoolClassController::class)->except('show')->parameters(['classes' => 'class']);
+        Route::get('/classes/{class}/groups', [SchoolClassController::class, 'groups'])->name('classes.groups');
         Route::resource('sections', SectionController::class)->except('show');
+        Route::get('/sections/{section}/groups', [SectionController::class, 'groups'])->name('sections.groups');
         Route::resource('subjects', SubjectController::class)->except('show');
         Route::get('/teachers/hr-list', [TeacherController::class, 'hrList'])->name('teachers.hr-list');
         Route::get('/teachers/update/basic-info', [TeacherController::class, 'hrUpdate'])->name('teachers.hr-update');

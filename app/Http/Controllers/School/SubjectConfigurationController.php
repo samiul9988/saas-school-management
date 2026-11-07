@@ -4,6 +4,7 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\SchoolClass;
+use App\Models\Student;
 use App\Models\Subject;
 use App\Models\SubjectAssignment;
 use Illuminate\Http\RedirectResponse;
@@ -18,8 +19,11 @@ class SubjectConfigurationController extends Controller
     public function index(Request $request): View
     {
         $classes = SchoolClass::orderBy('sort_order')->get();
-        $groups = self::GROUPS;
         $subjects = Subject::orderBy('name')->get();
+
+        $groups = $request->filled('school_class_id')
+            ? Student::where('school_class_id', $request->school_class_id)->whereNotNull('group_name')->where('group_name', '!=', '')->distinct()->orderBy('group_name')->pluck('group_name')
+            : collect(self::GROUPS);
         $subjectTypes = SubjectAssignment::TYPES;
 
         $class = null;

@@ -31,7 +31,10 @@ class MarkInputController extends Controller
         $exams = Exam::orderByDesc('starts_on')->get();
         $subjects = Subject::orderBy('name')->get();
         $shortCodes = ExamShortCode::orderBy('serial')->get();
-        $groups = self::GROUPS;
+
+        $groups = $request->filled('section_id')
+            ? Student::where('section_id', $request->section_id)->whereNotNull('group_name')->where('group_name', '!=', '')->distinct()->orderBy('group_name')->pluck('group_name')
+            : collect(self::GROUPS);
 
         $section = null;
         $examSubject = null;

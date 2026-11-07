@@ -53,6 +53,11 @@
                     </div>
                 </form>
 
+                @include('school.partials.dynamic-group-script')
+                <script>
+                    wireDynamicGroupSelect('section_id', 'group_name', 'sections', @json($groupName));
+                </script>
+
                 @if ($section && $groupName)
                     <form method="POST" action="{{ route('school.exam-configuration.fourth-subject.store') }}">
                         @csrf

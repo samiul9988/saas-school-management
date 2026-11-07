@@ -21,7 +21,10 @@ class FourthSubjectController extends Controller
         $tab = $request->get('tab', 'assign') === 'list' ? 'list' : 'assign';
 
         $sections = Section::with('schoolClass')->orderBy('name')->get();
-        $groups = self::GROUPS;
+
+        $groups = $request->filled('section_id')
+            ? Student::where('section_id', $request->section_id)->whereNotNull('group_name')->where('group_name', '!=', '')->distinct()->orderBy('group_name')->pluck('group_name')
+            : collect(self::GROUPS);
 
         $section = null;
         $groupName = null;

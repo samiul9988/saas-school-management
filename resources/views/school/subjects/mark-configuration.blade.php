@@ -36,6 +36,11 @@
                 </x-primary-button>
             </form>
 
+            @include('school.partials.dynamic-group-script')
+            <script>
+                wireDynamicGroupSelect('school_class_id', 'group_name', 'classes', @json($groupName));
+            </script>
+
             @if ($class && $groupName)
                 <form method="POST" action="{{ route('school.exam-configuration.mark.store') }}" id="mark-config-form">
                     @csrf
@@ -128,7 +133,7 @@
                     <x-input-label for="view_group_name" value="Group" />
                     <select id="view_group_name" name="view_group_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
                         <option value="">Select</option>
-                        @foreach ($groups as $group)
+                        @foreach ($viewGroups as $group)
                             <option value="{{ $group }}" @selected(request('view_group_name') === $group)>{{ $group }}</option>
                         @endforeach
                     </select>
@@ -146,6 +151,10 @@
                     <i class="bi bi-search mr-1"></i> Search
                 </x-primary-button>
             </form>
+
+            <script>
+                wireDynamicGroupSelect('view_school_class_id', 'view_group_name', 'classes', @json(request('view_group_name')));
+            </script>
 
             @if ($viewClass)
                 <div class="overflow-hidden border rounded-md">

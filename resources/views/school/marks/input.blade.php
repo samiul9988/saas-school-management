@@ -63,6 +63,11 @@
                     </x-primary-button>
                 </form>
 
+                @include('school.partials.dynamic-group-script')
+                <script>
+                    wireDynamicGroupSelect('section_id', 'group_name', 'sections', @json(request('group_name')));
+                </script>
+
                 <div class="border-t px-6 pb-6">
                     <form id="mark-input-upload-form" action="{{ route('school.mark-input.upload') }}" method="POST" enctype="multipart/form-data" class="flex flex-wrap items-center gap-3 pt-4"
                           onsubmit="return window.markInputPrepareUpload(event)">

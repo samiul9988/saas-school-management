@@ -4,12 +4,30 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\SchoolClass;
+use App\Models\Student;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SchoolClassController extends Controller
 {
+    /**
+     * Distinct, non-empty group names actually assigned to this class's students,
+     * so Group dropdowns reflect real data instead of a fixed list.
+     */
+    public function groups(SchoolClass $class): JsonResponse
+    {
+        $groups = Student::where('school_class_id', $class->id)
+            ->whereNotNull('group_name')
+            ->where('group_name', '!=', '')
+            ->distinct()
+            ->orderBy('group_name')
+            ->pluck('group_name');
+
+        return response()->json(['groups' => $groups]);
+    }
+
     public function index(): View
     {
         $classes = SchoolClass::withCount('students')->orderBy('sort_order')->get();

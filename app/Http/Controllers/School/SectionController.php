@@ -3,14 +3,32 @@
 namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
-use App\Models\Section;
 use App\Models\SchoolClass;
+use App\Models\Section;
+use App\Models\Student;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SectionController extends Controller
 {
+    /**
+     * Distinct, non-empty group names actually assigned to this section's students,
+     * so Group dropdowns reflect real data instead of a fixed list.
+     */
+    public function groups(Section $section): JsonResponse
+    {
+        $groups = Student::where('section_id', $section->id)
+            ->whereNotNull('group_name')
+            ->where('group_name', '!=', '')
+            ->distinct()
+            ->orderBy('group_name')
+            ->pluck('group_name');
+
+        return response()->json(['groups' => $groups]);
+    }
+
     public function index(): View
     {
         $sections = Section::with('schoolClass')->withCount('students')->get();

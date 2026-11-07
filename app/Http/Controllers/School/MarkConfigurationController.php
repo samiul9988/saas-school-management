@@ -7,6 +7,7 @@ use App\Models\Exam;
 use App\Models\ExamShortCode;
 use App\Models\ExamSubject;
 use App\Models\SchoolClass;
+use App\Models\Student;
 use App\Models\Subject;
 use App\Models\SubjectAssignment;
 use App\Models\SubjectComponent;
@@ -22,9 +23,11 @@ class MarkConfigurationController extends Controller
     public function index(Request $request): View
     {
         $classes = SchoolClass::orderBy('sort_order')->get();
-        $groups = self::GROUPS;
         $shortCodes = ExamShortCode::orderBy('serial')->get();
         $exams = Exam::orderByDesc('starts_on')->get();
+
+        $groups = $this->groupsForClass($request->get('school_class_id'));
+        $viewGroups = $this->groupsForClass($request->get('view_school_class_id'));
 
         $class = null;
         $groupName = null;
@@ -99,10 +102,24 @@ class MarkConfigurationController extends Controller
         }
 
         return view('school.subjects.mark-configuration', compact(
-            'classes', 'groups', 'shortCodes', 'exams',
+            'classes', 'groups', 'viewGroups', 'shortCodes', 'exams',
             'class', 'groupName', 'availableSubjects',
             'viewClass', 'viewGroupName', 'viewExam', 'existingRows'
         ));
+    }
+
+    private function groupsForClass(?string $classId)
+    {
+        if (! $classId) {
+            return collect(self::GROUPS);
+        }
+
+        return Student::where('school_class_id', $classId)
+            ->whereNotNull('group_name')
+            ->where('group_name', '!=', '')
+            ->distinct()
+            ->orderBy('group_name')
+            ->pluck('group_name');
     }
 
     public function store(Request $request): RedirectResponse
