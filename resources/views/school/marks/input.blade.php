@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Mark Input Here') }}</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Mark Input / Update Here') }}</h2>
     </x-slot>
 
     <div class="space-y-4">

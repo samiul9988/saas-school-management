@@ -277,7 +277,7 @@
                             <li class="nav-item"><a href="{{ route('school.exams.seat-plan') }}" class="nav-link {{ $isActiveGroup('school.exams.seat-plan') }}"><i class="nav-icon bi bi-person-vcard"></i><p>{{ __('Admit & Seat Plan') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.exams.top-sheet') }}" class="nav-link {{ $isActiveGroup('school.exams.top-sheet') }}"><i class="nav-icon bi bi-journal-text"></i><p>{{ __('Top Sheet') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.mark-input.index') }}" class="nav-link {{ $isActiveGroup('school.mark-input.*') }}"><i class="nav-icon bi bi-pencil"></i><p>{{ __('Mark Input') }}</p></a></li>
-                            <li class="nav-item"><a href="{{ route('school.exam-subjects.search') }}" class="nav-link {{ $isActiveGroup('school.exam-subjects.search') }}"><i class="nav-icon bi bi-pencil-square"></i><p>{{ __('Mark Update') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.mark-input.index') }}" class="nav-link {{ $isActiveGroup('school.mark-input.*') }}"><i class="nav-icon bi bi-pencil-square"></i><p>{{ __('Mark Update') }}</p></a></li>
                             <li class="nav-item has-treeview {{ request()->routeIs('school.results.*', 'school.results-process.*') ? 'menu-open' : '' }}">
                                 <a href="#" class="nav-link {{ $isActiveGroup('school.results.index') }}">
                                     <i class="nav-icon bi bi-bar-chart"></i>
