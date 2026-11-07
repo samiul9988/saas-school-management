@@ -17,7 +17,7 @@
         @endif
 
         <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
                 <div class="lg:col-span-2">
                 <form method="GET" class="p-6 space-y-4">
                     <div>
@@ -133,7 +133,7 @@
                     };
                 </script>
 
-                <div class="border-t lg:border-t-0 lg:border-l bg-gray-50 p-6">
+                <div class="lg:col-span-3 border-t lg:border-t-0 lg:border-l bg-gray-50 p-6">
                     <table class="w-full text-sm text-left">
                         <thead class="bg-blue-100">
                             <tr class="text-gray-700">
