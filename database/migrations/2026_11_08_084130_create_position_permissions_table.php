@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('position_permissions', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
             $table->foreignId('position_id')->constrained('positions')->cascadeOnDelete();
             $table->string('module');

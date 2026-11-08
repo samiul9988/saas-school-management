@@ -8,8 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (! Schema::hasColumn('users', 'position_id')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->foreignId('position_id')->nullable()->after('role');
+            });
+        }
+
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('position_id')->nullable()->after('role')->constrained('positions')->nullOnDelete();
+            $table->foreign('position_id')->references('id')->on('positions')->nullOnDelete();
         });
     }
 
