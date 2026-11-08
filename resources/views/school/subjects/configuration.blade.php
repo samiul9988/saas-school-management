@@ -33,29 +33,27 @@
                 </div>
             </form>
 
-            @if ($class && $groupName)
-                <form method="POST" action="{{ route('school.exam-configuration.subject.store') }}">
-                    @csrf
-                    <input type="hidden" name="school_class_id" value="{{ $class->id }}">
-                    <input type="hidden" name="group_name" value="{{ $groupName }}">
+            <form method="POST" action="{{ route('school.exam-configuration.subject.store') }}">
+                @csrf
+                <input type="hidden" name="school_class_id" value="{{ $class->id ?? request('school_class_id') }}">
+                <input type="hidden" name="group_name" value="{{ $groupName ?? request('group_name') }}">
 
-                    <x-input-label value="Select Subject(s)" />
-                    <div class="mt-2 border rounded-md p-4 grid grid-cols-1 sm:grid-cols-6 gap-x-6 gap-y-3">
-                        @foreach ($subjects as $subject)
-                            <label class="flex items-center gap-2 text-sm">
-                                <input type="checkbox" name="subject_ids[]" value="{{ $subject->id }}" @checked(in_array($subject->id, $assignedSubjectIds))>
-                                {{ $subject->name }}
-                            </label>
-                        @endforeach
-                    </div>
+                <x-input-label value="Select Subject(s)" />
+                <div class="mt-2 border rounded-md p-4 grid grid-cols-1 sm:grid-cols-6 gap-x-6 gap-y-3">
+                    @foreach ($subjects as $subject)
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="checkbox" name="subject_ids[]" value="{{ $subject->id }}" @checked(in_array($subject->id, $assignedSubjectIds))>
+                            {{ $subject->name }}
+                        </label>
+                    @endforeach
+                </div>
 
-                    <div class="mt-4 flex justify-center">
-                        <button type="submit" class="px-10 py-2.5 bg-[#2196f3] border border-transparent rounded-md font-semibold text-sm text-white hover:bg-blue-600">
-                            Save
-                        </button>
-                    </div>
-                </form>
-            @endif
+                <div class="mt-4 flex justify-center">
+                    <button type="submit" class="px-10 py-2.5 bg-[#2196f3] border border-transparent rounded-md font-semibold text-sm text-white hover:bg-blue-600">
+                        Save
+                    </button>
+                </div>
+            </form>
         </div>
 
         @if ($class && $groupName && $assignments->isNotEmpty())
