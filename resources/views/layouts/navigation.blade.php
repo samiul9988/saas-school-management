@@ -3,6 +3,7 @@
     // Temporary: set to false to re-enable these sidebar modules.
     $lockedMenu = true;
     $locked = fn () => $lockedMenu ? 'nav-locked' : '';
+    $canView = fn (string $module) => Auth::user()->isSuperAdmin() || Auth::user()->isSchoolAdmin() || Auth::user()->hasModuleAccess($module, 'view');
 @endphp
 
 <!-- Topbar -->
@@ -111,6 +112,7 @@
                         </ul>
                     </li>
                 @elseif (Auth::user()->isSchoolStaff())
+                    @if ($canView('students'))
                     <li class="nav-item has-treeview {{ request()->routeIs('school.students.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $isActiveGroup('school.students.*') }}">
                             <i class="nav-icon bi bi-mortarboard"></i>
@@ -168,6 +170,9 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
+
+                    @if ($canView('hr'))
                     <li class="nav-item has-treeview {{ request()->routeIs('school.teachers.*', 'school.designations.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $isActiveGroup('school.teachers.*', 'school.designations.*') }}">
                             <i class="nav-icon bi bi-person-badge"></i>
@@ -182,7 +187,9 @@
                             <li class="nav-item"><a href="{{ route('school.designations.index') }}" class="nav-link {{ $isActiveGroup('school.designations.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Create Designation') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('hr_attendance'))
                     <li class="nav-item has-treeview {{ request()->routeIs('school.hr-attendance.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $isActiveGroup('school.hr-attendance.*') }}">
                             <i class="nav-icon bi bi-person-check"></i>
@@ -215,7 +222,9 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('student_attendance'))
                     <li class="nav-item has-treeview {{ request()->routeIs('school.student-attendance.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $isActiveGroup('school.student-attendance.*') }}">
                             <i class="nav-icon bi bi-clipboard-check"></i>
@@ -251,7 +260,9 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('academics'))
                     <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.classes.*','school.sections.*','school.subjects.*','school.academic-years.*','school.attendance.*','school.routine.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-journal-bookmark"></i>
@@ -266,7 +277,9 @@
                             <li class="nav-item"><a href="{{ route('school.routine.index') }}" class="nav-link {{ $isActiveGroup('school.routine.*') }}"><i class="nav-icon bi bi-clock"></i><p>{{ __('Routine') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('exams'))
                     <li class="nav-item has-treeview {{ request()->routeIs('school.exams.*','school.results.*','school.results-process.*','school.mark-sheets.*','school.reports.*','school.exam-configuration.*','school.grades.*','school.marks.*','school.mark-input.*','school.mark-update.*','school.exam-subjects.*','school.subject-components.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-pencil-square"></i>
@@ -336,7 +349,9 @@
                             <li class="nav-item"><a href="{{ route('school.exams.admit-instruction') }}" class="nav-link {{ $isActiveGroup('school.exams.admit-instruction') }}"><i class="nav-icon bi bi-card-text"></i><p>{{ __('Admit Instruction') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('finance'))
                     <li class="nav-item has-treeview {{ request()->routeIs('school.finance.*','school.fee-types.*','school.student-fees.*','school.incomes.*','school.expenses.*','school.accounts.*','school.journal-entries.*','school.accounting-reports.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-cash-coin"></i>
@@ -369,7 +384,9 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('library'))
                     <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.book*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-journal-richtext"></i>
@@ -381,7 +398,9 @@
                             <li class="nav-item"><a href="{{ route('school.book-issues.index') }}" class="nav-link {{ $isActiveGroup('school.book-issues.*') }}"><i class="nav-icon bi bi-arrow-left-right"></i><p>{{ __('Issue / Return') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('transport'))
                     <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.vehicles.*','school.transport-routes.*','school.student-transports.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-bus-front"></i>
@@ -393,7 +412,9 @@
                             <li class="nav-item"><a href="{{ route('school.student-transports.index') }}" class="nav-link {{ $isActiveGroup('school.student-transports.*') }}"><i class="nav-icon bi bi-person-check"></i><p>{{ __('Assignments') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('inventory'))
                     <li class="nav-item has-treeview {{ $locked() }} {{ request()->routeIs('school.inventory-*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-box2"></i>
@@ -404,7 +425,9 @@
                             <li class="nav-item"><a href="{{ route('school.inventory-categories.index') }}" class="nav-link {{ $isActiveGroup('school.inventory-categories.*') }}"><i class="nav-icon bi bi-tag"></i><p>{{ __('Categories') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('payroll'))
                     <li class="nav-item has-treeview {{ request()->routeIs('school.salary-structures.*','school.payrolls.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-wallet2"></i>
@@ -415,7 +438,9 @@
                             <li class="nav-item"><a href="{{ route('school.payrolls.index') }}" class="nav-link {{ $isActiveGroup('school.payrolls.*') }}"><i class="nav-icon bi bi-cash-stack"></i><p>{{ __('Monthly Payroll') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
 
+                    @if ($canView('sms'))
                     <li class="nav-item has-treeview {{ request()->routeIs('school.sms-*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $isActiveGroup('school.sms-*') }}">
                             <i class="nav-icon bi bi-chat-dots"></i>
@@ -446,8 +471,10 @@
                             <li class="nav-item"><a href="{{ route('school.sms-templates.index') }}" class="nav-link {{ $isActiveGroup('school.sms-templates.*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Template Settings') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.profile.*','school.signatures.*','school.users.*') ? 'menu-open' : '' }}">
+                    @if ($canView('institute_setting'))
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.profile.*','school.signatures.*','school.users.*','school.positions.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-building"></i>
                             <p>{{ __('Institute Setting') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
@@ -455,9 +482,10 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item"><a href="{{ route('school.profile.edit') }}" class="nav-link {{ $isActiveGroup('school.profile.*') }}"><i class="nav-icon bi bi-pencil-square"></i><p>{{ __('Institute Update') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.signatures.index') }}" class="nav-link {{ $isActiveGroup('school.signatures.*') }}"><i class="nav-icon bi bi-vector-pen"></i><p>{{ __('Default Signature') }}</p></a></li>
-                            <li class="nav-item"><a href="{{ route('school.users.index') }}" class="nav-link {{ $isActiveGroup('school.users.*') }}"><i class="nav-icon bi bi-people"></i><p>{{ __('User List') }}</p></a></li>
+                            <li class="nav-item"><a href="{{ route('school.users.index') }}" class="nav-link {{ $isActiveGroup('school.users.*') }}"><i class="nav-icon bi bi-people"></i><p>{{ __('Users & Positions') }}</p></a></li>
                         </ul>
                     </li>
+                    @endif
                 @elseif (Auth::user()->isParent())
                     <li class="nav-item">
                         <a href="{{ route('parent.attendance') }}" class="nav-link {{ $isActiveGroup('parent.attendance') }}">

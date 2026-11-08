@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'phone', 'password', 'role', 'school_id', 'is_active'])]
+#[Fillable(['name', 'email', 'phone', 'password', 'role', 'school_id', 'position_id', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -45,9 +45,19 @@ class User extends Authenticatable
         return $this->hasOne(Student::class, 'portal_user_id');
     }
 
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(Position::class);
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+
+    public function isSchoolAdmin(): bool
+    {
+        return $this->role === self::ROLE_SCHOOL_ADMIN;
     }
 
     public function isParent(): bool
@@ -58,6 +68,26 @@ class User extends Authenticatable
     public function isSchoolStaff(): bool
     {
         return in_array($this->role, self::SCHOOL_STAFF_ROLES, true);
+    }
+
+    /**
+     * Whether this user may perform $action ('view'|'create'|'edit'|'delete')
+     * on $module. School admins (and super admins) always have full access;
+     * every other school-staff user needs their Position to grant it.
+     */
+    public function hasModuleAccess(string $module, string $action): bool
+    {
+        if ($this->isSuperAdmin() || $this->isSchoolAdmin()) {
+            return true;
+        }
+
+        $permission = $this->position?->permissions->firstWhere('module', $module);
+
+        if (! $permission) {
+            return false;
+        }
+
+        return (bool) $permission->{"can_{$action}"};
     }
 
     /**

@@ -50,6 +50,7 @@ use App\Http\Controllers\School\MarkSheetController;
 use App\Http\Controllers\School\MarksheetTemplateController;
 use App\Http\Controllers\School\NoticeController;
 use App\Http\Controllers\School\PayrollController;
+use App\Http\Controllers\School\PositionController;
 use App\Http\Controllers\School\RemarksTemplateController;
 use App\Http\Controllers\School\ReportController;
 use App\Http\Controllers\School\ResultController;
@@ -160,7 +161,7 @@ Route::middleware(['auth', 'verified', 'super_admin'])
         Route::get('/sms-usage-report', [SmsUsageReportController::class, 'index'])->name('sms-usage-report.index');
     });
 
-Route::middleware(['auth', 'verified', 'school_context'])
+Route::middleware(['auth', 'verified', 'school_context', 'module_permission'])
     ->prefix('school')
     ->name('school.')
     ->group(function () {
@@ -472,6 +473,11 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::post('/users', [SchoolUserController::class, 'store'])->name('users.store');
         Route::post('/users/{user}/toggle-status', [SchoolUserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::delete('/users/{user}', [SchoolUserController::class, 'destroy'])->name('users.destroy');
+
+        Route::get('/positions', [PositionController::class, 'index'])->name('positions.index');
+        Route::post('/positions', [PositionController::class, 'store'])->name('positions.store');
+        Route::put('/positions/{position}/permissions', [PositionController::class, 'updatePermissions'])->name('positions.permissions.update');
+        Route::delete('/positions/{position}', [PositionController::class, 'destroy'])->name('positions.destroy');
 
         Route::post('/students/{student}/portal-account', [StudentPortalAccountController::class, 'store'])->name('students.portal-account.store');
         Route::delete('/students/{student}/portal-account', [StudentPortalAccountController::class, 'destroy'])->name('students.portal-account.destroy');

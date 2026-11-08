@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\InstituteSettings;
 
+use App\Models\Position;
 use App\Models\School;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -33,6 +34,7 @@ class SchoolUserTest extends TestCase
     public function test_school_admin_can_create_operator_user(): void
     {
         $admin = $this->makeSchoolAdmin();
+        $position = Position::create(['school_id' => $admin->school_id, 'name' => 'Operator']);
 
         $response = $this->actingAs($admin)->post(route('school.users.store'), [
             'name' => 'Operator One',
@@ -40,6 +42,7 @@ class SchoolUserTest extends TestCase
             'email' => 'operator@example.com',
             'password' => 'password123',
             'role' => User::ROLE_SCHOOL_OPERATOR,
+            'position_id' => $position->id,
         ]);
 
         $response->assertRedirect(route('school.users.index'));
@@ -53,12 +56,14 @@ class SchoolUserTest extends TestCase
     public function test_newly_created_operator_can_log_in_and_reach_school_context_routes(): void
     {
         $admin = $this->makeSchoolAdmin();
+        $position = Position::create(['school_id' => $admin->school_id, 'name' => 'Operator']);
 
         $this->actingAs($admin)->post(route('school.users.store'), [
             'name' => 'Operator One',
             'email' => 'operator2@example.com',
             'password' => 'password123',
             'role' => User::ROLE_SCHOOL_OPERATOR,
+            'position_id' => $position->id,
         ]);
 
         $operator = User::where('email', 'operator2@example.com')->first();

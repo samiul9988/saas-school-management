@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Middleware\AllowActivationAccess;
+use App\Http\Middleware\EnsureModulePermission;
+use App\Http\Middleware\EnsureParent;
+use App\Http\Middleware\EnsureSchoolContext;
+use App\Http\Middleware\EnsureSuperAdmin;
+use App\Http\Middleware\MaintenanceMode;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,13 +19,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'super_admin' => \App\Http\Middleware\EnsureSuperAdmin::class,
-            'school_context' => \App\Http\Middleware\EnsureSchoolContext::class,
-            'parent_portal' => \App\Http\Middleware\EnsureParent::class,
-            'activation_access' => \App\Http\Middleware\AllowActivationAccess::class,
+            'super_admin' => EnsureSuperAdmin::class,
+            'school_context' => EnsureSchoolContext::class,
+            'module_permission' => EnsureModulePermission::class,
+            'parent_portal' => EnsureParent::class,
+            'activation_access' => AllowActivationAccess::class,
         ]);
         $middleware->web(append: [
-            \App\Http\Middleware\MaintenanceMode::class,
+            MaintenanceMode::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
