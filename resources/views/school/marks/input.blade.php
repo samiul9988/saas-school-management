@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Mark Input / Update Here') }}</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $mode === 'update' ? __('Mark Update Here') : __('Mark Input Here') }}</h2>
     </x-slot>
 
     <div class="space-y-4">
@@ -66,6 +66,11 @@
                 @include('school.partials.dynamic-group-script')
                 <script>
                     wireDynamicGroupSelect('section_id', 'group_name', 'sections', @json(request('group_name')));
+                </script>
+
+                @include('school.partials.dynamic-subject-script')
+                <script>
+                    wireDynamicSubjectSelect('section_id', 'exam_id', 'group_name', 'subject_id', @json($mode), @json(request('subject_id')));
                 </script>
 
                 <div class="border-t px-6 pb-6">

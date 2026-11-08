@@ -10,8 +10,10 @@ use App\Models\Mark;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\Subject;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -27,14 +29,81 @@ class MarkInputController extends Controller
 
     public function index(Request $request): View
     {
+        return $this->search($request, 'input');
+    }
+
+    public function markUpdate(Request $request): View
+    {
+        return $this->search($request, 'update');
+    }
+
+    public function subjects(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'section_id' => ['required', 'exists:sections,id'],
+            'exam_id' => ['required', 'exists:exams,id'],
+            'group_name' => ['nullable', 'string'],
+            'mode' => ['required', 'in:input,update'],
+        ]);
+
+        $subjects = $this->subjectsFor($data['section_id'], $data['exam_id'], $data['group_name'] ?? null, $data['mode']);
+
+        return response()->json(['subjects' => $subjects->map(fn ($subject) => ['id' => $subject->id, 'name' => $subject->name])->values()]);
+    }
+
+    /**
+     * Subjects still awaiting marks ("input" mode) or already have marks
+     * entered ("update" mode) for the given section/exam/group, so a subject
+     * once input no longer shows up for input and only shows up for update.
+     */
+    private function subjectsFor(?string $sectionId, ?string $examId, ?string $groupName, string $mode): Collection
+    {
+        if (! $sectionId || ! $examId) {
+            return Subject::orderBy('name')->get();
+        }
+
+        $section = Section::find($sectionId);
+
+        if (! $section) {
+            return collect();
+        }
+
+        $examSubjects = ExamSubject::where('exam_id', $examId)
+            ->where('school_class_id', $section->school_class_id)
+            ->with('subject')
+            ->get();
+
+        $studentIds = Student::where('section_id', $sectionId)
+            ->where('status', 'active')
+            ->when($groupName, fn ($q) => $q->where('group_name', $groupName))
+            ->pluck('id');
+
+        return $examSubjects
+            ->filter(function (ExamSubject $examSubject) use ($studentIds, $mode) {
+                $hasMarks = Mark::where('exam_subject_id', $examSubject->id)
+                    ->whereIn('student_id', $studentIds)
+                    ->exists();
+
+                return $mode === 'update' ? $hasMarks : ! $hasMarks;
+            })
+            ->pluck('subject')
+            ->filter()
+            ->unique('id')
+            ->sortBy('name')
+            ->values();
+    }
+
+    private function search(Request $request, string $mode): View
+    {
         $sections = Section::with('schoolClass')->get();
         $exams = Exam::orderByDesc('starts_on')->get();
-        $subjects = Subject::orderBy('name')->get();
         $shortCodes = ExamShortCode::orderBy('serial')->get();
 
         $groups = $request->filled('section_id')
             ? Student::where('section_id', $request->section_id)->whereNotNull('group_name')->where('group_name', '!=', '')->distinct()->orderBy('group_name')->pluck('group_name')
             : collect(self::GROUPS);
+
+        $subjects = $this->subjectsFor($request->get('section_id'), $request->get('exam_id'), $request->get('group_name'), $mode);
 
         $section = null;
         $examSubject = null;
@@ -74,12 +143,26 @@ class MarkInputController extends Controller
                     ->with('components')
                     ->get()
                     ->keyBy('student_id');
+
+                $hasExistingMarks = $marks->isNotEmpty();
+
+                if ($mode === 'input' && $hasExistingMarks) {
+                    $error = 'Marks for this subject have already been entered. Please use Mark Update to edit them.';
+                    $examSubject = null;
+                    $components = collect();
+                    $students = collect();
+                } elseif ($mode === 'update' && ! $hasExistingMarks) {
+                    $error = 'No marks have been entered for this subject yet. Please use Mark Input first.';
+                    $examSubject = null;
+                    $components = collect();
+                    $students = collect();
+                }
             }
         }
 
         return view('school.marks.input', compact(
             'sections', 'exams', 'subjects', 'shortCodes', 'groups',
-            'section', 'examSubject', 'components', 'students', 'marks', 'error'
+            'section', 'examSubject', 'components', 'students', 'marks', 'error', 'mode'
         ));
     }
 

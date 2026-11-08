@@ -305,9 +305,11 @@ Route::middleware(['auth', 'verified', 'school_context'])
         Route::get('/exam-subjects/search', [ExamSubjectSearchController::class, 'index'])->name('exam-subjects.search');
 
         Route::get('/mark-input', [MarkInputController::class, 'index'])->name('mark-input.index');
+        Route::get('/mark-input/subjects', [MarkInputController::class, 'subjects'])->name('mark-input.subjects');
         Route::put('/mark-input/{examSubject}', [MarkInputController::class, 'update'])->name('mark-input.update');
         Route::get('/mark-input/template/download', [MarkInputController::class, 'downloadTemplate'])->name('mark-input.template');
         Route::post('/mark-input/upload', [MarkInputController::class, 'upload'])->name('mark-input.upload');
+        Route::get('/mark-update', [MarkInputController::class, 'markUpdate'])->name('mark-update.index');
 
         Route::post('/subject-components', [SubjectComponentController::class, 'store'])->name('subject-components.store');
         Route::delete('/subject-components/{subjectComponent}', [SubjectComponentController::class, 'destroy'])->name('subject-components.destroy');
