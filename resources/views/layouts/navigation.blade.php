@@ -267,7 +267,7 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->routeIs('school.exams.*','school.results.*','school.results-process.*','school.mark-sheets.*','school.reports.*','school.exam-configuration.*','school.grades.*','school.marks.*','school.mark-input.*','school.exam-subjects.*','school.subject-components.*') ? 'menu-open' : '' }}">
+                    <li class="nav-item has-treeview {{ request()->routeIs('school.exams.*','school.results.*','school.results-process.*','school.mark-sheets.*','school.reports.*','school.exam-configuration.*','school.grades.*','school.marks.*','school.mark-input.*','school.mark-update.*','school.exam-subjects.*','school.subject-components.*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-pencil-square"></i>
                             <p>{{ __('Exams & Results') }}<i class="nav-arrow bi bi-chevron-right"></i></p>

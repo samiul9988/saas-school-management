@@ -17,7 +17,10 @@
         }
 
         var placeholderOption = groupSelect.options.length ? groupSelect.options[0].cloneNode(true) : null;
-        var base = '{{ url('/') }}/' + scope + '/';
+        var urlTemplates = {
+            sections: {!! json_encode(route('school.sections.groups', ['section' => '__ID__'])) !!},
+            classes: {!! json_encode(route('school.classes.groups', ['class' => '__ID__'])) !!},
+        };
 
         function loadGroups(preserve) {
             var scopeId = scopeSelect.value;
@@ -26,7 +29,9 @@
                 return;
             }
 
-            fetch(base + scopeId + '/groups', { headers: { Accept: 'application/json' } })
+            var url = urlTemplates[scope].replace('__ID__', scopeId);
+
+            fetch(url, { headers: { Accept: 'application/json' } })
                 .then(function (response) { return response.json(); })
                 .then(function (data) {
                     groupSelect.innerHTML = '';

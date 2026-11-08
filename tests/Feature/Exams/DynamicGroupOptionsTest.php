@@ -78,4 +78,13 @@ class DynamicGroupOptionsTest extends TestCase
 
         $response->assertOk()->assertSee('Generel')->assertDontSee('Commerce');
     }
+
+    public function test_group_dropdown_fetches_from_the_correctly_prefixed_route(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+
+        $response = $this->actingAs($admin)->get(route('school.mark-input.index'));
+
+        $response->assertOk()->assertSee('\/school\/sections\/__ID__\/groups', false);
+    }
 }
