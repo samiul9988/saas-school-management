@@ -286,7 +286,6 @@
                             <p>{{ __('Exams & Results') }}<i class="nav-arrow bi bi-chevron-right"></i></p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item"><a href="{{ route('school.exams.index') }}" class="nav-link {{ $isActiveGroup('school.exams.*') }}"><i class="nav-icon bi bi-file-text"></i><p>{{ __('Exams') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.exams.seat-plan') }}" class="nav-link {{ $isActiveGroup('school.exams.seat-plan') }}"><i class="nav-icon bi bi-person-vcard"></i><p>{{ __('Admit & Seat Plan') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.exams.top-sheet') }}" class="nav-link {{ $isActiveGroup('school.exams.top-sheet') }}"><i class="nav-icon bi bi-journal-text"></i><p>{{ __('Top Sheet') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.mark-input.index') }}" class="nav-link {{ $isActiveGroup('school.mark-input.*') }}"><i class="nav-icon bi bi-pencil"></i><p>{{ __('Mark Input') }}</p></a></li>
@@ -330,6 +329,7 @@
                                     <li class="nav-item"><a href="{{ route('school.reports.pass-fail-summary') }}" class="nav-link {{ $isActiveGroup('school.reports.pass-fail-summary') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Section Wise Pass/Fail Summary') }}</p></a></li>
                                 </ul>
                             </li>
+                            <li class="nav-item"><a href="{{ route('school.exams.settings') }}" class="nav-link {{ $isActiveGroup('school.exams.settings') }}"><i class="nav-icon bi bi-gear"></i><p>{{ __('Settings') }}</p></a></li>
                             <li class="nav-item has-treeview {{ request()->routeIs('school.exam-configuration.*') ? 'menu-open' : '' }}">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon bi bi-sliders"></i>
@@ -345,7 +345,6 @@
                                     <li class="nav-item"><a href="{{ route('school.exam-configuration.remarks-template') }}" class="nav-link {{ $isActiveGroup('school.exam-configuration.remarks-template*') }}"><i class="nav-icon bi bi-dash"></i><p>{{ __('Remarks Template') }}</p></a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item"><a href="{{ route('school.exams.settings') }}" class="nav-link {{ $isActiveGroup('school.exams.settings') }}"><i class="nav-icon bi bi-gear"></i><p>{{ __('Settings') }}</p></a></li>
                             <li class="nav-item"><a href="{{ route('school.exams.admit-instruction') }}" class="nav-link {{ $isActiveGroup('school.exams.admit-instruction') }}"><i class="nav-icon bi bi-card-text"></i><p>{{ __('Admit Instruction') }}</p></a></li>
                         </ul>
                     </li>

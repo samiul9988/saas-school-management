@@ -36,15 +36,23 @@
                 <a href="{{ route('school.exams.create') }}" class="inline-block mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">+ Add Exam</a>
 
             @elseif ($activeTab === 'subject')
-                <p class="text-sm text-gray-500 mb-4">Manage subjects from the full Subjects page.</p>
+                <p class="text-sm text-gray-500 mb-4">Manage subjects from the full Subjects page. Listed by Code.</p>
                 <table class="w-full text-sm text-left">
-                    <thead class="bg-gray-50"><tr class="text-gray-500"><th class="py-2 px-3">Name</th><th class="py-2 px-3">Code</th><th class="py-2 px-3">Actions</th></tr></thead>
+                    <thead class="bg-gray-50"><tr class="text-gray-500"><th class="py-2 px-3">Serial</th><th class="py-2 px-3">Name</th><th class="py-2 px-3">Code</th><th class="py-2 px-3">Actions</th></tr></thead>
                     <tbody>
-                        @foreach ($subjects as $subject)
+                        @foreach ($subjects as $index => $subject)
                             <tr class="border-t">
+                                <td class="py-2 px-3">{{ $index + 1 }}</td>
                                 <td class="py-2 px-3">{{ $subject->name }}</td>
                                 <td class="py-2 px-3">{{ $subject->code ?? '—' }}</td>
-                                <td class="py-2 px-3"><a href="{{ route('school.subjects.edit', $subject) }}" class="text-indigo-600 hover:underline">Edit</a></td>
+                                <td class="py-2 px-3 space-x-2">
+                                    <a href="{{ route('school.subjects.edit', $subject) }}" class="text-indigo-600 hover:underline">Edit</a>
+                                    <form action="{{ route('school.subjects.destroy', $subject) }}" method="POST" class="inline" onsubmit="return confirm('Delete this subject?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:underline">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

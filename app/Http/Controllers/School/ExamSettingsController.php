@@ -14,7 +14,7 @@ class ExamSettingsController extends Controller
     public function index(): View
     {
         $exams = Exam::orderByDesc('starts_on')->get();
-        $subjects = Subject::orderBy('name')->get();
+        $subjects = Subject::orderBy('code')->orderBy('name')->get();
         $shortCodes = ExamShortCode::orderBy('serial')->get();
         $grades = Grade::orderByDesc('min_percent')->get();
 
