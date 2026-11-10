@@ -52,25 +52,51 @@
                 <a href="{{ route('school.subjects.create') }}" class="inline-block mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">+ Add Subject</a>
 
             @elseif ($activeTab === 'short-code')
-                <form method="POST" action="{{ route('school.exam-short-codes.store') }}" class="flex gap-3 items-end mb-6">
+                <form method="POST" action="{{ route('school.exam-short-codes.store') }}" class="grid grid-cols-2 sm:grid-cols-5 gap-3 items-end mb-6">
                     @csrf
                     <div>
-                        <x-input-label for="name" value="Insert Name" />
-                        <x-text-input id="name" name="name" class="mt-1" placeholder="Insert Name" required />
+                        <x-input-label for="name" value="Title" />
+                        <x-text-input id="name" name="name" class="mt-1 block w-full" placeholder="e.g. SC-1" required />
                     </div>
                     <div>
-                        <x-input-label for="serial" value="Insert Serial" />
-                        <x-text-input id="serial" type="number" name="serial" class="mt-1 w-32" placeholder="Insert Serial" />
+                        <x-input-label for="note" value="Note" />
+                        <x-text-input id="note" name="note" class="mt-1 block w-full" placeholder="e.g. Short Code -1" />
                     </div>
-                    <x-primary-button>Save</x-primary-button>
+                    <div>
+                        <x-input-label for="default_total" value="Total Marks" />
+                        <x-text-input id="default_total" type="number" step="0.01" min="0" name="default_total" class="mt-1 block w-full" value="100" />
+                    </div>
+                    <div>
+                        <x-input-label for="default_pass_mark" value="Pass Mark" />
+                        <x-text-input id="default_pass_mark" type="number" step="0.01" min="0" name="default_pass_mark" class="mt-1 block w-full" value="0" />
+                    </div>
+                    <div>
+                        <x-input-label for="default_acceptance" value="Acceptance" />
+                        <x-text-input id="default_acceptance" type="number" step="0.01" min="0" name="default_acceptance" class="mt-1 block w-full" value="1" />
+                    </div>
+                    <div class="sm:col-span-5 flex justify-end">
+                        <x-primary-button>Save</x-primary-button>
+                    </div>
                 </form>
                 <table class="w-full text-sm text-left">
-                    <thead class="bg-gray-50"><tr class="text-gray-500"><th class="py-2 px-3">Serial</th><th class="py-2 px-3">Name</th><th class="py-2 px-3">Actions</th></tr></thead>
+                    <thead class="bg-blue-100">
+                        <tr class="text-gray-700">
+                            <th class="py-2 px-3">Title</th>
+                            <th class="py-2 px-3">Note</th>
+                            <th class="py-2 px-3">Total Marks</th>
+                            <th class="py-2 px-3">Pass Mark</th>
+                            <th class="py-2 px-3">Acceptance</th>
+                            <th class="py-2 px-3">Actions</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         @forelse ($shortCodes as $shortCode)
                             <tr class="border-t">
-                                <td class="py-2 px-3">{{ $shortCode->serial }}</td>
                                 <td class="py-2 px-3">{{ $shortCode->name }}</td>
+                                <td class="py-2 px-3">{{ $shortCode->note ?? '—' }}</td>
+                                <td class="py-2 px-3">{{ rtrim(rtrim(number_format($shortCode->default_total, 2), '0'), '.') }}</td>
+                                <td class="py-2 px-3">{{ rtrim(rtrim(number_format($shortCode->default_pass_mark, 2), '0'), '.') }}</td>
+                                <td class="py-2 px-3">{{ rtrim(rtrim(number_format($shortCode->default_acceptance, 2), '0'), '.') }}</td>
                                 <td class="py-2 px-3">
                                     <form action="{{ route('school.exam-short-codes.destroy', $shortCode) }}" method="POST" onsubmit="return confirm('Delete this short code?')">
                                         @csrf
@@ -80,7 +106,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="3" class="py-4 text-center text-gray-400">No short codes yet.</td></tr>
+                            <tr><td colspan="6" class="py-4 text-center text-gray-400">No short codes yet.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

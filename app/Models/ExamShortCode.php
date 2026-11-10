@@ -10,5 +10,5 @@ class ExamShortCode extends Model
 {
     use BelongsToSchool, HasFactory;
 
-    protected $fillable = ['school_id', 'name', 'serial'];
+    protected $fillable = ['school_id', 'name', 'note', 'serial', 'default_total', 'default_pass_mark', 'default_acceptance'];
 }

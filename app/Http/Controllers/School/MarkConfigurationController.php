@@ -57,9 +57,9 @@ class MarkConfigurationController extends Controller
 
             $shortCodes = $shortCodes->map(function ($shortCode) use ($prefillComponents) {
                 $existing = $prefillComponents->get($shortCode->id);
-                $shortCode->prefill_total = $existing->total ?? 100;
-                $shortCode->prefill_pass_mark = $existing->pass_mark ?? 0;
-                $shortCode->prefill_acceptance = $existing->acceptance ?? 1;
+                $shortCode->prefill_total = $existing->total ?? $shortCode->default_total;
+                $shortCode->prefill_pass_mark = $existing->pass_mark ?? $shortCode->default_pass_mark;
+                $shortCode->prefill_acceptance = $existing->acceptance ?? $shortCode->default_acceptance;
 
                 return $shortCode;
             });

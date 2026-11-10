@@ -13,7 +13,11 @@ class ExamShortCodeController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:255'],
             'serial' => ['nullable', 'integer', 'min:0'],
+            'default_total' => ['nullable', 'numeric', 'min:0'],
+            'default_pass_mark' => ['nullable', 'numeric', 'min:0'],
+            'default_acceptance' => ['nullable', 'numeric', 'min:0'],
         ]);
 
         ExamShortCode::create($data);
