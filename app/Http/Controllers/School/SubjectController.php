@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
-use App\Models\SchoolClass;
 use App\Models\Subject;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,9 +19,7 @@ class SubjectController extends Controller
 
     public function create(): View
     {
-        $classes = SchoolClass::orderBy('sort_order')->get();
-
-        return view('school.subjects.create', compact('classes'));
+        return view('school.subjects.create');
     }
 
     public function store(Request $request): RedirectResponse
@@ -34,9 +31,7 @@ class SubjectController extends Controller
 
     public function edit(Subject $subject): View
     {
-        $classes = SchoolClass::orderBy('sort_order')->get();
-
-        return view('school.subjects.edit', compact('subject', 'classes'));
+        return view('school.subjects.edit', compact('subject'));
     }
 
     public function update(Request $request, Subject $subject): RedirectResponse
