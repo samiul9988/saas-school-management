@@ -68,7 +68,7 @@ class GrandFinalController extends Controller
             fn ($component) => ResultCalculator::forExam($component->exam, $class->id, $students)
         )->values();
 
-        $combined = $students->mapWithKeys(function ($student) use ($components, $perExamResults) {
+        $combined = $students->mapWithKeys(function ($student) use ($components, $perExamResults, $class) {
             $weightedPercentage = 0;
             $weightedGpa = 0;
             $totalWeight = 0;
@@ -95,7 +95,10 @@ class GrandFinalController extends Controller
 
             $percentage = $totalWeight > 0 ? round($weightedPercentage, 2) : 0;
             $gpa = $totalWeight > 0 ? round($weightedGpa, 2) : 0;
-            $grade = $allPassed ? Grade::forPercent($percentage) : Grade::where('grade_point', 0)->first();
+            $grade = $allPassed
+                ? Grade::forPercent($percentage, $class->id)
+                : Grade::where('grade_point', 0)->where('school_class_id', $class->id)->first()
+                    ?? Grade::where('grade_point', 0)->whereNull('school_class_id')->first();
 
             return [$student->id => [
                 'student' => $student,

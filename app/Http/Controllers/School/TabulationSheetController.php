@@ -38,7 +38,7 @@ class TabulationSheetController extends Controller
 
             $students = Student::where('school_class_id', $class->id)->where('status', 'active')->orderByRoll()->get();
 
-            $rows = $students->map(function ($student) use ($examSubjects) {
+            $rows = $students->map(function ($student) use ($examSubjects, $class) {
                 $totalFull = 0;
                 $totalObtained = 0;
                 $marks = [];
@@ -59,7 +59,7 @@ class TabulationSheetController extends Controller
                     'total_obtained' => $totalObtained,
                     'total_full' => $totalFull,
                     'percentage' => $percentage,
-                    'grade' => Grade::forPercent($percentage)?->name,
+                    'grade' => Grade::forPercent($percentage, $class->id)?->name,
                 ];
             })->sortByDesc('percentage')->values();
 

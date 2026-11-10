@@ -56,7 +56,7 @@ class ResultController extends Controller
         }
 
         $percentage = $totalFull > 0 ? round(($totalObtained / $totalFull) * 100, 2) : 0;
-        $grade = Grade::forPercent($percentage);
+        $grade = Grade::forPercent($percentage, $student->school_class_id);
 
         return view('school.results.marksheet', [
             'exam' => $exam,
@@ -76,7 +76,7 @@ class ResultController extends Controller
 
         $students = Student::where('school_class_id', $classId)->where('status', 'active')->orderByRoll()->get();
 
-        $results = $students->map(function ($student) use ($examSubjects) {
+        $results = $students->map(function ($student) use ($examSubjects, $classId) {
             $totalFull = 0;
             $totalObtained = 0;
             $hasFailed = false;
@@ -100,7 +100,7 @@ class ResultController extends Controller
                 'total_full' => $totalFull,
                 'total_obtained' => $totalObtained,
                 'percentage' => $percentage,
-                'grade' => Grade::forPercent($percentage)?->name,
+                'grade' => Grade::forPercent($percentage, $classId)?->name,
                 'status' => $hasFailed ? 'Fail' : 'Pass',
             ];
         })->sortByDesc('percentage')->values();

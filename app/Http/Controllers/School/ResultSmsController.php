@@ -88,7 +88,7 @@ class ResultSmsController extends Controller
 
         $students = Student::where('school_class_id', $classId)->where('status', 'active')->orderByRoll()->get();
 
-        return $students->map(function ($student) use ($examSubjects) {
+        return $students->map(function ($student) use ($examSubjects, $classId) {
             $totalFull = 0;
             $totalObtained = 0;
 
@@ -101,7 +101,7 @@ class ResultSmsController extends Controller
             }
 
             $percentage = $totalFull > 0 ? round(($totalObtained / $totalFull) * 100, 2) : 0;
-            $grade = Grade::forPercent($percentage);
+            $grade = Grade::forPercent($percentage, $classId);
 
             return [
                 'student' => $student,

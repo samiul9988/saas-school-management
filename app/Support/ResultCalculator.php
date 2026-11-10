@@ -20,7 +20,7 @@ class ResultCalculator
             ->with('marks')
             ->get();
 
-        return $students->mapWithKeys(function (Student $student) use ($examSubjects) {
+        return $students->mapWithKeys(function (Student $student) use ($examSubjects, $schoolClassId) {
             $totalFull = 0;
             $totalObtained = 0;
             $gradePoints = [];
@@ -43,12 +43,15 @@ class ResultCalculator
                 }
 
                 $subjectPercent = $examSubject->full_marks > 0 ? ($obtained / $examSubject->full_marks) * 100 : 0;
-                $gradePoints[] = $subjectPassed ? (float) (Grade::forPercent($subjectPercent)?->grade_point ?? 0) : 0;
+                $gradePoints[] = $subjectPassed ? (float) (Grade::forPercent($subjectPercent, $schoolClassId)?->grade_point ?? 0) : 0;
             }
 
             $percentage = $totalFull > 0 ? round(($totalObtained / $totalFull) * 100, 2) : 0;
             $gpa = $hasFailed ? 0 : round(array_sum($gradePoints) / max(count($gradePoints), 1), 2);
-            $grade = $hasFailed ? Grade::where('grade_point', 0)->first() : Grade::forPercent($percentage);
+            $grade = $hasFailed
+                ? Grade::where('grade_point', 0)->where('school_class_id', $schoolClassId)->first()
+                    ?? Grade::where('grade_point', 0)->whereNull('school_class_id')->first()
+                : Grade::forPercent($percentage, $schoolClassId);
 
             return [$student->id => [
                 'student' => $student,

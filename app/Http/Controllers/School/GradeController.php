@@ -48,6 +48,36 @@ class GradeController extends Controller
         return redirect()->route('school.grades.index')->with('status', 'Grade deleted.');
     }
 
+    /**
+     * Bulk-sets a class's grading scale from the fixed A+..F standard bands:
+     * checked grades are created/updated for the class, unchecked ones are
+     * removed, so the class's scale always matches the current selection.
+     */
+    public function classSetup(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'school_class_id' => ['required', 'exists:school_classes,id'],
+            'grades' => ['array'],
+            'grades.*' => ['in:'.implode(',', array_keys(Grade::STANDARD_GRADES))],
+        ]);
+
+        $selected = $data['grades'] ?? [];
+
+        foreach (Grade::STANDARD_GRADES as $name => $band) {
+            if (in_array($name, $selected, true)) {
+                Grade::updateOrCreate(
+                    ['school_class_id' => $data['school_class_id'], 'name' => $name],
+                    ['min_percent' => $band['min'], 'max_percent' => $band['max'], 'grade_point' => $band['point']]
+                );
+            } else {
+                Grade::where('school_class_id', $data['school_class_id'])->where('name', $name)->delete();
+            }
+        }
+
+        return redirect()->route('school.exams.settings', ['tab' => 'grade', 'school_class_id' => $data['school_class_id']])
+            ->with('status', 'Grade setup saved.');
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([

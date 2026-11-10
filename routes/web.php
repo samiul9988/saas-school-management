@@ -295,6 +295,7 @@ Route::middleware(['auth', 'verified', 'school_context', 'module_permission'])
         Route::post('/hr-attendance/setting/machine-id-mapping/batch-update', [StaffAttendanceController::class, 'settingMachineIdMappingBatchUpdate'])->name('hr-attendance.setting.machine-id-mapping.batch-update');
 
         Route::resource('grades', GradeController::class)->except('show');
+        Route::post('/grades/class-setup', [GradeController::class, 'classSetup'])->name('grades.class-setup');
 
         Route::resource('exams', ExamController::class);
         Route::get('/exams/{exam}/subjects/create', [ExamSubjectController::class, 'create'])->name('exams.subjects.create');

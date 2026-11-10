@@ -50,7 +50,8 @@ class MarkSheetController extends Controller
 
         $templateConfig = MarksheetTemplateConfig::where('school_class_id', $section->school_class_id)->first();
         $templateNumber = $templateConfig->template_number ?? 1;
-        $grades = Grade::orderByDesc('min_percent')->get();
+        $classGrades = Grade::where('school_class_id', $section->school_class_id)->orderByDesc('min_percent')->get();
+        $grades = $classGrades->isNotEmpty() ? $classGrades : Grade::whereNull('school_class_id')->orderByDesc('min_percent')->get();
 
         $examSubjects = $exam->examSubjects()->where('school_class_id', $section->school_class_id)->with('subject', 'marks.components.subjectComponent.shortCode')->get();
 
@@ -68,12 +69,12 @@ class MarkSheetController extends Controller
         $pages = $students->map(function ($student) use ($results, $exam, $section, $examSubjects, $highestBySubject, $templateNumber, $grades, $processedResults) {
             $result = $results[$student->id] ?? null;
 
-            $subjectRows = $examSubjects->map(function ($examSubject) use ($student, $highestBySubject) {
+            $subjectRows = $examSubjects->map(function ($examSubject) use ($student, $highestBySubject, $section) {
                 $mark = $examSubject->marks->firstWhere('student_id', $student->id);
                 $isAbsent = ! $mark || $mark->is_absent;
                 $obtained = $isAbsent ? 0 : (float) $mark->marks_obtained;
                 $percent = $examSubject->full_marks > 0 ? ($obtained / $examSubject->full_marks) * 100 : 0;
-                $grade = Grade::forPercent($percent);
+                $grade = Grade::forPercent($percent, $section->school_class_id);
 
                 $components = $mark?->components->map(fn ($component) => [
                     'label' => $component->subjectComponent?->shortCode?->name ?? '-',

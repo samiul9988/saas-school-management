@@ -120,21 +120,77 @@
                 </table>
 
             @elseif ($activeTab === 'grade')
-                <p class="text-sm text-gray-500 mb-4">Manage grading scale from the full Grading Scale page.</p>
-                <table class="w-full text-sm text-left">
-                    <thead class="bg-gray-50"><tr class="text-gray-500"><th class="py-2 px-3">Grade</th><th class="py-2 px-3">Min %</th><th class="py-2 px-3">Max %</th><th class="py-2 px-3">Actions</th></tr></thead>
-                    <tbody>
-                        @foreach ($grades as $grade)
-                            <tr class="border-t">
-                                <td class="py-2 px-3">{{ $grade->name }}</td>
-                                <td class="py-2 px-3">{{ $grade->min_percent }}</td>
-                                <td class="py-2 px-3">{{ $grade->max_percent }}</td>
-                                <td class="py-2 px-3"><a href="{{ route('school.grades.edit', $grade) }}" class="text-indigo-600 hover:underline">Edit</a></td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <a href="{{ route('school.grades.create') }}" class="inline-block mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">+ Add Grade</a>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <form method="GET" class="mb-4">
+                            <input type="hidden" name="tab" value="grade">
+                            <x-input-label for="school_class_id" value="Class" />
+                            <select id="school_class_id" name="school_class_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" onchange="this.form.submit()">
+                                <option value="">Select</option>
+                                @foreach ($classes as $classOption)
+                                    <option value="{{ $classOption->id }}" @selected($selectedClassId == $classOption->id)>{{ $classOption->name }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+
+                        <form method="POST" action="{{ route('school.grades.class-setup') }}">
+                            @csrf
+                            <input type="hidden" name="school_class_id" value="{{ $selectedClassId }}">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-blue-100">
+                                    <tr class="text-gray-700">
+                                        <th class="py-2 px-3 w-10"></th>
+                                        <th class="py-2 px-3">Grade</th>
+                                        <th class="py-2 px-3">Grade Range</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (\App\Models\Grade::STANDARD_GRADES as $name => $band)
+                                        <tr class="border-t">
+                                            <td class="py-2 px-3">
+                                                <input type="checkbox" name="grades[]" value="{{ $name }}" @checked(in_array($name, $selectedClassGrades, true)) @disabled(! $selectedClassId)>
+                                            </td>
+                                            <td class="py-2 px-3">{{ $name }}</td>
+                                            <td class="py-2 px-3">{{ rtrim(rtrim(number_format($band['min'], 2), '0'), '.') }}-{{ rtrim(rtrim(number_format($band['max'], 2), '0'), '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div class="mt-4">
+                                @if ($selectedClassId)
+                                    <x-primary-button>Save</x-primary-button>
+                                @else
+                                    <p class="text-sm text-gray-400">Select a class above to configure its grading scale.</p>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+
+                    <div>
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-blue-100">
+                                <tr class="text-gray-700">
+                                    <th class="py-2 px-3">Class</th>
+                                    <th class="py-2 px-3">Grade</th>
+                                    <th class="py-2 px-3">Grade Point</th>
+                                    <th class="py-2 px-3">Grade Range</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($grades as $grade)
+                                    <tr class="border-t">
+                                        <td class="py-2 px-3">{{ $grade->schoolClass?->name }}</td>
+                                        <td class="py-2 px-3">{{ $grade->name }}</td>
+                                        <td class="py-2 px-3">{{ rtrim(rtrim(number_format($grade->grade_point, 2), '0'), '.') }}</td>
+                                        <td class="py-2 px-3">{{ rtrim(rtrim(number_format($grade->min_percent, 2), '0'), '.') }}-{{ rtrim(rtrim(number_format($grade->max_percent, 2), '0'), '.') }}</td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="4" class="py-4 text-center text-gray-400">No class grading scales configured yet.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             @endif
         </div>
     </div>
