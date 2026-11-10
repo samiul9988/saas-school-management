@@ -11,7 +11,7 @@ class SubjectAssignment extends Model
 {
     use BelongsToSchool, HasFactory;
 
-    public const TYPES = ['Compulsory', 'Optional', 'Fourth Subject'];
+    public const TYPES = ['Compulsory', 'Optional', 'Fourth Subject', 'Uncountable'];
 
     protected $fillable = [
         'school_id', 'school_class_id', 'group_name', 'subject_id', 'subject_type', 'serial', 'merge_id',
