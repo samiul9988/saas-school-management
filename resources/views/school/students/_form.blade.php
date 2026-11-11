@@ -45,7 +45,7 @@
         <x-input-label for="category" value="Category" />
         <select id="category" name="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
             <option value="">— Select Category —</option>
-            @foreach (['Regular', 'Freedom Fighter Quota', 'Disabled Quota', 'Other'] as $category)
+            @foreach ($categories as $category)
                 <option value="{{ $category }}" @selected(old('category', $student?->category) === $category)>{{ $category }}</option>
             @endforeach
         </select>

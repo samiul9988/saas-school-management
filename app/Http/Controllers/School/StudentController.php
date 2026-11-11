@@ -9,6 +9,7 @@ use App\Models\Group;
 use App\Models\SchoolClass;
 use App\Models\SmsTemplate;
 use App\Models\Student;
+use App\Models\StudentCategory;
 use App\Services\Sms\SmsSendingService;
 use App\Services\Sms\SmsTemplateRenderer;
 use Illuminate\Database\QueryException;
@@ -39,9 +40,10 @@ class StudentController extends Controller
         $classes = SchoolClass::with('sections')->orderBy('sort_order')->get();
         $academicYears = AcademicYear::orderByDesc('starts_on')->get();
         $groups = $this->configuredGroups();
+        $categories = $this->configuredCategories();
         $defaultSmsContent = SmsTemplate::defaultContentFor('admission') ?: self::DEFAULT_WELCOME_SMS;
 
-        return view('school.students.create', compact('classes', 'academicYears', 'groups', 'defaultSmsContent'));
+        return view('school.students.create', compact('classes', 'academicYears', 'groups', 'categories', 'defaultSmsContent'));
     }
 
     public function store(Request $request, SmsSendingService $sendingService, SmsTemplateRenderer $renderer): RedirectResponse
@@ -84,8 +86,9 @@ class StudentController extends Controller
         $classes = SchoolClass::with('sections')->orderBy('sort_order')->get();
         $academicYears = AcademicYear::orderByDesc('starts_on')->get();
         $groups = $this->configuredGroups();
+        $categories = $this->configuredCategories();
 
-        return view('school.students.edit', compact('student', 'classes', 'academicYears', 'groups'));
+        return view('school.students.edit', compact('student', 'classes', 'academicYears', 'groups', 'categories'));
     }
 
     public function update(Request $request, Student $student): RedirectResponse
@@ -112,6 +115,13 @@ class StudentController extends Controller
         $groups = Group::where('status', 'enable')->orderBy('serial')->pluck('name')->all();
 
         return $groups ?: ['Science', 'Commerce', 'Arts', 'General'];
+    }
+
+    private function configuredCategories(): array
+    {
+        $categories = StudentCategory::where('status', 'enable')->orderBy('serial')->pluck('name')->all();
+
+        return $categories ?: ['Regular', 'Freedom Fighter Quota', 'Disabled Quota', 'Other'];
     }
 
     private function validated(Request $request): array
