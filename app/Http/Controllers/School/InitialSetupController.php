@@ -5,7 +5,6 @@ namespace App\Http\Controllers\School;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Group;
-use App\Models\Period;
 use App\Models\SchoolClass;
 use App\Models\Section;
 use App\Models\Shift;
@@ -23,7 +22,6 @@ class InitialSetupController extends Controller
         'section' => ['model' => Section::class, 'label' => 'Section', 'placeholder' => 'Enter Section Name', 'needsClass' => true],
         'group' => ['model' => Group::class, 'label' => 'Group', 'placeholder' => 'Enter Group Name', 'needsClass' => false],
         'student-category' => ['model' => StudentCategory::class, 'label' => 'Student Category', 'placeholder' => 'Enter Category Name', 'needsClass' => false],
-        'period' => ['model' => Period::class, 'label' => 'Period', 'placeholder' => 'Enter Period Name', 'needsClass' => false],
     ];
 
     public function index(string $type): View
@@ -55,15 +53,10 @@ class InitialSetupController extends Controller
         abort_unless(array_key_exists($type, self::TYPES), 404);
         $meta = self::TYPES[$type];
 
-        $rules = [
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'serial' => ['nullable', 'integer', 'min:0'],
-        ];
-        if ($meta['needsClass']) {
-            $rules['school_class_id'] = ['required', 'exists:school_classes,id'];
-        }
-
-        $data = $request->validate($rules);
+        ]);
         $data['serial'] = $data['serial'] ?? 0;
 
         $payload = ['name' => $data['name'], 'serial' => $data['serial']];
@@ -73,11 +66,19 @@ class InitialSetupController extends Controller
         if ($type === 'academic-year') {
             $payload = array_merge($payload, $this->academicYearDates($data['name']));
         }
-        if ($meta['needsClass']) {
-            $payload['school_class_id'] = $data['school_class_id'];
-        }
 
-        $meta['model']::create($payload);
+        if ($type === 'section') {
+            // No class picker on this quick-setup form: apply the section
+            // name to every class at once instead of asking which one.
+            foreach (SchoolClass::orderBy('sort_order')->get() as $class) {
+                Section::firstOrCreate(
+                    ['school_class_id' => $class->id, 'name' => $data['name']],
+                    ['serial' => $data['serial'], 'status' => 'enable']
+                );
+            }
+        } else {
+            $meta['model']::create($payload);
+        }
 
         return redirect()->route('school.students.initial-setup', $type)->with('status', $meta['label'].' added.');
     }
