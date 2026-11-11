@@ -6,13 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\StudentCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StudentImportController extends Controller
 {
@@ -24,7 +29,7 @@ class StudentImportController extends Controller
     {
         $academicYears = AcademicYear::orderByDesc('starts_on')->get();
         $sections = Section::with('schoolClass')->get();
-        $categories = ['Regular', 'Freedom Fighter Quota', 'Disabled Quota', 'Other'];
+        $categories = StudentCategory::where('status', 'enable')->orderBy('serial')->pluck('name');
         $groups = ['Science', 'Commerce', 'Arts', 'General'];
 
         $previewWithId = Session::get($this->sessionKey('with-id'));
@@ -35,11 +40,11 @@ class StudentImportController extends Controller
         ));
     }
 
-    public function sample(string $mode): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function sample(string $mode): StreamedResponse
     {
         $this->assertMode($mode);
 
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
 
         $headers = $mode === 'with-id' ? array_merge(['Student ID'], self::COLUMNS) : self::COLUMNS;
@@ -51,13 +56,13 @@ class StudentImportController extends Controller
 
         $sheet->getStyle($headerRange)->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '0B1F4E']],
-            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0B1F4E']],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
         ]);
 
         $dataRange = "A1:{$lastColumn}31";
         $sheet->getStyle($dataRange)->applyFromArray([
-            'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN, 'color' => ['rgb' => 'D1D5DB']]],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => 'D1D5DB']]],
         ]);
 
         foreach (range('A', $lastColumn) as $column) {
