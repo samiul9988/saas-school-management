@@ -4,6 +4,7 @@ namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
+use App\Models\Group;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudentCategory;
@@ -30,7 +31,7 @@ class StudentImportController extends Controller
         $academicYears = AcademicYear::orderByDesc('starts_on')->get();
         $sections = Section::with('schoolClass')->get();
         $categories = StudentCategory::where('status', 'enable')->orderBy('serial')->pluck('name');
-        $groups = ['Science', 'Commerce', 'Arts', 'General'];
+        $groups = Group::where('status', 'enable')->orderBy('serial')->pluck('name');
 
         $previewWithId = Session::get($this->sessionKey('with-id'));
         $previewWithoutId = Session::get($this->sessionKey('without-id'));

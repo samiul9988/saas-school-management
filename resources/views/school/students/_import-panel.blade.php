@@ -75,11 +75,6 @@
                 </div>
             </form>
 
-            @include('school.partials.dynamic-group-script')
-            <script>
-                wireDynamicGroupSelect('section_id_{{ $mode }}', 'group_name_{{ $mode }}', 'sections', null);
-            </script>
-
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left">
                     <thead class="bg-gray-50">

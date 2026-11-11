@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Students;
 
+use App\Models\Group;
 use App\Models\School;
 use App\Models\StudentCategory;
 use App\Models\User;
@@ -45,12 +46,17 @@ class StudentImportDropdownsTest extends TestCase
             ->assertDontSee('Freedom Fighter Quota');
     }
 
-    public function test_group_dropdown_fetches_from_the_correctly_prefixed_route(): void
+    public function test_group_dropdown_lists_the_schools_configured_groups_not_a_fixed_list(): void
     {
         $admin = $this->makeSchoolAdmin();
+        Group::create(['school_id' => $admin->school_id, 'name' => 'Humanities', 'serial' => 1, 'status' => 'enable']);
+        Group::create(['school_id' => $admin->school_id, 'name' => 'Disabled Group', 'serial' => 2, 'status' => 'disable']);
 
         $response = $this->actingAs($admin)->get(route('school.students.import.create'));
 
-        $response->assertOk()->assertSee('\/school\/sections\/__ID__\/groups', false);
+        $response->assertOk()
+            ->assertSee('Humanities')
+            ->assertDontSee('Disabled Group')
+            ->assertDontSee('Commerce');
     }
 }
