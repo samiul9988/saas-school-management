@@ -76,4 +76,15 @@ class InitialSectionSetupTest extends TestCase
 
         $this->assertSame(1, Section::where('school_class_id', $class->id)->where('name', 'A')->count());
     }
+
+    public function test_section_list_does_not_show_a_class_column(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
+        Section::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'name' => 'A']);
+
+        $response = $this->actingAs($admin)->get(route('school.students.initial-setup', 'section'));
+
+        $response->assertOk()->assertDontSee('<th class="py-3 px-4">Class</th>', false)->assertSee('A');
+    }
 }

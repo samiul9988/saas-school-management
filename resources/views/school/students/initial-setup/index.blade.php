@@ -54,7 +54,7 @@
                 <thead class="bg-blue-100">
                     <tr class="text-gray-700">
                         <th class="py-3 px-4">Serial</th>
-                        @if ($meta['needsClass'])
+                        @if ($meta['needsClass'] && $type !== 'section')
                             <th class="py-3 px-4">Class</th>
                         @endif
                         <th class="py-3 px-4">{{ $meta['label'] }}</th>
@@ -67,7 +67,7 @@
                     @forelse ($records as $record)
                         <tr class="border-t">
                             <td class="py-2 px-4">{{ $record->serial }}</td>
-                            @if ($meta['needsClass'])
+                            @if ($meta['needsClass'] && $type !== 'section')
                                 <td class="py-2 px-4">{{ $record->schoolClass?->name }}</td>
                             @endif
                             <td class="py-2 px-4">{{ $record->name }}</td>
@@ -93,7 +93,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="py-6 text-center text-gray-400">No {{ strtolower($meta['label']) }} records yet.</td></tr>
+                        <tr><td colspan="{{ $meta['needsClass'] && $type !== 'section' ? 6 : 5 }}" class="py-6 text-center text-gray-400">No {{ strtolower($meta['label']) }} records yet.</td></tr>
                     @endforelse
                 </tbody>
             </table>
