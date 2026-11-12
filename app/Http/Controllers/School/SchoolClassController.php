@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClassGroupAssignment;
+use App\Models\Group;
 use App\Models\SchoolClass;
 use App\Models\Student;
 use Illuminate\Http\JsonResponse;
@@ -24,6 +26,32 @@ class SchoolClassController extends Controller
             ->distinct()
             ->orderBy('group_name')
             ->pluck('group_name');
+
+        return response()->json(['groups' => $groups]);
+    }
+
+    /**
+     * Group names assigned to this class via Students > Configuration > Group,
+     * for use when admitting a new student (there are no existing students to
+     * derive groups from yet). Falls back to every configured Group when this
+     * class has no explicit assignment, so schools that haven't set up
+     * class/group mapping yet still see their groups.
+     */
+    public function admissionGroups(SchoolClass $class): JsonResponse
+    {
+        $groups = ClassGroupAssignment::where('school_class_id', $class->id)
+            ->where('status', 'enable')
+            ->with('group')
+            ->get()
+            ->pluck('group.name')
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
+
+        if ($groups->isEmpty()) {
+            $groups = Group::where('status', 'enable')->orderBy('serial')->pluck('name');
+        }
 
         return response()->json(['groups' => $groups]);
     }

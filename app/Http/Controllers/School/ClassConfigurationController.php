@@ -19,6 +19,7 @@ class ClassConfigurationController extends Controller
 
         $perPage = (int) $request->get('per_page', 10);
         $sections = Section::with('schoolClass', 'shift')
+            ->whereNotNull('shift_id')
             ->orderBy('serial')
             ->orderBy('id')
             ->paginate($perPage)

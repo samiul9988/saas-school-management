@@ -5,7 +5,7 @@
      *
      * @param {string} scopeSelectId  id of the Section or Class <select>
      * @param {string} groupSelectId id of the Group <select> to repopulate
-     * @param {string} scope         'sections' or 'classes'
+     * @param {string} scope         'sections', 'classes', or 'admission-classes'
      * @param {string|null} selectedGroup group to keep selected on initial load
      */
     window.wireDynamicGroupSelect = function (scopeSelectId, groupSelectId, scope, selectedGroup) {
@@ -20,6 +20,7 @@
         var urlTemplates = {
             sections: {!! json_encode(route('school.sections.groups', ['section' => '__ID__'])) !!},
             classes: {!! json_encode(route('school.classes.groups', ['class' => '__ID__'])) !!},
+            'admission-classes': {!! json_encode(route('school.classes.admission-groups', ['class' => '__ID__'])) !!},
         };
 
         function loadGroups(preserve) {

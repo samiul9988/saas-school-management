@@ -169,6 +169,7 @@ Route::middleware(['auth', 'verified', 'school_context', 'module_permission'])
         Route::resource('academic-years', AcademicYearController::class)->except('show')->parameters(['academic-years' => 'academicYear']);
         Route::resource('classes', SchoolClassController::class)->except('show')->parameters(['classes' => 'class']);
         Route::get('/classes/{class}/groups', [SchoolClassController::class, 'groups'])->name('classes.groups');
+        Route::get('/classes/{class}/admission-groups', [SchoolClassController::class, 'admissionGroups'])->name('classes.admission-groups');
         Route::resource('sections', SectionController::class)->except('show');
         Route::get('/sections/{section}/groups', [SectionController::class, 'groups'])->name('sections.groups');
         Route::resource('subjects', SubjectController::class)->except('show');

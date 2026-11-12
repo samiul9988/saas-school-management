@@ -52,6 +52,11 @@
     </div>
 </div>
 
+@include('school.partials.dynamic-group-script')
+<script>
+    wireDynamicGroupSelect('school_class_id', 'group_name', 'admission-classes', @json(old('group_name', $student?->group_name)));
+</script>
+
 <div class="grid grid-cols-2 gap-4">
     <div>
         <x-input-label for="name" value="Name" />
