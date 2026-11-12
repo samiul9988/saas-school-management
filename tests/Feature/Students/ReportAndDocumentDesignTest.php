@@ -123,7 +123,7 @@ class ReportAndDocumentDesignTest extends TestCase
             ->assertSee('Student ID')
             ->assertSee("Father's Name", false)
             ->assertSee('Blood Group')
-            ->assertSee('IF FOUND, PLEASE RETURN TO');
+            ->assertSee('If Found, Please Return to');
     }
 
     public function test_id_card_preview_shows_the_uploaded_signature_for_its_matching_position(): void

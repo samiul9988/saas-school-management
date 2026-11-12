@@ -48,7 +48,7 @@
     /* Back side — Template 2, framed to match the front */
     .tpl2-back { background: #0ea5e9; padding: 6px; box-sizing: border-box; }
     .tpl2-back .inner { background: #fff; height: 190px; border-radius: 4px; box-sizing: border-box; padding: 8px 10px; text-align: center; position: relative; }
-    .tpl2-back .tag { font-size: 8px; font-weight: bold; color: #0369a1; letter-spacing: .5px; text-transform: uppercase; }
+    .tpl2-back .tag { font-size: 8px; font-weight: bold; color: #0369a1; letter-spacing: .5px; font-style: italic; }
     .tpl2-back .seal-big { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #0ea5e9; margin: 6px auto 4px auto; overflow: hidden; }
     .tpl2-back .seal-big img { width: 100%; height: 100%; }
     .tpl2-back .sname { font-size: 10px; font-weight: bold; color: #0369a1; }

@@ -33,7 +33,7 @@
 @else
     <div class="id-card tpl2-back">
         <div class="inner">
-            <div class="tag">IF FOUND, PLEASE RETURN TO</div>
+            <div class="tag">If Found, Please Return to</div>
             <div class="seal-big">
                 @if ($school->logo)
                     <img src="{{ $forPdf ? public_path('storage/'.$school->logo) : asset('storage/'.$school->logo) }}" alt="">
