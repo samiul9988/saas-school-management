@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class IdCardController extends Controller
 {
@@ -78,9 +79,15 @@ class IdCardController extends Controller
         return [$section, $students];
     }
 
-    public function downloadFront(Request $request)
+    public function downloadFront(Request $request): RedirectResponse|Response
     {
         [$section, $students] = $this->studentsForDownload($request);
+
+        if ($students->isEmpty()) {
+            return redirect()->route('school.students.id-card.index')
+                ->with('error', 'No students found for this section'.($request->filled(['from_roll', 'to_roll']) ? ' and roll range' : '').'. Nothing to download.');
+        }
+
         $school = Auth::user()->school;
         $template = in_array($school->id_card_template, self::SELECTABLE_TEMPLATES) ? $school->id_card_template : 1;
 
@@ -90,9 +97,15 @@ class IdCardController extends Controller
         return $pdf->download('ID Card Front '.$section->name.'.pdf');
     }
 
-    public function downloadBack(Request $request)
+    public function downloadBack(Request $request): RedirectResponse|Response
     {
         [$section, $students] = $this->studentsForDownload($request);
+
+        if ($students->isEmpty()) {
+            return redirect()->route('school.students.id-card.index')
+                ->with('error', 'No students found for this section'.($request->filled(['from_roll', 'to_roll']) ? ' and roll range' : '').'. Nothing to download.');
+        }
+
         $school = Auth::user()->school;
         $template = in_array($school->id_card_template, self::SELECTABLE_TEMPLATES) ? $school->id_card_template : 1;
 
