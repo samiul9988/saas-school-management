@@ -28,7 +28,7 @@
     .tpl2 .info-list { text-align: left; display: block; margin-top: 6px; font-size: 7.5px; color: #222; padding-left: 6px; }
     .tpl2 .info-row { margin-bottom: 1.5px; }
     .tpl2 .info-row .lbl { display: inline-block; width: 66px; color: #555; }
-    .tpl2 .sign { position: absolute; right: 10px; bottom: 4px; font-size: 6.5px; color: #333; text-align: center; }
+    .tpl2 .sign { position: absolute; right: 10px; bottom: 4px; font-size: 6.5px; font-weight: bold; color: #333; text-align: center; text-transform: uppercase; }
     .tpl2 .sign img { height: 16px; display: block; margin: 0 auto; }
     .tpl2 .sign .line { width: 60px; border-top: 1px solid #333; margin: 0 auto 2px auto; }
 
