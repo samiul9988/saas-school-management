@@ -30,26 +30,38 @@
     </div>
 @else
     <div class="id-card tpl2">
-        <div class="seal">
-            @if ($school->logo)
-                <img src="{{ $forPdf ? public_path('storage/'.$school->logo) : asset('storage/'.$school->logo) }}" alt="">
-            @endif
-        </div>
-        <div class="sname-top">{{ $school->name }}</div>
-        <div class="photo-wrap">
-            @if ($photoSrc)
-                <img src="{{ $photoSrc }}" class="photo" alt="">
-            @else
-                <div class="photo"></div>
-            @endif
-        </div>
-        <div class="sname-student">{{ $student->name }}</div>
-        <div class="info-list">
-            <div class="info-row"><span class="lbl">Student ID</span>: {{ $student->admission_number }}</div>
-            <div class="info-row"><span class="lbl">Father's Name</span>: {{ $student->father_name ?? '-' }}</div>
-            <div class="info-row"><span class="lbl">Mother's Name</span>: {{ $student->mother_name ?? '-' }}</div>
-            <div class="info-row"><span class="lbl">Blood Group</span>: {{ $student->blood_group ?? '-' }}</div>
-            <div class="info-row"><span class="lbl">Mobile</span>: {{ $student->guardian_phone }}</div>
+        <div class="inner">
+            <div class="seal">
+                @if ($school->logo)
+                    <img src="{{ $forPdf ? public_path('storage/'.$school->logo) : asset('storage/'.$school->logo) }}" alt="">
+                @endif
+            </div>
+            <div class="sname-top">{{ $school->name }}</div>
+            <div class="divider"></div>
+            <div class="photo-wrap">
+                @if ($photoSrc)
+                    <img src="{{ $photoSrc }}" class="photo" alt="">
+                @else
+                    <div class="photo"></div>
+                @endif
+            </div>
+            <div class="sname-student">{{ $student->name }}</div>
+            <div class="info-list">
+                <div class="info-row"><span class="lbl">Student ID</span>: {{ $student->admission_number }}</div>
+                <div class="info-row"><span class="lbl">Father's Name</span>: {{ $student->father_name ?? '-' }}</div>
+                <div class="info-row"><span class="lbl">Mother's Name</span>: {{ $student->mother_name ?? '-' }}</div>
+                <div class="info-row"><span class="lbl">Blood Group</span>: {{ $student->blood_group ?? '-' }}</div>
+                <div class="info-row"><span class="lbl">Mobile</span>: {{ $student->guardian_phone }}</div>
+            </div>
+            <div class="sign">
+                @php($__idSignature = \App\Models\Signature::activeForPosition('Student ID Card'))
+                @if ($__idSignature && $__idSignature->imageUrl())
+                    <img src="{{ $forPdf ? public_path('storage/'.$__idSignature->image_path) : $__idSignature->imageUrl() }}" alt="">
+                @else
+                    <div class="line"></div>
+                @endif
+                Head Teacher
+            </div>
         </div>
     </div>
 @endif
