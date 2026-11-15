@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\School;
 
 use App\Http\Controllers\Controller;
-use App\Models\AcademicYear;
 use App\Models\Attendance;
 use App\Models\SchoolClass;
 use App\Models\SmsSendRequest;
@@ -30,7 +29,9 @@ class DashboardController extends Controller
             'absent_today' => Attendance::where('date', today())->where('status', 'absent')->count(),
         ];
 
-        $currentYear = AcademicYear::where('is_current', true)->first() ?? AcademicYear::orderByDesc('starts_on')->first();
+        // Only the Academic Year explicitly chosen on Institute Update should show here,
+        // not whatever was most recently created via the quick-setup page.
+        $currentYear = $school->academicYear;
 
         $classSummary = SchoolClass::withCount('students')->orderBy('sort_order')->get();
 
