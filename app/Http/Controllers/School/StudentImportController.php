@@ -190,8 +190,26 @@ class StudentImportController extends Controller
         return 'student_import_preview_'.str_replace('-', '_', $mode);
     }
 
+    /**
+     * Matches a header case/punctuation-insensitively (e.g. "Roll No" also
+     * matches "ROLL NO.", "roll no", etc.), so minor edits to the downloaded
+     * sample file's header row don't silently drop a column's data.
+     */
     private function colLetter(array $map, string $header): ?string
     {
-        return $map[$header] ?? null;
+        if (isset($map[$header])) {
+            return $map[$header];
+        }
+
+        $normalize = fn (string $value) => strtolower(trim($value, " \t\n\r\0\x0B."));
+        $target = $normalize($header);
+
+        foreach ($map as $actualHeader => $letter) {
+            if ($normalize((string) $actualHeader) === $target) {
+                return $letter;
+            }
+        }
+
+        return null;
     }
 }
