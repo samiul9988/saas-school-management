@@ -79,14 +79,16 @@
                 <table class="w-full text-sm text-left">
                     <thead class="bg-gray-50">
                         <tr class="text-gray-500">
-                            <th class="py-2 px-3">SL</th>
+                            @if ($mode === 'without-id')
+                                <th class="py-2 px-3">ID</th>
+                            @endif
                             @foreach ($columns as $column)
                                 <th class="py-2 px-3">{{ $column }}</th>
                             @endforeach
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td colspan="{{ count($columns) + 1 }}" class="py-8 text-center text-gray-400">No Data</td></tr>
+                        <tr><td colspan="{{ $mode === 'without-id' ? count($columns) + 1 : count($columns) }}" class="py-8 text-center text-gray-400">No Data</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -107,7 +109,9 @@
                 <table class="w-full text-sm text-left">
                     <thead class="bg-gray-50">
                         <tr class="text-gray-500">
-                            <th class="py-2 px-3">SL</th>
+                            @if ($mode === 'without-id')
+                                <th class="py-2 px-3">ID</th>
+                            @endif
                             @foreach ($columns as $column)
                                 <th class="py-2 px-3">{{ $column }}</th>
                             @endforeach
@@ -116,10 +120,7 @@
                     <tbody>
                         @forelse ($preview['rows'] as $row)
                             <tr class="border-t">
-                                <td class="py-2 px-3">{{ $mode === 'without-id' ? $row['admission_number'] : $loop->iteration }}</td>
-                                @if ($mode === 'with-id')
-                                    <td class="py-2 px-3">{{ $row['admission_number'] }}</td>
-                                @endif
+                                <td class="py-2 px-3">{{ $row['admission_number'] }}</td>
                                 <td class="py-2 px-3">{{ $row['roll'] }}</td>
                                 <td class="py-2 px-3">{{ $row['name'] }}</td>
                                 <td class="py-2 px-3 capitalize">{{ $row['gender'] }}</td>
@@ -129,7 +130,7 @@
                                 <td class="py-2 px-3">{{ $row['guardian_phone'] }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="{{ count($columns) + 1 }}" class="py-8 text-center text-gray-400">No data found in the uploaded file.</td></tr>
+                            <tr><td colspan="{{ $mode === 'without-id' ? count($columns) + 1 : count($columns) }}" class="py-8 text-center text-gray-400">No data found in the uploaded file.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

@@ -81,7 +81,7 @@ class StudentImportPreviewTest extends TestCase
         $this->assertSame('01700000000', $preview['rows'][0]['guardian_phone']);
     }
 
-    public function test_preview_table_shows_a_serial_number_column(): void
+    public function test_preview_table_shows_an_id_column(): void
     {
         $admin = $this->makeSchoolAdmin();
         $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
@@ -105,7 +105,7 @@ class StudentImportPreviewTest extends TestCase
 
         $response = $this->actingAs($admin)->get(route('school.students.import.create'));
 
-        $response->assertOk()->assertSee('SL');
+        $response->assertOk()->assertSee('ID');
     }
 
     public function test_without_id_import_auto_assigns_student_ids_starting_at_2001(): void
@@ -161,5 +161,33 @@ class StudentImportPreviewTest extends TestCase
         $this->actingAs($admin)->post(route('school.students.import.store', 'without-id'));
 
         $this->assertDatabaseHas('students', ['name' => 'Student Two', 'admission_number' => '2051']);
+    }
+
+    public function test_unrelated_large_numeric_admission_numbers_do_not_push_the_starting_serial_up(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
+        $section = Section::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'name' => 'A']);
+        $year = AcademicYear::create(['school_id' => $admin->school_id, 'name' => '2026', 'starts_on' => '2026-01-01', 'ends_on' => '2026-12-31']);
+        $group = Group::create(['school_id' => $admin->school_id, 'name' => 'Science', 'serial' => 1, 'status' => 'enable']);
+        $category = StudentCategory::create(['school_id' => $admin->school_id, 'name' => 'Regular', 'serial' => 1, 'status' => 'enable']);
+        Student::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'section_id' => $section->id, 'name' => 'Legacy Row', 'roll' => '1', 'status' => 'active', 'admission_number' => '346553453']);
+
+        $file = $this->makeUploadFile(
+            ['Roll No', 'Name', 'Gender', 'Religion', "Father's Name", "Mother's Name", 'Mobile No.'],
+            ['2', 'Student New', 'Male', 'Islam', 'Father New', 'Mother New', '01700000000']
+        );
+
+        $this->actingAs($admin)->post(route('school.students.import.preview', 'without-id'), [
+            'academic_year_id' => $year->id,
+            'section_id' => $section->id,
+            'group_name' => $group->name,
+            'category' => $category->name,
+            'file' => $file,
+        ]);
+
+        $this->actingAs($admin)->post(route('school.students.import.store', 'without-id'));
+
+        $this->assertDatabaseHas('students', ['name' => 'Student New', 'admission_number' => '2001']);
     }
 }
