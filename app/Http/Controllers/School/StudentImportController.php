@@ -204,25 +204,25 @@ class StudentImportController extends Controller
      * sample file's header row don't silently drop a column's data.
      */
     /**
-     * Next auto-generated Student ID for a "Without ID" import, continuing
-     * on from the school's highest existing numeric ID so repeated imports
-     * never collide, but never lower than SERIAL_START.
+     * Next auto-generated Student ID for a "Without ID" import: always tries
+     * SERIAL_START (2001) first, only moving forward past numbers that are
+     * already taken (admission_number is unique per school) — it never looks
+     * at unrelated/legacy admission numbers to decide where to start.
      */
     private function nextSerial(): int
     {
-        // Only consider IDs that already look like they belong to this
-        // auto-generated sequence (SERIAL_START..999999); unrelated legacy
-        // or garbage admission numbers elsewhere in the table (e.g. phone-
-        // number-sized values from manual test data) must never push this up.
-        $highest = Student::query()
+        $existing = Student::query()
             ->whereNotNull('admission_number')
-            ->get(['admission_number'])
             ->pluck('admission_number')
-            ->filter(fn ($value) => ctype_digit((string) $value) && (int) $value >= self::SERIAL_START && (int) $value < 1000000)
-            ->map(fn ($value) => (int) $value)
-            ->max();
+            ->map(fn ($value) => (string) $value)
+            ->flip();
 
-        return $highest ? $highest + 1 : self::SERIAL_START;
+        $candidate = self::SERIAL_START;
+        while ($existing->has((string) $candidate)) {
+            $candidate++;
+        }
+
+        return $candidate;
     }
 
     private function colLetter(array $map, string $header): ?string

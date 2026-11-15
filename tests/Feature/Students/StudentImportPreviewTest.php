@@ -135,7 +135,7 @@ class StudentImportPreviewTest extends TestCase
         $this->assertDatabaseHas('students', ['name' => 'Student One', 'admission_number' => '2001']);
     }
 
-    public function test_without_id_import_continues_after_the_schools_highest_existing_numeric_id(): void
+    public function test_without_id_import_skips_past_2001_only_if_2001_itself_is_already_taken(): void
     {
         $admin = $this->makeSchoolAdmin();
         $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
@@ -143,7 +143,7 @@ class StudentImportPreviewTest extends TestCase
         $year = AcademicYear::create(['school_id' => $admin->school_id, 'name' => '2026', 'starts_on' => '2026-01-01', 'ends_on' => '2026-12-31']);
         $group = Group::create(['school_id' => $admin->school_id, 'name' => 'Science', 'serial' => 1, 'status' => 'enable']);
         $category = StudentCategory::create(['school_id' => $admin->school_id, 'name' => 'Regular', 'serial' => 1, 'status' => 'enable']);
-        Student::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'section_id' => $section->id, 'name' => 'Existing', 'roll' => '1', 'status' => 'active', 'admission_number' => '2050']);
+        Student::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'section_id' => $section->id, 'name' => 'Existing', 'roll' => '1', 'status' => 'active', 'admission_number' => '2001']);
 
         $file = $this->makeUploadFile(
             ['Roll No', 'Name', 'Gender', 'Religion', "Father's Name", "Mother's Name", 'Mobile No.'],
@@ -160,7 +160,7 @@ class StudentImportPreviewTest extends TestCase
 
         $this->actingAs($admin)->post(route('school.students.import.store', 'without-id'));
 
-        $this->assertDatabaseHas('students', ['name' => 'Student Two', 'admission_number' => '2051']);
+        $this->assertDatabaseHas('students', ['name' => 'Student Two', 'admission_number' => '2002']);
     }
 
     public function test_unrelated_large_numeric_admission_numbers_do_not_push_the_starting_serial_up(): void
