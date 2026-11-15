@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\AcademicYear;
 use App\Models\School;
+use App\Models\SchoolClass;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -67,5 +69,24 @@ class DashboardAcademicYearTest extends TestCase
         $response = $this->actingAs($admin)->get(route('school.dashboard'));
 
         $response->assertOk()->assertSee('2026');
+    }
+
+    public function test_student_count_and_recent_students_are_scoped_to_the_selected_academic_year(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
+        $year2025 = AcademicYear::create(['school_id' => $admin->school_id, 'name' => '2025', 'starts_on' => '2025-01-01', 'ends_on' => '2025-12-31']);
+        $year2026 = AcademicYear::create(['school_id' => $admin->school_id, 'name' => '2026', 'starts_on' => '2026-01-01', 'ends_on' => '2026-12-31']);
+        $admin->school->update(['academic_year_id' => $year2026->id]);
+
+        Student::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'academic_year_id' => $year2025->id, 'name' => 'Old Year Student', 'roll' => '1', 'status' => 'active']);
+        Student::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'academic_year_id' => $year2026->id, 'name' => 'Current Year Student', 'roll' => '2', 'status' => 'active']);
+
+        $response = $this->actingAs($admin)->get(route('school.dashboard'));
+
+        $response->assertOk()
+            ->assertSee('Current Year Student')
+            ->assertDontSee('Old Year Student')
+            ->assertSeeInOrder(['fs-4 fw-bold">1<', 'Total Student'], false);
     }
 }
