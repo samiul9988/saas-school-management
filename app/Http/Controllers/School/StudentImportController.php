@@ -26,6 +26,12 @@ class StudentImportController extends Controller
 
     private const COLUMNS = ['Roll No', 'Name', 'Gender', 'Religion', "Father's Name", "Mother's Name", 'Mobile No.'];
 
+    /**
+     * Starting point for auto-generated Student IDs when importing without
+     * an ID column, so a school's IDs read e.g. 2001, 2002, 2003...
+     */
+    private const SERIAL_START = 2001;
+
     public function create(): View
     {
         $academicYears = AcademicYear::orderByDesc('starts_on')->get();
@@ -102,6 +108,8 @@ class StudentImportController extends Controller
         $header = array_map('trim', array_shift($rows) ?? []);
         $map = array_flip($header);
 
+        $nextSerial = $mode === 'without-id' ? $this->nextSerial() : null;
+
         $parsed = [];
         foreach ($rows as $row) {
             $name = trim($row[$this->colLetter($map, 'Name')] ?? '');
@@ -113,7 +121,7 @@ class StudentImportController extends Controller
             $parsed[] = [
                 'admission_number' => $mode === 'with-id'
                     ? trim((string) ($row[$this->colLetter($map, 'Student ID')] ?? ''))
-                    : null,
+                    : (string) $nextSerial++,
                 'name' => $name,
                 'roll' => trim($row[$this->colLetter($map, 'Roll No')] ?? ''),
                 'father_name' => trim($row[$this->colLetter($map, "Father's Name")] ?? ''),
@@ -150,7 +158,7 @@ class StudentImportController extends Controller
                 $row['gender'] = null;
             }
 
-            if ($mode === 'without-id' || $row['admission_number'] === '') {
+            if ($mode === 'with-id' && $row['admission_number'] === '') {
                 $row['admission_number'] = null;
             }
 
@@ -195,6 +203,24 @@ class StudentImportController extends Controller
      * matches "ROLL NO.", "roll no", etc.), so minor edits to the downloaded
      * sample file's header row don't silently drop a column's data.
      */
+    /**
+     * Next auto-generated Student ID for a "Without ID" import, continuing
+     * on from the school's highest existing numeric ID so repeated imports
+     * never collide, but never lower than SERIAL_START.
+     */
+    private function nextSerial(): int
+    {
+        $highest = Student::query()
+            ->whereNotNull('admission_number')
+            ->get(['admission_number'])
+            ->pluck('admission_number')
+            ->filter(fn ($value) => ctype_digit((string) $value))
+            ->map(fn ($value) => (int) $value)
+            ->max();
+
+        return max(self::SERIAL_START, ($highest ?? 0) + 1);
+    }
+
     private function colLetter(array $map, string $header): ?string
     {
         if (isset($map[$header])) {

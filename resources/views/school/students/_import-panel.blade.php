@@ -116,7 +116,7 @@
                     <tbody>
                         @forelse ($preview['rows'] as $row)
                             <tr class="border-t">
-                                <td class="py-2 px-3">{{ $loop->iteration }}</td>
+                                <td class="py-2 px-3">{{ $mode === 'without-id' ? $row['admission_number'] : $loop->iteration }}</td>
                                 @if ($mode === 'with-id')
                                     <td class="py-2 px-3">{{ $row['admission_number'] }}</td>
                                 @endif

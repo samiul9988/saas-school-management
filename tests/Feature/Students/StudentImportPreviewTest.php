@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\School;
 use App\Models\SchoolClass;
 use App\Models\Section;
+use App\Models\Student;
 use App\Models\StudentCategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -105,5 +106,60 @@ class StudentImportPreviewTest extends TestCase
         $response = $this->actingAs($admin)->get(route('school.students.import.create'));
 
         $response->assertOk()->assertSee('SL');
+    }
+
+    public function test_without_id_import_auto_assigns_student_ids_starting_at_2001(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
+        $section = Section::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'name' => 'A']);
+        $year = AcademicYear::create(['school_id' => $admin->school_id, 'name' => '2026', 'starts_on' => '2026-01-01', 'ends_on' => '2026-12-31']);
+        $group = Group::create(['school_id' => $admin->school_id, 'name' => 'Science', 'serial' => 1, 'status' => 'enable']);
+        $category = StudentCategory::create(['school_id' => $admin->school_id, 'name' => 'Regular', 'serial' => 1, 'status' => 'enable']);
+
+        $file = $this->makeUploadFile(
+            ['Roll No', 'Name', 'Gender', 'Religion', "Father's Name", "Mother's Name", 'Mobile No.'],
+            ['1', 'Student One', 'Male', 'Islam', 'Father One', 'Mother One', '01700000000']
+        );
+
+        $this->actingAs($admin)->post(route('school.students.import.preview', 'without-id'), [
+            'academic_year_id' => $year->id,
+            'section_id' => $section->id,
+            'group_name' => $group->name,
+            'category' => $category->name,
+            'file' => $file,
+        ]);
+
+        $this->actingAs($admin)->post(route('school.students.import.store', 'without-id'));
+
+        $this->assertDatabaseHas('students', ['name' => 'Student One', 'admission_number' => '2001']);
+    }
+
+    public function test_without_id_import_continues_after_the_schools_highest_existing_numeric_id(): void
+    {
+        $admin = $this->makeSchoolAdmin();
+        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
+        $section = Section::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'name' => 'A']);
+        $year = AcademicYear::create(['school_id' => $admin->school_id, 'name' => '2026', 'starts_on' => '2026-01-01', 'ends_on' => '2026-12-31']);
+        $group = Group::create(['school_id' => $admin->school_id, 'name' => 'Science', 'serial' => 1, 'status' => 'enable']);
+        $category = StudentCategory::create(['school_id' => $admin->school_id, 'name' => 'Regular', 'serial' => 1, 'status' => 'enable']);
+        Student::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'section_id' => $section->id, 'name' => 'Existing', 'roll' => '1', 'status' => 'active', 'admission_number' => '2050']);
+
+        $file = $this->makeUploadFile(
+            ['Roll No', 'Name', 'Gender', 'Religion', "Father's Name", "Mother's Name", 'Mobile No.'],
+            ['2', 'Student Two', 'Male', 'Islam', 'Father Two', 'Mother Two', '01700000000']
+        );
+
+        $this->actingAs($admin)->post(route('school.students.import.preview', 'without-id'), [
+            'academic_year_id' => $year->id,
+            'section_id' => $section->id,
+            'group_name' => $group->name,
+            'category' => $category->name,
+            'file' => $file,
+        ]);
+
+        $this->actingAs($admin)->post(route('school.students.import.store', 'without-id'));
+
+        $this->assertDatabaseHas('students', ['name' => 'Student Two', 'admission_number' => '2051']);
     }
 }
