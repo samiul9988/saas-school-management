@@ -3,7 +3,6 @@
 namespace Tests\Feature\Students;
 
 use App\Models\School;
-use App\Models\SchoolClass;
 use App\Models\Section;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -50,41 +49,27 @@ class InitialSectionSetupTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function test_submitting_a_section_name_creates_it_for_every_class(): void
+    public function test_submitting_a_section_name_creates_exactly_one_row_with_no_class(): void
     {
         $admin = $this->makeSchoolAdmin();
-        $classNine = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
-        $classTen = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Ten']);
 
         $response = $this->actingAs($admin)->post(route('school.students.initial-setup.store', 'section'), [
-            'name' => 'A',
+            'name' => 'B',
             'serial' => 1,
         ]);
 
         $response->assertRedirect();
-        $this->assertDatabaseHas('sections', ['school_class_id' => $classNine->id, 'name' => 'A']);
-        $this->assertDatabaseHas('sections', ['school_class_id' => $classTen->id, 'name' => 'A']);
+        $this->assertSame(1, Section::withoutGlobalScope('assigned')->where('name', 'B')->count());
+        $this->assertNull(Section::withoutGlobalScope('assigned')->where('name', 'B')->first()->school_class_id);
     }
 
-    public function test_submitting_an_existing_section_name_again_does_not_duplicate_it(): void
+    public function test_section_list_does_not_show_a_class_column_since_assignment_happens_in_configuration(): void
     {
         $admin = $this->makeSchoolAdmin();
-        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
-
-        $this->actingAs($admin)->post(route('school.students.initial-setup.store', 'section'), ['name' => 'A']);
-        $this->actingAs($admin)->post(route('school.students.initial-setup.store', 'section'), ['name' => 'A']);
-
-        $this->assertSame(1, Section::where('school_class_id', $class->id)->where('name', 'A')->count());
-    }
-
-    public function test_section_list_shows_a_class_column_so_one_row_per_class_is_not_mistaken_for_duplicates(): void
-    {
-        $admin = $this->makeSchoolAdmin();
-        $class = SchoolClass::create(['school_id' => $admin->school_id, 'name' => 'Nine']);
-        Section::create(['school_id' => $admin->school_id, 'school_class_id' => $class->id, 'name' => 'A']);
+        Section::create(['school_id' => $admin->school_id, 'name' => 'A']);
 
         $response = $this->actingAs($admin)->get(route('school.students.initial-setup', 'section'));
 
-        $response->assertOk()->assertSee('<th class="py-3 px-4">Class</th>', false)->assertSee('Nine')->assertSee('A');
+        $response->assertOk()->assertDontSee('<th class="py-3 px-4">Class</th>', false)->assertSee('A');
     }
 }

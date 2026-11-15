@@ -34,14 +34,13 @@
                 </div>
                 <div>
                     <x-input-label value="Section:" />
-                    <select name="section_id" id="f_section" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <select name="section_name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
                         <option value="">Select</option>
-                        @foreach ($classes as $classOption)
-                            @foreach ($classOption->sections as $sectionOption)
-                                <option value="{{ $sectionOption->id }}" data-class="{{ $classOption->id }}">{{ $classOption->name }} - {{ $sectionOption->name }}</option>
-                            @endforeach
+                        @foreach ($sectionNames as $sectionName)
+                            <option value="{{ $sectionName }}">{{ $sectionName }}</option>
                         @endforeach
                     </select>
+                    <p class="mt-1 text-xs text-gray-500">Create new section names from Students &rarr; Settings &rarr; Section.</p>
                 </div>
                 <div>
                     <button type="submit" class="w-full px-6 py-2.5 bg-green-600 border border-transparent rounded-md font-semibold text-sm text-white hover:bg-green-700">
@@ -102,18 +101,4 @@
             </div>
         </form>
     </div>
-
-    <script>
-        (function () {
-            var classSelect = document.getElementById('f_class');
-            var sectionSelect = document.getElementById('f_section');
-            classSelect.addEventListener('change', function () {
-                Array.from(sectionSelect.options).forEach(function (opt) {
-                    if (!opt.value) return;
-                    opt.hidden = opt.dataset.class && opt.dataset.class !== classSelect.value;
-                });
-                sectionSelect.value = '';
-            });
-        })();
-    </script>
 </x-app-layout>

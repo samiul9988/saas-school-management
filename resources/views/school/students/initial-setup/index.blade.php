@@ -22,11 +22,11 @@
             </div>
 
             @if ($type === 'section')
-                <p class="text-sm text-gray-500">Adds this section name to every class at once.</p>
+                <p class="text-sm text-gray-500">Creates the section name only. Assign it to a Class from Configuration &rarr; Class.</p>
             @endif
             <form method="POST" action="{{ route('school.students.initial-setup.store', $type) }}" class="flex flex-wrap gap-4 items-end">
                 @csrf
-                @if ($meta['needsClass'] && $type !== 'section')
+                @if ($meta['needsClass'])
                     <div class="w-56">
                         <select name="school_class_id" class="block w-full border-gray-300 rounded-md shadow-sm" required>
                             <option value="">Select Class</option>

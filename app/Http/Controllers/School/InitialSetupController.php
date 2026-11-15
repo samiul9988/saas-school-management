@@ -19,7 +19,7 @@ class InitialSetupController extends Controller
         'academic-year' => ['model' => AcademicYear::class, 'label' => 'Academic Year', 'placeholder' => 'Enter Academic Year', 'needsClass' => false],
         'class' => ['model' => SchoolClass::class, 'label' => 'Class', 'placeholder' => 'Enter Class Name', 'needsClass' => false],
         'shift' => ['model' => Shift::class, 'label' => 'Shift', 'placeholder' => 'Enter Shift Name', 'needsClass' => false],
-        'section' => ['model' => Section::class, 'label' => 'Section', 'placeholder' => 'Enter Section Name', 'needsClass' => true],
+        'section' => ['model' => Section::class, 'label' => 'Section', 'placeholder' => 'Enter Section Name', 'needsClass' => false],
         'group' => ['model' => Group::class, 'label' => 'Group', 'placeholder' => 'Enter Group Name', 'needsClass' => false],
         'student-category' => ['model' => StudentCategory::class, 'label' => 'Student Category', 'placeholder' => 'Enter Category Name', 'needsClass' => false],
     ];
@@ -32,6 +32,13 @@ class InitialSetupController extends Controller
         $modelClass = $meta['model'];
 
         $query = $modelClass::query()->orderBy('serial')->orderBy('id');
+        if ($type === 'section') {
+            // This page manages section *names* only (one row per name); the
+            // per-class rows created from Configuration > Class are a
+            // separate concern and shouldn't appear here as look-alike
+            // duplicates of the name that was actually typed in.
+            $query->withoutGlobalScope('assigned')->whereNull('school_class_id');
+        }
         if ($meta['needsClass']) {
             $query->with('schoolClass');
         }
@@ -67,18 +74,7 @@ class InitialSetupController extends Controller
             $payload = array_merge($payload, $this->academicYearDates($data['name']));
         }
 
-        if ($type === 'section') {
-            // No class picker on this quick-setup form: apply the section
-            // name to every class at once instead of asking which one.
-            foreach (SchoolClass::orderBy('sort_order')->get() as $class) {
-                Section::firstOrCreate(
-                    ['school_class_id' => $class->id, 'name' => $data['name']],
-                    ['serial' => $data['serial'], 'status' => 'enable']
-                );
-            }
-        } else {
-            $meta['model']::create($payload);
-        }
+        $meta['model']::create($payload);
 
         return redirect()->route('school.students.initial-setup', $type)->with('status', $meta['label'].' added.');
     }
@@ -87,7 +83,7 @@ class InitialSetupController extends Controller
     {
         abort_unless(array_key_exists($type, self::TYPES), 404);
         $meta = self::TYPES[$type];
-        $record = $meta['model']::findOrFail($id);
+        $record = $this->findRecord($type, $meta, $id);
 
         $rules = [
             'name' => ['required', 'string', 'max:255'],
@@ -130,7 +126,7 @@ class InitialSetupController extends Controller
     {
         abort_unless(array_key_exists($type, self::TYPES), 404);
         $meta = self::TYPES[$type];
-        $record = $meta['model']::findOrFail($id);
+        $record = $this->findRecord($type, $meta, $id);
 
         $record->update(['status' => $record->status === 'enable' ? 'disable' : 'enable']);
 
@@ -141,8 +137,19 @@ class InitialSetupController extends Controller
     {
         abort_unless(array_key_exists($type, self::TYPES), 404);
         $meta = self::TYPES[$type];
-        $meta['model']::findOrFail($id)->delete();
+        $this->findRecord($type, $meta, $id)->delete();
 
         return redirect()->route('school.students.initial-setup', $type)->with('status', $meta['label'].' removed.');
+    }
+
+    private function findRecord(string $type, array $meta, int $id)
+    {
+        $query = $meta['model']::query();
+
+        if ($type === 'section') {
+            $query->withoutGlobalScope('assigned')->whereNull('school_class_id');
+        }
+
+        return $query->findOrFail($id);
     }
 }

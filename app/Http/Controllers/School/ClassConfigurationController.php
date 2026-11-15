@@ -14,29 +14,37 @@ class ClassConfigurationController extends Controller
 {
     public function index(Request $request): View
     {
-        $classes = SchoolClass::with('sections')->orderBy('sort_order')->get();
+        $classes = SchoolClass::orderBy('sort_order')->get();
         $shifts = Shift::orderBy('serial')->get();
+
+        // Section names are defined once (Students > Settings > Section) and
+        // assigned to a class here, so the picker lists distinct names, not
+        // per-class rows.
+        $sectionNames = Section::withoutGlobalScope('assigned')->select('name')->distinct()->orderBy('name')->pluck('name');
 
         $perPage = (int) $request->get('per_page', 10);
         $sections = Section::with('schoolClass', 'shift')
-            ->whereNotNull('shift_id')
+            ->whereNotNull('school_class_id')
             ->orderBy('serial')
             ->orderBy('id')
             ->paginate($perPage)
             ->withQueryString();
 
-        return view('school.students.configuration.class', compact('classes', 'shifts', 'sections', 'perPage'));
+        return view('school.students.configuration.class', compact('classes', 'shifts', 'sectionNames', 'sections', 'perPage'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'school_class_id' => ['required', 'exists:school_classes,id'],
-            'section_id' => ['required', 'exists:sections,id'],
+            'section_name' => ['required', 'string', 'exists:sections,name'],
             'shift_id' => ['nullable', 'exists:shifts,id'],
         ]);
 
-        $section = Section::where('id', $data['section_id'])->where('school_class_id', $data['school_class_id'])->firstOrFail();
+        $section = Section::firstOrCreate(
+            ['school_class_id' => $data['school_class_id'], 'name' => $data['section_name']],
+            ['status' => 'enable']
+        );
         $section->update(['shift_id' => $data['shift_id'] ?? null]);
 
         return redirect()->route('school.students.configuration.class')->with('status', 'Class configuration saved.');
