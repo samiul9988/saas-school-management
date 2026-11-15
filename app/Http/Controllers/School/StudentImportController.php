@@ -108,7 +108,19 @@ class StudentImportController extends Controller
         $header = array_map('trim', array_shift($rows) ?? []);
         $map = array_flip($header);
 
-        $nextSerial = $mode === 'without-id' ? $this->nextSerial() : null;
+        $usedIds = $this->existingAdmissionNumbers();
+
+        $allocateId = function () use (&$usedIds) {
+            $candidate = self::SERIAL_START;
+
+            while (isset($usedIds[(string) $candidate])) {
+                $candidate++;
+            }
+
+            $usedIds[(string) $candidate] = true;
+
+            return (string) $candidate;
+        };
 
         $parsed = [];
         foreach ($rows as $row) {
@@ -118,10 +130,18 @@ class StudentImportController extends Controller
                 continue;
             }
 
+            $admissionNumber = $mode === 'with-id'
+                ? trim((string) ($row[$this->colLetter($map, 'Student ID')] ?? ''))
+                : '';
+
+            if ($admissionNumber === '') {
+                $admissionNumber = $allocateId();
+            } else {
+                $usedIds[$admissionNumber] = true;
+            }
+
             $parsed[] = [
-                'admission_number' => $mode === 'with-id'
-                    ? trim((string) ($row[$this->colLetter($map, 'Student ID')] ?? ''))
-                    : (string) $nextSerial++,
+                'admission_number' => $admissionNumber,
                 'name' => $name,
                 'roll' => trim($row[$this->colLetter($map, 'Roll No')] ?? ''),
                 'father_name' => trim($row[$this->colLetter($map, "Father's Name")] ?? ''),
@@ -203,26 +223,21 @@ class StudentImportController extends Controller
      * matches "ROLL NO.", "roll no", etc.), so minor edits to the downloaded
      * sample file's header row don't silently drop a column's data.
      */
+
     /**
-     * Next auto-generated Student ID for a "Without ID" import: always tries
-     * SERIAL_START (2001) first, only moving forward past numbers that are
-     * already taken (admission_number is unique per school) — it never looks
-     * at unrelated/legacy admission numbers to decide where to start.
+     * This school's existing admission numbers, as a ['value' => true] set,
+     * so auto-assigned IDs (starting at SERIAL_START) never collide with a
+     * real Student ID (admission_number is unique per school).
+     *
+     * @return array<string, true>
      */
-    private function nextSerial(): int
+    private function existingAdmissionNumbers(): array
     {
-        $existing = Student::query()
+        return Student::query()
             ->whereNotNull('admission_number')
             ->pluck('admission_number')
-            ->map(fn ($value) => (string) $value)
-            ->flip();
-
-        $candidate = self::SERIAL_START;
-        while ($existing->has((string) $candidate)) {
-            $candidate++;
-        }
-
-        return $candidate;
+            ->mapWithKeys(fn ($value) => [(string) $value => true])
+            ->all();
     }
 
     private function colLetter(array $map, string $header): ?string
