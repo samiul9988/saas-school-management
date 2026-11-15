@@ -28,12 +28,17 @@
                         <select id="section_id" name="section_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                             <option value="">-- Select Section --</option>
                             @foreach ($sections as $section)
-                                <option value="{{ $section->id }}" @selected(request('section_id') == $section->id)>{{ $section->schoolClass?->name }} - {{ $section->name }}</option>
+                                <option value="{{ $section->id }}" data-class-id="{{ $section->school_class_id }}" @selected(request('section_id') == $section->id)>{{ $section->schoolClass?->name }} - {{ $section->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <x-primary-button>Search</x-primary-button>
                 </form>
+
+                @include('school.partials.class-filtered-select-script')
+                <script>
+                    wireClassFilteredSelect('school_class_id', 'section_id');
+                </script>
             </div>
 
             <form method="POST" action="{{ route('school.sms-send.guardian.store') }}">

@@ -7,8 +7,11 @@
      * @param {string} groupSelectId id of the Group <select> to repopulate
      * @param {string} scope         'sections', 'classes', or 'admission-classes'
      * @param {string|null} selectedGroup group to keep selected on initial load
+     * @param {string|null} idAttr   when set, the scope id is read from the selected
+     *                               <option>'s data-{idAttr} attribute instead of its value
+     *                               (e.g. a Section select filtering by its class)
      */
-    window.wireDynamicGroupSelect = function (scopeSelectId, groupSelectId, scope, selectedGroup) {
+    window.wireDynamicGroupSelect = function (scopeSelectId, groupSelectId, scope, selectedGroup, idAttr) {
         var scopeSelect = document.getElementById(scopeSelectId);
         var groupSelect = document.getElementById(groupSelectId);
 
@@ -23,8 +26,18 @@
             'admission-classes': {!! json_encode(route('school.classes.admission-groups', ['class' => '__ID__'])) !!},
         };
 
+        function resolveScopeId() {
+            if (! idAttr) {
+                return scopeSelect.value;
+            }
+
+            var option = scopeSelect.options[scopeSelect.selectedIndex];
+
+            return option ? option.dataset[idAttr] : null;
+        }
+
         function loadGroups(preserve) {
-            var scopeId = scopeSelect.value;
+            var scopeId = resolveScopeId();
 
             if (! scopeId) {
                 return;

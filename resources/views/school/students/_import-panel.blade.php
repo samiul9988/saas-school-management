@@ -45,7 +45,7 @@
                         <select id="section_id_{{ $mode }}" name="section_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
                             <option value="">Select Section</option>
                             @foreach ($sections as $section)
-                                <option value="{{ $section->id }}">{{ $section->schoolClass?->name }} - {{ $section->name }}</option>
+                                <option value="{{ $section->id }}" data-class-id="{{ $section->school_class_id }}">{{ $section->schoolClass?->name }} - {{ $section->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -74,6 +74,11 @@
                     <x-primary-button>Upload File</x-primary-button>
                 </div>
             </form>
+
+            @include('school.partials.dynamic-group-script')
+            <script>
+                wireDynamicGroupSelect('section_id_{{ $mode }}', 'group_name_{{ $mode }}', 'admission-classes', null, 'classId');
+            </script>
 
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left">

@@ -27,7 +27,7 @@
             <option value="">— Select Section —</option>
             @foreach ($classes as $class)
                 @foreach ($class->sections as $section)
-                    <option value="{{ $section->id }}" @selected(old('section_id', $student?->section_id) == $section->id)>{{ $class->name }} - {{ $section->name }}</option>
+                    <option value="{{ $section->id }}" data-class-id="{{ $class->id }}" @selected(old('section_id', $student?->section_id) == $section->id)>{{ $class->name }} - {{ $section->name }}</option>
                 @endforeach
             @endforeach
         </select>
@@ -57,6 +57,11 @@
     wireDynamicGroupSelect('school_class_id', 'group_name', 'admission-classes', @json(old('group_name', $student?->group_name)));
 </script>
 
+@include('school.partials.class-filtered-select-script')
+<script>
+    wireClassFilteredSelect('school_class_id', 'section_id');
+</script>
+
 <div class="grid grid-cols-2 gap-4">
     <div>
         <x-input-label for="name" value="Name" />
@@ -80,7 +85,7 @@
 </div>
 <div class="grid grid-cols-2 gap-4">
     <div>
-        <x-input-label for="admission_number" value="Admission Number" />
+        <x-input-label for="admission_number" value="ID NO" />
         <x-text-input id="admission_number" name="admission_number" class="mt-1 block w-full" value="{{ old('admission_number', $student?->admission_number) }}" />
     </div>
     <div>
