@@ -56,7 +56,8 @@ class SeatPlanController extends Controller
             return [$student->id => 'data:image/png;base64,'.$png];
         });
 
-        $pdf = Pdf::loadView("school.exams.pdf.admit-card-template-{$template}", compact('school', 'section', 'exam', 'students', 'instruction', 'qrCodes'));
+        $pdf = Pdf::loadView("school.exams.pdf.admit-card-template-{$template}", compact('school', 'section', 'exam', 'students', 'instruction', 'qrCodes'))
+            ->setPaper('a4', 'portrait');
 
         return $pdf->download('admit-card.pdf');
     }
@@ -96,8 +97,8 @@ class SeatPlanController extends Controller
 
         $students = Student::where('section_id', $section->id)
             ->where('status', 'active')
-            ->when($request->filled('from_roll') && (int) $request->from_roll > 0, fn ($q) => $q->where('roll', '>=', $request->from_roll))
-            ->when($request->filled('to_roll') && (int) $request->to_roll > 0, fn ($q) => $q->where('roll', '<=', $request->to_roll))
+            ->when($request->filled('from_roll') && (int) $request->from_roll > 0, fn ($q) => $q->where('roll', '>=', (int) $request->from_roll))
+            ->when($request->filled('to_roll') && (int) $request->to_roll > 0, fn ($q) => $q->where('roll', '<=', (int) $request->to_roll))
             ->orderByRoll()
             ->get();
 
