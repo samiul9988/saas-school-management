@@ -3,37 +3,39 @@
 <head>
     <meta charset="utf-8">
     <style>
-        body { font-family: sans-serif; font-size: 11px; color: #1f2937; margin: 0; }
+        @page { margin: 6mm; }
+        body { font-family: sans-serif; font-size: 9.5px; color: #1f2937; margin: 0; }
         .page { page-break-after: always; }
         .page:last-child { page-break-after: auto; }
 
         table.grid { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        table.grid td.cell { width: 50%; vertical-align: top; padding: 0 1% 14px 1%; }
+        table.grid td.cell { width: 50%; vertical-align: top; padding: 0 1% 6px 1%; }
 
-        .card { border: 1px dashed #666; padding: 10px 14px; }
+        .card { border: 1px dashed #666; padding: 6px 8px; }
 
         table.head-table { width: 100%; }
-        table.head-table .logo-cell { width: 56px; vertical-align: top; }
-        .logo { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 1px solid #ccc; }
+        table.head-table .logo-cell { width: 40px; vertical-align: top; }
+        .logo { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; border: 1px solid #ccc; }
         .logo img { width: 100%; height: 100%; object-fit: cover; }
 
-        .head h3 { margin: 0; font-size: 12.5px; }
-        .head .addr { font-size: 9px; color: #555; }
-        .seat-badge { display: inline-block; border: 1px solid #333; padding: 2px 10px; font-weight: bold; font-size: 10px; margin-top: 4px; }
-        .exam-title { font-weight: bold; font-size: 9.5px; margin-top: 2px; }
+        .head h3 { margin: 0; font-size: 11px; }
+        .head .addr { font-size: 8px; color: #555; }
+        .seat-badge { display: inline-block; border: 1px solid #333; padding: 1px 8px; font-weight: bold; font-size: 9px; margin-top: 2px; }
+        .exam-title { font-weight: bold; font-size: 8.5px; margin-top: 1px; }
 
-        table.body-table { width: 100%; margin-top: 10px; }
+        table.body-table { width: 100%; margin-top: 5px; }
         table.body-table .info-cell { width: 62%; vertical-align: top; }
         table.body-table .roll-cell { width: 36%; vertical-align: top; }
 
-        table.info td { padding: 1px 2px; font-size: 9.5px; }
-        table.info .label { color: #555; width: 60px; }
+        table.info td { padding: 0.5px 2px; font-size: 8.5px; }
+        table.info .label { color: #555; width: 55px; }
 
-        .roll-box { border: 1px solid #333; text-align: center; padding: 6px 0; }
-        .roll-box .roll-label { font-size: 9px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 3px; margin-bottom: 4px; }
-        .roll-box .roll-no { font-size: 20px; font-weight: bold; }
+        .roll-box { border: 1px solid #333; text-align: center; padding: 4px 0; }
+        .roll-box .roll-label { font-size: 8px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 2px; margin-bottom: 2px; }
+        .roll-box .roll-no { font-size: 16px; font-weight: bold; }
 
-        .footer { text-align: center; font-size: 9px; margin-top: 14px; border-top: 1px dashed #999; padding-top: 4px; }
+        .footer-spacer { height: 6px; font-size: 1px; line-height: 1px;}
+        .footer { text-align: center; font-size: 8px; border-top: 1px dashed #999; padding-top: 3px; }
     </style>
 </head>
 <body>
@@ -85,6 +87,7 @@
                                         </tr>
                                     </table>
 
+                                    <div class="footer-spacer">&nbsp;</div>
                                     <div class="footer">Convener, Exam Committee</div>
                                 </div>
                             </td>
