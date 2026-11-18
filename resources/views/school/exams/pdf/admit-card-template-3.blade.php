@@ -5,8 +5,8 @@
     <style>
         @page { margin: 8mm 10mm; }
         body { font-family: sans-serif; font-size: 9px; color: #1f2937; margin: 0; }
-        .card { border: 2px solid #1f2937; padding: 1mm; height: 80mm; box-sizing: border-box; margin-bottom: 3mm; background: #1f2937; }
-        .card .inner { border: 1px solid #b4802f; background: #fbf6e8; padding: 4mm; height: 100%; box-sizing: border-box; position: relative; }
+        .card { border: 3px solid #1f2937; padding: 2mm; margin-bottom: 4mm; background: #1f2937; }
+        .card .inner { border: 1px solid #b4802f; background: #fbf6e8; padding: 4mm; position: relative; min-height: 70mm; }
 
         .logo { position: absolute; top: 4mm; left: 4mm; width: 17mm; height: 17mm; border-radius: 50%; overflow: hidden; border: 1px solid #b4802f; background: #fff; }
         .logo img { width: 100%; height: 100%; object-fit: cover; }
