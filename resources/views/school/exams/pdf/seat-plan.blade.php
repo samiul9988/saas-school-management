@@ -35,7 +35,7 @@
         .roll-box .roll-no { font-size: 16px; font-weight: bold; }
 
         .footer-spacer { height: 6px; font-size: 1px; line-height: 1px;}
-        .footer { text-align: center; font-size: 8px; border-top: 1px dashed #999; padding-top: 3px; }
+        .footer { text-align: right; font-size: 8px; border-top: 1px dashed #999; padding-top: 3px; }
     </style>
 </head>
 <body>
